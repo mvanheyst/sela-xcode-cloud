@@ -1,0 +1,36 @@
+// Same client works in the browser and the bundled WKWebView. Keys stay on the server.
+function abortable(operation, signal) {
+  if (!signal) return operation();
+  if (signal.aborted) return Promise.reject(new DOMException('Aborted', 'AbortError'));
+  return new Promise((resolve, reject) => {
+    const abort = () => reject(new DOMException('Aborted', 'AbortError'));
+    signal.addEventListener('abort', abort, { once: true });
+    Promise.resolve().then(operation).then(resolve, reject).finally(() => {
+      signal.removeEventListener('abort', abort);
+    });
+  });
+}
+
+export async function requestJSON(path, options = {}) {
+  const bridge = globalThis.webkit?.messageHandlers?.sela;
+  let data, status;
+  if (bridge) {
+    const result = await abortable(() => bridge.postMessage({
+      action: 'request', path, method: options.method || 'GET', body: options.body || null
+    }), options.signal);
+    ({ data, status } = result);
+  } else {
+    const response = await fetch(path, options);
+    status = response.status;
+    data = await response.json().catch(() => ({}));
+  }
+  if (options.signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+  if (status < 200 || status >= 300) throw new Error(data?.error || `Request failed (${status})`);
+  return data;
+}
+
+export async function copyText(text) {
+  const bridge = globalThis.webkit?.messageHandlers?.sela;
+  if (bridge) await bridge.postMessage({ action: 'copy', text });
+  else await navigator.clipboard.writeText(text);
+}

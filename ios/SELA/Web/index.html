@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fcfbf8">
+  <meta name="description" content="A quiet place to read Scripture, highlight verses, and explore the original Greek and Hebrew.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <title>SELA — Scripture, deeply understood</title>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span>✦</span></div>
+        <div><div class="brand-name">sela<span class="brand-dot">.</span></div><div class="brand-caption">SCRIPTURE & STUDY</div></div>
+      </div>
+      <div class="sidebar-section-title">YOUR SPACE</div>
+      <nav class="side-links" aria-label="Main navigation">
+        <button class="side-link active" id="navRead" type="button"><span data-icon="book-open"></span> Read Scripture</button>
+        <button class="side-link" id="navSaved" type="button"><span data-icon="bookmark"></span> Highlights & notes <span class="saved-count" id="savedCount">0</span></button>
+        <button class="side-link" id="navSearch" type="button"><span data-icon="search"></span> Search the Bible</button>
+      </nav>
+      <div class="sidebar-section-title books-title">THE BIBLE</div>
+      <div class="book-filter-wrap"><span data-icon="search"></span><input id="bookFilter" aria-label="Filter Bible books" placeholder="Find a book…" autocomplete="off"></div>
+      <div class="book-scroll" id="bookList" aria-label="Bible books"></div>
+      <div class="sidebar-footer"><div class="sidebar-footer-icon">✧</div><div><strong>A deeper kind of reading</strong><small>Original words. Timeless context.</small></div></div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-button mobile-menu" id="menuButton" title="Open menu" aria-label="Open menu"><span data-icon="menu"></span></button>
+          <div class="topbar-crumb">THE BIBLE <span class="crumb-divider">/</span> <span id="topReference">2 Peter 3</span></div>
+        </div>
+        <div class="topbar-right">
+          <span class="quiet-label">A QUIET MOMENT WITH THE WORD</span>
+          <button class="icon-button" id="searchButton" title="Search" aria-label="Search Bible"><span data-icon="search"></span></button>
+          <button class="icon-button" id="fontButton" title="Change text size" aria-label="Change text size"><span data-icon="type"></span></button>
+        </div>
+      </header>
+
+      <main id="readerView" class="page-area">
+        <section class="reading-header">
+          <div class="eyebrow"><span class="eyebrow-line"></span> SCRIPTURE READING</div>
+          <div class="reading-title-row">
+            <div><h1 id="chapterTitle">2 Peter <em>3</em></h1><p class="chapter-subtitle" id="chapterSubtitle">The promise of His coming</p></div>
+            <div class="chapter-arrows">
+              <button id="prevChapter" class="circle-button" aria-label="Previous chapter" title="Previous chapter"><span data-icon="chevron-left"></span></button>
+              <button id="nextChapter" class="circle-button" aria-label="Next chapter" title="Next chapter"><span data-icon="chevron-right"></span></button>
+            </div>
+          </div>
+          <div class="reading-controls">
+            <div class="reference-controls">
+              <label class="select-wrap"><span data-icon="book-open"></span><select id="bookSelect" aria-label="Book"></select><span data-icon="chevron-down"></span></label>
+              <label class="select-wrap chapter-select"><span>CH.</span><select id="chapterSelect" aria-label="Chapter"></select><span data-icon="chevron-down"></span></label>
+            </div>
+            <label class="version-control"><span data-icon="layers"></span><select id="translationSelect" aria-label="Bible translation"><option value="web">WEB</option><option value="kjv">KJV</option></select><span data-icon="chevron-down"></span></label>
+          </div>
+        </section>
+
+        <div class="insight-banner" id="insightBanner"><div class="banner-symbol">✦</div><div><strong>Go beyond the translation</strong><p>Tap any verse to uncover its original language, historical setting, and deeper meaning.</p></div><button id="dismissBanner" aria-label="Dismiss tip"><span data-icon="x"></span></button></div>
+        <div class="reading-section-label"><span>THE WORD</span><span class="reading-line"></span><span id="languageLabel">WORLD ENGLISH BIBLE</span></div>
+        <div class="status-note hidden" id="readerNotice"></div>
+        <div class="verses" id="verseList" aria-live="polite"><div class="loading-passage"><span class="spinner"></span> Opening Scripture…</div></div>
+        <footer class="reader-footer"><span>✦</span><p>Read slowly. Discover deeply. Let the words dwell.</p></footer>
+      </main>
+
+      <main id="savedView" class="page-area hidden">
+        <div class="eyebrow"><span class="eyebrow-line"></span> YOUR COLLECTION</div>
+        <h1 class="secondary-title">Saved <em>Scripture</em></h1>
+        <p class="secondary-subtitle">The verses that have spoken to you, gathered in one place.</p>
+        <div id="savedList" class="saved-list"></div>
+      </main>
+      <main id="searchView" class="page-area hidden">
+        <div class="eyebrow"><span class="eyebrow-line"></span> EXPLORE THE WORD</div>
+        <h1 class="secondary-title">Find a <em>passage</em></h1>
+        <p class="secondary-subtitle">Search a reference like “2 Peter 3:10” or a phrase like “steadfast love”.</p>
+        <form id="searchForm" class="search-box"><span data-icon="search"></span><input id="searchInput" placeholder="Verse, reference, or phrase…" aria-label="Search" minlength="2"><button type="submit">Search <span data-icon="arrow-right"></span></button></form>
+        <div id="searchResults" class="search-results"><div class="search-hint">Try: John 3:16 · Psalm 23 · covenant · peace</div></div>
+      </main>
+    </div>
+
+    <aside class="study-panel" id="studyPanel" aria-label="Verse study panel">
+      <div class="study-topbar"><div><span class="study-overline">DIG DEEPER</span><h2>Verse <em>study</em></h2></div><button class="icon-button" id="closeStudy" aria-label="Close study"><span data-icon="x"></span></button></div>
+      <div class="study-scroller" id="studyScroller">
+        <div class="study-empty" id="studyEmpty"><div class="study-empty-icon">✳</div><h3>Every word has a story.</h3><p>Select a verse in the reading pane to see the original Greek or Hebrew, word meanings, and historical context.</p><div class="empty-steps"><span>01 &nbsp; Read</span><span>02 &nbsp; Select</span><span>03 &nbsp; Discover</span></div></div>
+        <div id="studyContent" class="hidden">
+          <div class="selected-verse-card"><div class="selected-meta"><span id="selectedReference">2 Peter 3:10</span><span id="selectedVersion">WEB</span></div><p id="selectedText"></p></div>
+          <div class="study-actions"><div><span class="tiny-label">MARK THIS VERSE</span><div class="highlight-palette" id="highlightPalette" aria-label="Highlight colors"><button data-color="honey" aria-label="Highlight gold" title="Gold"></button><button data-color="sage" aria-label="Highlight green" title="Green"></button><button data-color="lavender" aria-label="Highlight lavender" title="Lavender"></button><button data-color="rose" aria-label="Highlight pink" title="Pink"></button><button class="erase-highlight" data-color="none" aria-label="Remove highlight" title="Remove highlight"><span data-icon="x"></span></button></div></div><button id="copyVerse" class="copy-verse" title="Copy verse"><span data-icon="copy"></span><span>Copy</span></button></div>
+          <div class="study-tabs" role="tablist" aria-label="Study sections"><button class="study-tab active" data-tab="words" role="tab" aria-selected="true">Original text</button><button class="study-tab" data-tab="meaning" role="tab" aria-selected="false">Meaning & context</button><button class="study-tab" data-tab="notes" role="tab" aria-selected="false">My notes</button></div>
+          <section class="tab-panel" id="wordsTab">
+            <div class="section-heading"><span data-icon="languages"></span><h3 id="originalHeading">Greek original</h3></div>
+            <div id="originalContent"><div class="section-loading"><span class="spinner"></span> Loading original text…</div></div>
+          </section>
+          <section class="tab-panel hidden" id="meaningTab">
+            <div class="section-heading"><span data-icon="sparkles"></span><h3>Meaning & context</h3></div>
+            <div id="meaningContent"></div>
+          </section>
+          <section class="tab-panel hidden" id="notesTab">
+            <div class="section-heading"><span data-icon="notebook-pen"></span><h3>Personal reflection</h3></div>
+            <p class="notes-caption">Your thoughts are saved on this device.</p>
+            <textarea id="noteInput" placeholder="What is God teaching you through this verse? Write a reflection, question, or prayer…" rows="8"></textarea>
+            <div id="noteStatus" class="note-status">Notes save automatically.</div>
+          </section>
+        </div>
+      </div>
+      <div class="study-bottom"><span data-icon="shield-check"></span><span>Original text sourced from Greek & Hebrew manuscripts · AI commentary is interpretive</span></div>
+    </aside>
+  </div>
+
+  <div id="mobileBackdrop" class="mobile-backdrop hidden"></div>
+  <nav class="mobile-nav" aria-label="Mobile navigation"><button id="mobileRead" class="active"><span data-icon="book-open"></span><span>Read</span></button><button id="mobileSearch"><span data-icon="search"></span><span>Search</span></button><button id="mobileSaved"><span data-icon="bookmark"></span><span>Saved</span></button><button id="mobileStudy"><span data-icon="sparkles"></span><span>Study</span></button></nav>
+  <div class="toast hidden" id="toast" role="status"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

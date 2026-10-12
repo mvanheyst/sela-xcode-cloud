@@ -1,0 +1,12 @@
+{
+  "name": "sela-xcode-cloud",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "python3 -m unittest discover -s tests -p test_cloud.py -v && node --test tests/native-api.test.mjs && npm --prefix backend test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
