@@ -11,7 +11,7 @@ function abortable(operation, signal) {
   });
 }
 
-export async function requestJSON(path, options = {}) {
+async function performRequest(path, options = {}) {
   const bridge = globalThis.webkit?.messageHandlers?.sela;
   let data, status;
   if (bridge) {
@@ -27,6 +27,20 @@ export async function requestJSON(path, options = {}) {
   if (options.signal?.aborted) throw new DOMException('Aborted', 'AbortError');
   if (status < 200 || status >= 300) throw new Error(data?.error || `Request failed (${status})`);
   return data;
+}
+
+export async function requestJSON(path, options = {}) {
+  const controller=new AbortController();let timedOut=false;
+  const abort=()=>controller.abort();
+  if(options.signal?.aborted)abort();
+  else options.signal?.addEventListener('abort',abort,{once:true});
+  const timer=setTimeout(()=>{timedOut=true;controller.abort();},path==='/api/study'?80000:35000);
+  try {
+    return await abortable(()=>performRequest(path,{...options,signal:controller.signal}),controller.signal);
+  } catch(error) {
+    if(timedOut)throw new Error('The study server took too long to respond. Please try again.');
+    throw error;
+  } finally {clearTimeout(timer);options.signal?.removeEventListener('abort',abort);}
 }
 
 export async function copyText(text) {

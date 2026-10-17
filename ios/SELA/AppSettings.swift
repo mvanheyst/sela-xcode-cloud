@@ -63,7 +63,7 @@ struct SettingsView: View {
                     Text("When you request an AI study, WEB verse text and Greek/Hebrew source data are sent through your study server to its AI provider. Personal notes are not included. Commentary is interpretation and should be checked against trusted scholarship.")
                 }
                 Section("Scripture sources") {
-                    Text("When you read NIV, API.Bible receives passage-view reports with random device and session identifiers. Your notes are not included. VDC Romanian text is supplied by YouVersion; passage requests go through the study server.")
+                    Text("Authorized Bible reading editions are supplied by YouVersion through your study server. WEB and KJV can use the existing Scripture service when YouVersion access is unavailable. Passage requests identify the Bible reference and the server application. Your notes and random device/session identifiers are not sent to Scripture providers.")
                 }
                 Section("About SELA") {
                     Text("Scripture & Study")

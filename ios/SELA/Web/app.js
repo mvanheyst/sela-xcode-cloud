@@ -73,35 +73,29 @@ const PREVIEW_COMMENTARY = {
 };
 const state = {
   book:'2 Peter', chapter:3, translation:savedJSON('sela.translation','web'), selected:null, verses:[],
-  translations:[{id:'web',available:true},{id:'kjv',available:true},{id:'esv',available:false},{id:'niv',available:false},{id:'vdc',available:false}],
+  translations:[{id:'web',available:true},{id:'kjv',available:true},{id:'esv',available:false},{id:'niv',available:false},{id:'vdc',available:false},{id:'ntr',available:false}],
   books:fallbackBooks, view:'read', aiEnabled:false, original:null, tab:'words',
   selectedToken:0, highlight:savedJSON('sela.highlights',{}), notes:savedJSON('sela.notes',{}),
   studies:savedJSON('sela.studies',{}), passageAbort:null, studySerial:0,
   fontSize:Number(localStorage.getItem('sela.fontsize')) || 19, toastTimer:null
 };
 
-const editionNames = {web:'World English Bible', kjv:'King James Version', esv:'English Standard Version', niv:'New International Version', vdc:'Dumitru Cornilescu (VDC) — Română'};
+const editionNames = {web:'World English Bible', kjv:'King James Version', esv:'English Standard Version', niv:'New International Version', vdc:'Dumitru Cornilescu (VDC) — Română', ntr:'Noua Traducere Românească'};
 function renderTranslationOptions() {
-  $('translationSelect').innerHTML=state.translations.map(t=>`<option value="${escapeHTML(t.id)}" ${t.available?'':'disabled'}>${t.id==='vdc'?'VDC · RO':t.id.toUpperCase()}${t.available?'':' (unavailable)'}</option>`).join('');
+  $('translationSelect').innerHTML=state.translations.map(t=>`<option value="${escapeHTML(t.id)}" ${t.available?'':'disabled'}>${t.id.toUpperCase()}${['vdc','ntr'].includes(t.id)?' · RO':''}${t.available?'':' (unavailable)'}</option>`).join('');
   $('translationSelect').value=state.translation;
 }
 function translationCredits(data) {
-  const el=$('translationCredit');
+  let el=$('translationCredit');
+  if (!el && !data) return;
+  if (!el) {
+    el=document.createElement('div');el.id='translationCredit';el.className='source-credit';
+    el.setAttribute('aria-live','polite');$('verseList').after(el);
+  }
   const links=(data?.attribution||[]).filter(a=>{
     try{return new URL(a.url).protocol==='https:';}catch{return false;}
   }).map(a=>`<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(a.name||'Source')}</a>`).join(' · ');
   el.innerHTML=`${escapeHTML(data?.copyright||'')}${data?.copyright&&links?'<br>':''}${links}`;
-}
-async function reportScriptureView(data) {
-  if(!data.usageToken)return;
-  try {
-    let deviceId=localStorage.getItem('sela.scriptureDeviceId');
-    if(!deviceId){deviceId=crypto.randomUUID();localStorage.setItem('sela.scriptureDeviceId',deviceId);}
-    let sessionId=sessionStorage.getItem('sela.scriptureSessionId');
-    if(!sessionId){sessionId=crypto.randomUUID();sessionStorage.setItem('sela.scriptureSessionId',sessionId);}
-    await api('/api/usage',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({token:data.usageToken,deviceId,sessionId})});
-  }catch{console.warn('Scripture usage reporting could not complete.');}
 }
 
 const refKey = (book = state.book, chapter = state.chapter, verse = state.selected) => `${book} ${chapter}:${verse}`;
@@ -118,7 +112,7 @@ function updateNavigation() {
   $('chapterSelect').innerHTML = Array.from({length:state.books.find(b=>b.name===state.book)?.chapters || 1},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('');
   $('chapterSelect').value = state.chapter;
   $('translationSelect').value = state.translation;
-  $('verseList').lang = state.translation === 'vdc' ? 'ro' : 'en';
+  $('verseList').lang = ['vdc','ntr'].includes(state.translation) ? 'ro' : 'en';
   $('chapterTitle').innerHTML = `${escapeHTML(state.book)} <em>${state.chapter}</em>`;
   $('topReference').textContent = `${state.book} ${state.chapter}`;
   $('languageLabel').textContent = (editionNames[state.translation]||state.translation).toUpperCase();
@@ -153,7 +147,7 @@ async function loadChapter() {
     if (state.passageAbort !== ctrl) return;
     state.verses = data.verses || [];
     translationCredits(data);
-    void reportScriptureView(data);
+    if(data.editionName)$('languageLabel').textContent=data.editionName.toUpperCase();
   } catch(error) {
     if (ctrl.signal.aborted) return;
     state.verses = state.translation === 'web' ? (DEMO_VERSES[keyForChapter()] || []) : [];
