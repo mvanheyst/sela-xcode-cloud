@@ -87,6 +87,7 @@ function renderTranslationOptions() {
 }
 function translationCredits(data) {
   const el=$('translationCredit');
+  if (!el) return; // Earlier readers do not have a publisher-credit element.
   const links=(data?.attribution||[]).filter(a=>{
     try{return new URL(a.url).protocol==='https:';}catch{return false;}
   }).map(a=>`<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(a.name||'Source')}</a>`).join(' · ');
