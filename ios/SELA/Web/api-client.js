@@ -34,7 +34,7 @@ export async function requestJSON(path, options = {}) {
   const abort=()=>controller.abort();
   if(options.signal?.aborted)abort();
   else options.signal?.addEventListener('abort',abort,{once:true});
-  const timer=setTimeout(()=>{timedOut=true;controller.abort();},path==='/api/study'?80000:35000);
+  const timer=setTimeout(()=>{timedOut=true;controller.abort();},(path==='/api/study'||path.startsWith('/api/original?'))?80000:35000);
   try {
     return await abortable(()=>performRequest(path,{...options,signal:controller.signal}),controller.signal);
   } catch(error) {

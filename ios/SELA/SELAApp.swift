@@ -9,6 +9,7 @@ struct SELAApp: App {
 
 struct ReaderView: View {
     @StateObject private var settings = AppSettings()
+    @AppStorage("sela.interfaceLanguage") private var interfaceLanguage = "en"
     @State private var showSettings = false
     @State private var readerGeneration = UUID()
 
@@ -23,7 +24,7 @@ struct ReaderView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button { showSettings = true } label: {
                             Image(systemName: "gearshape")
-                        }.accessibilityLabel("Settings")
+                        }.accessibilityLabel(selaText("Settings"))
                     }
                 }
                 .sheet(isPresented: $showSettings) {
@@ -32,5 +33,6 @@ struct ReaderView: View {
         }
         .tint(Color(red: 0.094, green: 0.243, blue: 0.227))
         .preferredColorScheme(.light)
+        .environment(\.locale, Locale(identifier: interfaceLanguage))
     }
 }

@@ -56,6 +56,11 @@ struct WebReader: UIViewRepresentable {
                   let body = message.body as? [String: Any] else {
                 replyHandler(nil, "Only the bundled SELA reader can use this bridge."); return
             }
+            if body["action"] as? String == "language",
+               let language = body["language"] as? String, ["en", "ro"].contains(language) {
+                UserDefaults.standard.set(language, forKey: "sela.interfaceLanguage")
+                replyHandler(["saved": true], nil); return
+            }
             if body["action"] as? String == "copy", let text = body["text"] as? String {
                 guard text.utf8.count <= 50_000 else {
                     replyHandler(nil, "The copied text is too long."); return

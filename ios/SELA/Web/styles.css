@@ -16,3 +16,6 @@
 @media(max-width:390px){.page-area{padding-left:17px;padding-right:17px}.reading-title-row h1{font-size:43px}.reading-controls{gap:6px}.select-wrap,.version-control{padding:7px 5px}.reference-controls{gap:5px}.study-tabs{gap:11px}}
 
 #translationCredit{margin-top:24px;line-height:1.65;overflow-wrap:anywhere} .version-control select{max-width:110px}
+
+/* Localized text labels inherit typography; decorative footer symbols retain their styling. */
+.reader-footer [data-i18n]{color:inherit;font-size:inherit}

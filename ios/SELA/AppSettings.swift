@@ -33,7 +33,7 @@ final class AppSettings: ObservableObject {
 enum SettingsError: LocalizedError {
     case invalidURL
     var errorDescription: String? {
-        "Enter an HTTPS server address without a path, login details, query, or fragment."
+        selaText("Enter an HTTPS server address without a path, login details, query, or fragment.")
     }
 }
 
@@ -44,6 +44,7 @@ struct SettingsView: View {
     @State private var draft = ""
     @State private var status = ""
     @State private var testing = false
+    @AppStorage("sela.interfaceLanguage") private var interfaceLanguage = "en"
 
     var body: some View {
         NavigationStack {
@@ -52,38 +53,38 @@ struct SettingsView: View {
                     TextField("https://your-study-server.com", text: $draft)
                         .keyboardType(.URL).textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                    Button(testing ? "Connecting…" : "Test connection") { testConnection() }
+                    Button(testing ? selaText("Connecting…") : selaText("Test connection")) { testConnection() }
                         .disabled(testing)
                     if !status.isEmpty { Text(status).font(.footnote) }
-                } header: { Text("Study server") } footer: {
-                    Text("Your administrator provides this address. Leave it blank to use the included example verses. Complete chapters and original-language study require an internet connection to the server.")
+                } header: { Text(selaText("Study server")) } footer: {
+                    Text(selaText("Your administrator provides this address. Leave it blank to use the included example verses. Complete chapters and original-language study require an internet connection to the server."))
                 }
-                Section("Your reading") {
-                    Text("Highlights and notes stay on this device. They are not synchronized with other devices and may be removed when the app is deleted.")
-                    Text("When you request an AI study, WEB verse text and Greek/Hebrew source data are sent through your study server to its AI provider. Personal notes are not included. Commentary is interpretation and should be checked against trusted scholarship.")
+                Section(selaText("Your reading")) {
+                    Text(selaText("Highlights and notes stay on this device. They are not synchronized with other devices and may be removed when the app is deleted."))
+                    Text(selaText("AI studies use the original Greek/Hebrew source and lexical data, in the language of your selected edition. English studies may also use WEB context. Licensed reading text and personal notes are not sent to the AI provider. Verify commentary against trusted scholarship."))
                 }
-                Section("Scripture sources") {
-                    Text("Authorized Bible reading editions are supplied by YouVersion through your study server. WEB and KJV can use the existing Scripture service when YouVersion access is unavailable. Passage requests identify the Bible reference and the server application. Your notes and random device/session identifiers are not sent to Scripture providers.")
+                Section(selaText("Scripture sources")) {
+                    Text(selaText("Authorized Bible reading editions are supplied by YouVersion through your study server. WEB and KJV can use the existing Scripture service when YouVersion access is unavailable. Passage requests identify the Bible reference and the server application. Your notes and random device/session identifiers are not sent to Scripture providers."))
                 }
-                Section("About SELA") {
-                    Text("Scripture & Study")
-                    Text("A quiet place to read, mark verses, and explore Greek and Hebrew.")
-                    Text("Version \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0") (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"))")
+                Section(selaText("About SELA")) {
+                    Text(selaText("Scripture & Study"))
+                    Text(selaText("A quiet place to read, mark verses, and explore Greek and Hebrew."))
+                    Text("\(selaText("Version")) \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0") (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"))")
                         .font(.footnote)
                 }
             }
-            .navigationTitle("Settings").navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(selaText("Settings")).navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .cancellationAction) { Button(selaText("Cancel")) { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(selaText("Save")) {
                         do { try settings.save(draft); onSaved(); dismiss() }
-                        catch { status = error.localizedDescription }
+                        catch { status = interfaceLanguage == "ro" ? "Conexiunea sau adresa serverului nu este validă. Reîncearcă." : error.localizedDescription }
                     }.disabled(testing)
                 }
             }
             .onAppear { draft = settings.serverURL }
-        }
+        }.environment(\.locale, Locale(identifier: interfaceLanguage))
     }
 
     private func testConnection() {
@@ -93,7 +94,7 @@ struct SettingsView: View {
             do {
                 let base = try AppSettings.normalizedURL(draft)
                 guard !base.isEmpty, let url = URL(string: base + "/api/status") else {
-                    status = "No server configured. Included examples remain available."; return
+                    status = selaText("No server configured. Included examples remain available."); return
                 }
                 var request = URLRequest(url: url)
                 request.timeoutInterval = 15
@@ -101,12 +102,40 @@ struct SettingsView: View {
                 guard let http = response as? HTTPURLResponse, http.statusCode == 200,
                       let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                       json["ready"] as? Bool == true else {
-                    status = "This address did not return a ready SELA study server."; return
+                    status = selaText("This address did not return a ready SELA study server."); return
                 }
                 status = json["aiEnabled"] as? Bool == true
-                    ? "Connected. Original-language data and AI studies are enabled."
-                    : "Connected. Original-language data is enabled; AI studies are disabled."
-            } catch { status = error.localizedDescription }
+                    ? selaText("Connected. Original-language data and AI studies are enabled.")
+                    : selaText("Connected. Original-language data is enabled; AI studies are disabled.")
+            } catch { status = interfaceLanguage == "ro" ? "Conexiunea sau adresa serverului nu este validă. Reîncearcă." : error.localizedDescription }
         }
     }
+}
+
+func selaText(_ text: String) -> String {
+    guard UserDefaults.standard.string(forKey: "sela.interfaceLanguage") == "ro" else { return text }
+    let translations: [String: String] = [
+        "Version": "Versiunea",
+        "Enter an HTTPS server address without a path, login details, query, or fragment.": "Introdu adresa HTTPS a serverului, fără cale, date de autentificare, parametri sau fragment.",
+        "Connecting…": "Se conectează…",
+        "Test connection": "Testează conexiunea",
+        "Study server": "Serverul de studiu",
+        "Your administrator provides this address. Leave it blank to use the included example verses. Complete chapters and original-language study require an internet connection to the server.": "Administratorul furnizează această adresă. Las-o necompletată pentru exemplele incluse. Capitolele complete și studiul textului original necesită conexiune la server.",
+        "Your reading": "Lectura ta",
+        "Highlights and notes stay on this device. They are not synchronized with other devices and may be removed when the app is deleted.": "Evidențierile și notițele rămân pe acest dispozitiv. Nu sunt sincronizate și se pot pierde dacă ștergi aplicația.",
+        "AI studies use the original Greek/Hebrew source and lexical data, in the language of your selected edition. English studies may also use WEB context. Licensed reading text and personal notes are not sent to the AI provider. Verify commentary against trusted scholarship.": "Studiile AI folosesc textul original grecesc sau ebraic și date lexicale, în limba versiunii selectate. Studiile englezești pot folosi și contextul WEB. Textul edițiilor licențiate și notițele personale nu sunt trimise serviciului AI. Verifică explicațiile în lucrări de specialitate.",
+        "Scripture sources": "Sursele biblice",
+        "Authorized Bible reading editions are supplied by YouVersion through your study server. WEB and KJV can use the existing Scripture service when YouVersion access is unavailable. Passage requests identify the Bible reference and the server application. Your notes and random device/session identifiers are not sent to Scripture providers.": "Edițiile biblice autorizate sunt furnizate de YouVersion prin serverul de studiu. WEB și KJV pot folosi sursa existentă dacă accesul YouVersion nu este disponibil. Solicitările identifică pasajul și aplicația serverului. Notițele și identificatori aleatorii ai dispozitivului sau sesiunii nu sunt trimiși furnizorilor biblici.",
+        "About SELA": "Despre SELA",
+        "Scripture & Study": "Scriptură și studiu",
+        "A quiet place to read, mark verses, and explore Greek and Hebrew.": "Un loc liniștit pentru a citi, a evidenția versete și a explora greaca și ebraica.",
+        "Settings": "Setări",
+        "Cancel": "Anulează",
+        "Save": "Salvează",
+        "No server configured. Included examples remain available.": "Nu este configurat un server. Exemplele incluse rămân disponibile.",
+        "This address did not return a ready SELA study server.": "Adresa nu a răspuns ca server SELA pregătit.",
+        "Connected. Original-language data and AI studies are enabled.": "Conectat. Textul original și studiile AI sunt disponibile.",
+        "Connected. Original-language data is enabled; AI studies are disabled.": "Conectat. Textul original este disponibil; studiile AI nu sunt activate."
+    ]
+    return translations[text] ?? text
 }
