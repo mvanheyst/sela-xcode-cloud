@@ -54,10 +54,10 @@
           </div>
           <div class="reading-controls">
             <div class="reference-controls">
-              <label class="select-wrap"><span data-icon="book-open"></span><select id="bookSelect" aria-label="Book"></select><span data-icon="chevron-down"></span></label>
+              <label class="select-wrap"><span data-icon="book-open"></span><select id="bookSelect" aria-label="Book"><option value="vdc" disabled>VDC · Română (unavailable)</option></select><span data-icon="chevron-down"></span></label>
               <label class="select-wrap chapter-select"><span>CH.</span><select id="chapterSelect" aria-label="Chapter"></select><span data-icon="chevron-down"></span></label>
             </div>
-            <label class="version-control"><span data-icon="layers"></span><select id="translationSelect" aria-label="Bible translation"><option value="web">WEB</option><option value="kjv">KJV</option></select><span data-icon="chevron-down"></span></label>
+            <label class="version-control"><span data-icon="layers"></span><select id="translationSelect" aria-label="Bible translation"><option value="web">WEB</option><option value="kjv">KJV</option><option value="esv" disabled>ESV (unavailable)</option><option value="niv" disabled>NIV (unavailable)</option></select><span data-icon="chevron-down"></span></label>
           </div>
         </section>
 
@@ -65,6 +65,7 @@
         <div class="reading-section-label"><span>THE WORD</span><span class="reading-line"></span><span id="languageLabel">WORLD ENGLISH BIBLE</span></div>
         <div class="status-note hidden" id="readerNotice"></div>
         <div class="verses" id="verseList" aria-live="polite"><div class="loading-passage"><span class="spinner"></span> Opening Scripture…</div></div>
+        <div id="translationCredit" class="source-credit" aria-live="polite"></div>
         <footer class="reader-footer"><span>✦</span><p>Read slowly. Discover deeply. Let the words dwell.</p></footer>
       </main>
 
@@ -77,7 +78,7 @@
       <main id="searchView" class="page-area hidden">
         <div class="eyebrow"><span class="eyebrow-line"></span> EXPLORE THE WORD</div>
         <h1 class="secondary-title">Find a <em>passage</em></h1>
-        <p class="secondary-subtitle">Search a reference like “2 Peter 3:10” or a phrase like “steadfast love”.</p>
+        <p class="secondary-subtitle">Keyword searches use WEB. References like “2 Peter 3:10” open your selected reading translation.</p>
         <form id="searchForm" class="search-box"><span data-icon="search"></span><input id="searchInput" placeholder="Verse, reference, or phrase…" aria-label="Search" minlength="2"><button type="submit">Search <span data-icon="arrow-right"></span></button></form>
         <div id="searchResults" class="search-results"><div class="search-hint">Try: John 3:16 · Psalm 23 · covenant · peace</div></div>
       </main>
@@ -107,7 +108,7 @@
           </section>
         </div>
       </div>
-      <div class="study-bottom"><span data-icon="shield-check"></span><span>Original text sourced from Greek & Hebrew manuscripts · AI commentary is interpretive</span></div>
+      <div class="study-bottom"><span data-icon="shield-check"></span><span>Word study uses Greek/Hebrew sources. AI commentary uses WEB and those sources, independently of your reading translation.</span></div>
     </aside>
   </div>
 

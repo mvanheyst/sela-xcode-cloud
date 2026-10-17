@@ -87,7 +87,6 @@ function renderTranslationOptions() {
 }
 function translationCredits(data) {
   const el=$('translationCredit');
-  if (!el) return; // Earlier readers do not have a publisher-credit element.
   const links=(data?.attribution||[]).filter(a=>{
     try{return new URL(a.url).protocol==='https:';}catch{return false;}
   }).map(a=>`<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(a.name||'Source')}</a>`).join(' · ');
@@ -298,7 +297,7 @@ function renderMeaning() {
   let html='';
   if(PREVIEW_COMMENTARY[ref] && !state.studies[ref]) html='<div class="source-label">Included example commentary · not an AI-generated manuscript analysis</div>';
   if(state.studies[ref]) html='<div class="source-label">AI-generated study · verify interpretive claims with trusted commentaries.</div>';
-  html+=block('A direct translation',study.literalTranslation)+block('What the author is saying',study.overview);
+  html+=block('A direct translation',study.literalTranslation)+block('What Peter / the author is saying',study.overview);
   if(study.keyPhrases?.length){html+='<div class="study-block"><h4>Key expressions</h4>';for(const p of study.keyPhrases){html+=`<div class="phrase-card"><strong>${escapeHTML(p.original)}</strong><small>${escapeHTML(p.transliteration)}</small><p><b>${escapeHTML(p.meaning)}</b> — ${escapeHTML(p.significance)}</p></div>`;}html+='</div>';}
   html+=block('Historical setting',study.historicalContext)+block('Literary context',study.literaryContext);
   if(study.interpretations?.length)html+=`<div class="study-block"><h4>Interpretations & nuances</h4><ul>${study.interpretations.map(x=>`<li>${escapeHTML(x)}</li>`).join('')}</ul></div>`;

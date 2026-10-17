@@ -60,7 +60,10 @@ struct SettingsView: View {
                 }
                 Section("Your reading") {
                     Text("Highlights and notes stay on this device. They are not synchronized with other devices and may be removed when the app is deleted.")
-                    Text("When you request an AI study, the verse and source language data are sent through your study server to its AI provider. Personal notes are not included. Commentary is interpretation and should be checked against trusted scholarship.")
+                    Text("When you request an AI study, WEB verse text and Greek/Hebrew source data are sent through your study server to its AI provider. Personal notes are not included. Commentary is interpretation and should be checked against trusted scholarship.")
+                }
+                Section("Scripture sources") {
+                    Text("When you read NIV, API.Bible receives passage-view reports with random device and session identifiers. Your notes are not included. VDC Romanian text is supplied by YouVersion; passage requests go through the study server.")
                 }
                 Section("About SELA") {
                     Text("Scripture & Study")
