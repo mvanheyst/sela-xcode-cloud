@@ -72,12 +72,38 @@ const PREVIEW_COMMENTARY = {
   }
 };
 const state = {
-  book:'2 Peter', chapter:3, translation:'web', selected:null, verses:[],
+  book:'2 Peter', chapter:3, translation:savedJSON('sela.translation','web'), selected:null, verses:[],
+  translations:[{id:'web',available:true},{id:'kjv',available:true},{id:'esv',available:false},{id:'niv',available:false},{id:'vdc',available:false}],
   books:fallbackBooks, view:'read', aiEnabled:false, original:null, tab:'words',
   selectedToken:0, highlight:savedJSON('sela.highlights',{}), notes:savedJSON('sela.notes',{}),
   studies:savedJSON('sela.studies',{}), passageAbort:null, studySerial:0,
   fontSize:Number(localStorage.getItem('sela.fontsize')) || 19, toastTimer:null
 };
+
+const editionNames = {web:'World English Bible', kjv:'King James Version', esv:'English Standard Version', niv:'New International Version', vdc:'Dumitru Cornilescu (VDC) — Română'};
+function renderTranslationOptions() {
+  $('translationSelect').innerHTML=state.translations.map(t=>`<option value="${escapeHTML(t.id)}" ${t.available?'':'disabled'}>${t.id==='vdc'?'VDC · RO':t.id.toUpperCase()}${t.available?'':' (unavailable)'}</option>`).join('');
+  $('translationSelect').value=state.translation;
+}
+function translationCredits(data) {
+  const el=$('translationCredit');
+  const links=(data?.attribution||[]).filter(a=>{
+    try{return new URL(a.url).protocol==='https:';}catch{return false;}
+  }).map(a=>`<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(a.name||'Source')}</a>`).join(' · ');
+  el.innerHTML=`${escapeHTML(data?.copyright||'')}${data?.copyright&&links?'<br>':''}${links}`;
+}
+async function reportScriptureView(data) {
+  if(!data.usageToken)return;
+  try {
+    let deviceId=localStorage.getItem('sela.scriptureDeviceId');
+    if(!deviceId){deviceId=crypto.randomUUID();localStorage.setItem('sela.scriptureDeviceId',deviceId);}
+    let sessionId=sessionStorage.getItem('sela.scriptureSessionId');
+    if(!sessionId){sessionId=crypto.randomUUID();sessionStorage.setItem('sela.scriptureSessionId',sessionId);}
+    await api('/api/usage',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({token:data.usageToken,deviceId,sessionId})});
+  }catch{console.warn('Scripture usage reporting could not complete.');}
+}
+
 const refKey = (book = state.book, chapter = state.chapter, verse = state.selected) => `${book} ${chapter}:${verse}`;
 const keyForChapter = () => `${state.book}:${state.chapter}`;
 function toast(message) {
@@ -92,9 +118,10 @@ function updateNavigation() {
   $('chapterSelect').innerHTML = Array.from({length:state.books.find(b=>b.name===state.book)?.chapters || 1},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('');
   $('chapterSelect').value = state.chapter;
   $('translationSelect').value = state.translation;
+  $('verseList').lang = state.translation === 'vdc' ? 'ro' : 'en';
   $('chapterTitle').innerHTML = `${escapeHTML(state.book)} <em>${state.chapter}</em>`;
   $('topReference').textContent = `${state.book} ${state.chapter}`;
-  $('languageLabel').textContent = state.translation === 'kjv' ? 'KING JAMES VERSION' : 'WORLD ENGLISH BIBLE';
+  $('languageLabel').textContent = (editionNames[state.translation]||state.translation).toUpperCase();
   $('chapterSubtitle').textContent = state.book === '2 Peter' && state.chapter === 3 ? 'The promise of His coming' : 'Read • reflect • understand';
   $('prevChapter').disabled = state.chapter === 1 && state.books[0].name === state.book;
   $('nextChapter').disabled = state.book === 'Revelation' && state.chapter === 22;
@@ -110,12 +137,13 @@ function renderBooks(filter = '') {
 }
 function verseExcerpt(book,chapter,verse) {
   if (book===state.book && chapter===state.chapter) return state.verses.find(v=>Number(v.verse)===Number(verse))?.text || '';
-  return (DEMO_VERSES[`${book}:${chapter}`] || []).find(v=>Number(v.verse)===Number(verse))?.text || '';
+  return (state.translation === 'web' ? DEMO_VERSES[`${book}:${chapter}`] || [] : []).find(v=>Number(v.verse)===Number(verse))?.text || '';
 }
 async function loadChapter() {
   state.passageAbort?.abort();
   const ctrl = new AbortController(); state.passageAbort = ctrl;
   state.selected=null;state.original=null;state.studySerial++;
+  translationCredits(null);
   updateNavigation(); $('verseList').innerHTML='<div class="loading-passage"><span class="spinner"></span> Opening Scripture…</div>';
   $('readerNotice').classList.add('hidden'); closePanel();
   let data;
@@ -124,13 +152,15 @@ async function loadChapter() {
     data = await api(`/api/chapter?${params}`,{signal:ctrl.signal});
     if (state.passageAbort !== ctrl) return;
     state.verses = data.verses || [];
+    translationCredits(data);
+    void reportScriptureView(data);
   } catch(error) {
     if (ctrl.signal.aborted) return;
     state.verses = state.translation === 'web' ? (DEMO_VERSES[keyForChapter()] || []) : [];
     const notice=$('readerNotice'); notice.classList.remove('hidden');
     notice.textContent = state.verses.length ?
       nativeApp ? 'Example verses only. Open Settings (gear above) and connect your study server for complete chapters and original-language study.' : 'Offline preview: showing selected example verses, not the complete chapter. Connect to the internet for the full Bible and word study.' :
-      nativeApp ? 'This chapter needs a study-server connection. Check Settings and your internet connection, then select the chapter again.' : 'Unable to load this chapter. Check your connection to the Scripture service and try the chapter arrows again.';
+      nativeApp ? 'This chapter needs a study-server connection. Check Settings and your internet connection, then select the chapter again.' : `Unable to load ${state.translation.toUpperCase()}: ${error.message}. Please try again or choose another translation.`;
   }
   renderVerses();
 }
@@ -267,7 +297,7 @@ function renderMeaning() {
   let html='';
   if(PREVIEW_COMMENTARY[ref] && !state.studies[ref]) html='<div class="source-label">Included example commentary · not an AI-generated manuscript analysis</div>';
   if(state.studies[ref]) html='<div class="source-label">AI-generated study · verify interpretive claims with trusted commentaries.</div>';
-  html+=block('A direct translation',study.literalTranslation)+block('What Peter / the author is saying',study.overview);
+  html+=block('A direct translation',study.literalTranslation)+block('What the author is saying',study.overview);
   if(study.keyPhrases?.length){html+='<div class="study-block"><h4>Key expressions</h4>';for(const p of study.keyPhrases){html+=`<div class="phrase-card"><strong>${escapeHTML(p.original)}</strong><small>${escapeHTML(p.transliteration)}</small><p><b>${escapeHTML(p.meaning)}</b> — ${escapeHTML(p.significance)}</p></div>`;}html+='</div>';}
   html+=block('Historical setting',study.historicalContext)+block('Literary context',study.literaryContext);
   if(study.interpretations?.length)html+=`<div class="study-block"><h4>Interpretations & nuances</h4><ul>${study.interpretations.map(x=>`<li>${escapeHTML(x)}</li>`).join('')}</ul></div>`;
@@ -296,7 +326,7 @@ async function performSearch(query) {
   try {
     const result=await api(`/api/search?q=${encodeURIComponent(term)}`);
     const verses=result.results||[];
-    $('searchResults').innerHTML=`<div class="result-count">${Number(result.total||verses.length)} matching verses ${result.total_capped?'(showing first results)':''}</div>`+
+    $('searchResults').innerHTML=`<div class="result-count">${Number(result.total||verses.length)} matching verses in WEB ${result.total_capped?'(showing first results)':''}</div>`+
     (verses.length?verses.map(item=>{
       const name=item.book_name||item.book||'Unknown';const reference=`${name} ${item.chapter}:${item.verse}`;
       return `<button class="result-card" data-ref="${escapeHTML(reference)}"><div class="saved-meta">${escapeHTML(reference)}</div><div class="result-text">${escapeHTML(item.text||'Open verse')}</div></button>`;
@@ -308,7 +338,7 @@ function bindEvents() {
   $('bookList').addEventListener('click',e=>{const btn=e.target.closest('[data-book]');if(btn)navigate(btn.dataset.book,1);});
   $('bookSelect').addEventListener('change',e=>navigate(e.target.value,1));
   $('chapterSelect').addEventListener('change',e=>navigate(state.book,Number(e.target.value)));
-  $('translationSelect').addEventListener('change',e=>{state.translation=e.target.value;loadChapter();});
+  $('translationSelect').addEventListener('change',e=>{state.translation=e.target.value;saveJSON('sela.translation',state.translation);loadChapter();});
   $('prevChapter').addEventListener('click',()=>nextChapter(-1));
   $('nextChapter').addEventListener('click',()=>nextChapter(1));
   $('verseList').addEventListener('click',e=>{const btn=e.target.closest('[data-verse]');if(btn)selectVerse(btn.dataset.verse);});
@@ -343,7 +373,10 @@ async function init(){
     const [books,status]=await Promise.all([api('/api/books'),api('/api/status')]);
     if(books.books?.length)state.books=books.books;
     state.aiEnabled=!!status.aiEnabled;
+    if(Array.isArray(status.translations))state.translations=status.translations.filter(t=>Object.hasOwn(editionNames,t.id));
   }catch{ /* The included book catalogue and sample verses permit a simple offline preview. */ }
+  if(!Object.hasOwn(editionNames,state.translation))state.translation='web';
+  renderTranslationOptions();
   $('bookSelect').innerHTML=state.books.map(b=>`<option value="${escapeHTML(b.name)}">${escapeHTML(b.name)}</option>`).join('');
   renderBooks();updateNavigation();$('savedCount').textContent=new Set([...Object.keys(state.highlight),...Object.keys(state.notes)]).size;
   await loadChapter();
