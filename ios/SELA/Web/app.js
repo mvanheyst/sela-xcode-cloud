@@ -263,7 +263,7 @@ function switchTab(tab) {
 async function selectVerse(number) {
   const verse=state.verses.find(v=>Number(v.verse)===Number(number));
   if (!verse) return;
-  state.selected=Number(number);state.original=null;
+  state.selected=Number(number);state.original=null;renderDailyFlow();
   const serial=++state.studySerial;
   renderVerses(); $('studyEmpty').classList.add('hidden');$('studyContent').classList.remove('hidden');
   $('selectedReference').textContent=displayReference();$('selectedVersion').textContent=editionAbbreviation();
@@ -649,6 +649,26 @@ const DAILY_LABELS={
   'Try again':'Reîncearcă','Day':'Ziua','of':'din','Cycle':'Ciclul',
   'Weekly themes':'Temele săptămânale','Today':'Astăzi','SELA version 1.2':'SELA versiunea 1.2'
 };
+Object.assign(DAILY_LABELS,{
+  'Read':'Citește','Word study':'Studiul cuvintelor','Meaning':'Înțeles','Reflection':'Reflecție','Practice':'Aplicare',
+  'Begin daily study':'Începe studiul zilnic','Resume daily study':'Continuă studiul zilnic','Review today’s study':'Recapitulează studiul de astăzi',
+  'Back':'Înapoi','Continue':'Continuă','Continue daily study':'Continuă studiul zilnic',
+  'Finish today’s study':'Încheie studiul de astăzi','Study completed ✓':'Studiu încheiat ✓',
+  'Read slowly. What does the verse actually say? Notice the speaker, repeated words and the surrounding passage.':'Citește încet. Ce spune versetul? Observă cine vorbește, cuvintele repetate și pasajul din jur.',
+  'Explore the original words':'Explorează cuvintele originale',
+  'Choose one Greek or Hebrew word. Compare its meaning with its use in this sentence; a dictionary gloss alone does not determine the verse’s meaning.':'Alege un cuvânt grecesc sau ebraic. Compară sensul lui cu folosirea în această propoziție; o glosare de dicționar nu stabilește singură înțelesul versetului.',
+  'Understand the author’s message':'Înțelege mesajul autorului',
+  'Read the historical and literary context. What was the author communicating to the first readers? Explore the linked passages before applying the verse.':'Citește contextul istoric și literar. Ce le transmitea autorul primilor cititori? Explorează pasajele conexe înainte de a aplica versetul.',
+  'Open meaning & context':'Deschide înțelesul și contextul',
+  'Generate a verse study there if you want a fuller explanation.':'Generează acolo un studiu al versetului dacă dorești o explicație mai detaliată.',
+  'In your own words, what have you learned about God, yourself or your response?':'Cu propriile cuvinte, ce ai învățat despre Dumnezeu, despre tine sau despre răspunsul tău?',
+  'Your reflection':'Reflecția ta','My next step':'Următorul meu pas',
+  'What will you do, and when will you do it?':'Ce vei face și când vei face acel lucru?',
+  'Use today’s suggestion':'Folosește sugestia de astăzi',
+  'Choose a concrete action before finishing.':'Alege o acțiune concretă înainte de a încheia.',
+  'Saved on this device':'Salvat pe acest dispozitiv','Daily study steps':'Etapele studiului zilnic',
+  'You can revisit each step. Your place and practice plan are saved on this device.':'Poți reveni la fiecare etapă. Locul tău și planul de aplicare sunt salvate pe acest dispozitiv.'
+});
 const dt=label=>uiLanguage()==='ro'?(DAILY_LABELS[label]||label):label;
 const dailyText=value=>value[uiLanguage()]||value.en;
 let dailyState=null;
@@ -700,6 +720,64 @@ function renderDaily() {
     translationCredits(d.payload,'dailyCredit');
   }else $('dailyVerseText').textContent=dt(d.loading?'Loading today’s verse…':'Today’s verse could not be loaded in this translation. Retry or choose another translation.');
   $('dailyRetry').classList.toggle('hidden',d.key!==key||d.loading||!!d.payload);
+  renderDailyFlow();
+}
+
+const DAILY_STEPS=['Read','Word study','Meaning','Reflection','Practice'];
+function dailyJourney(){
+  const d=dailyState;let journey=d.journeys[d.date];
+  if(!journey||typeof journey!=='object'||Array.isArray(journey))journey=d.journeys[d.date]={step:0,reached:0,practice:''};
+  journey.reached=Math.max(0,Math.min(4,Math.trunc(Number(journey.reached))||0));
+  journey.step=Math.max(0,Math.min(journey.reached,Math.trunc(Number(journey.step))||0));
+  if(typeof journey.practice!=='string')journey.practice='';
+  return journey;
+}
+function saveDailyJourney(){
+  dailyState.journeys=Object.fromEntries(Object.entries(dailyState.journeys).sort(([a],[b])=>b.localeCompare(a)).slice(0,120));
+  saveJSON('sela.daily.journeys',dailyState.journeys);
+}
+function renderDailyFlow(){
+  if(!dailyState||!$('dailySteps'))return;
+  const d=dailyState,j=dailyJourney(),finished=d.completed[d.date]===true;
+  $('dailySteps').innerHTML=DAILY_STEPS.map((name,i)=>`<button type="button" data-daily-step="${i}" ${i>j.reached?'disabled':''} ${i===j.step?'aria-current="step"':''}><span>${i+1}</span>${escapeHTML(dt(name))}</button>`).join('');
+  $('dailySteps').setAttribute('aria-label',dt('Daily study steps'));
+  document.querySelectorAll('[data-daily-stage]').forEach(el=>el.classList.toggle('hidden',Number(el.dataset.dailyStage)!==j.step));
+  $('dailyStepStatus').textContent=`${j.step+1} / 5 · ${dt(DAILY_STEPS[j.step])}`;
+  $('dailyBack').disabled=j.step===0;
+  $('dailyNext').classList.toggle('hidden',j.step===4);
+  $('dailyNext').textContent=j.step<4?`${dt('Continue')}: ${dt(DAILY_STEPS[j.step+1])} →`:dt('Continue');
+  $('dailyStart').textContent=dt(finished?'Review today’s study':j.reached>0?'Resume daily study':'Begin daily study');
+  const reference=dailyLesson(d.anchor,d.date).entry.reference;
+  if(document.activeElement!==$('dailyReflection'))$('dailyReflection').value=state.notes[reference]||'';
+  if(document.activeElement!==$('dailyIntention'))$('dailyIntention').value=j.practice;
+  $('dailyReflection').placeholder=dt('In your own words, what have you learned about God, yourself or your response?');
+  $('dailyIntention').placeholder=dt('What will you do, and when will you do it?');
+  $('dailyComplete').textContent=dt(finished?'Study completed ✓':'Finish today’s study');
+  $('dailyComplete').classList.toggle('hidden',j.step!==4);
+  let continuation=$('dailyStudyContinue');
+  if(!continuation&&$('studyContent')){
+    continuation=document.createElement('button');continuation.id='dailyStudyContinue';continuation.type='button';continuation.className='daily-panel-continue primary-btn';
+    $('studyContent').append?.(continuation);
+    continuation.addEventListener('click',()=>{closePanel();setDailyStep(Math.min(4,dailyJourney().step+1));$('dailyVerseCard').scrollIntoView?.({behavior:'smooth',block:'start'});});
+  }
+  if(continuation){
+    const ref=dailyReference(reference),isDaily=state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse;
+    continuation.classList.toggle('hidden',!isDaily||!d.open||![1,2].includes(j.step));
+    continuation.textContent=`${dt('Continue daily study')}: ${dt(DAILY_STEPS[Math.min(4,j.step+1)])} →`;
+  }
+}
+function setDailyStep(step){
+  const j=dailyJourney();j.step=Math.max(0,Math.min(4,step));j.reached=Math.max(j.reached,j.step);
+  saveDailyJourney();dailyState.open=true;dailySeen();renderDaily();
+}
+async function openDailyTool(mode){
+  const date=dailyState.date,reference=dailyLesson(dailyState.anchor,date).entry.reference;
+  const ref=dailyReference(reference);
+  if(state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse){
+    openPanel();switchTab(mode==='meaning'?'meaning':'words');
+  }else await openDailyPassage(reference,mode);
+  if(dailyState.date!==date)return;
+  dailyState.open=true;renderDaily();
 }
 
 async function refreshDaily(force=false,now=new Date()) {
@@ -732,14 +810,19 @@ function setDailyOpen(open) {
 async function openDailyPassage(reference,mode='study') {
   const ref=dailyReference(reference);setDailyOpen(false);
   await navigate(ref.book,ref.chapter,mode==='context'?null:ref.verse);
-  if(mode==='notes'&&state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse)switchTab('notes');
+  if(state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse){
+    if(mode==='notes')switchTab('notes');
+    if(mode==='meaning')switchTab('meaning');
+  }
 }
 function initDaily() {
   if(!$('dailyVerseCard'))return; // Older HTML can still start the reader.
   const today=dailyDateKey();let anchor=savedJSON('sela.daily.anchor','');
   if(!Number.isFinite(dailyDayNumber(anchor))){anchor=today;saveJSON('sela.daily.anchor',anchor);}
   const completed=savedJSON('sela.daily.completed',{});
+  const savedJourneys=savedJSON('sela.daily.journeys',{});
   dailyState={anchor,date:today,auto:savedJSON('sela.daily.auto',true)!==false,
+    journeys:savedJourneys&&typeof savedJourneys==='object'&&!Array.isArray(savedJourneys)?savedJourneys:{},
     completed:completed&&typeof completed==='object'&&!Array.isArray(completed)?completed:{},key:'',payload:null,loading:false,abort:null};
   dailyState.open=dailyState.auto&&savedJSON('sela.daily.lastPrompt','')!==today;
   if(dailyState.open)dailySeen();
@@ -748,16 +831,33 @@ function initDaily() {
   $('dailyRetry').addEventListener('click',()=>void refreshDaily(true));
   $('dailyPromptToggle').addEventListener('change',event=>{dailyState.auto=event.target.checked;saveJSON('sela.daily.auto',dailyState.auto);});
   $('dailyComplete').addEventListener('click',()=>{
+    if(dailyJourney().step!==4)return;
+    if(!dailyJourney().practice.trim()){toast(dt('Choose a concrete action before finishing.'));$('dailyIntention').focus();return;}
     dailyState.completed[dailyState.date]=true;
     // Bound date-only history; Scripture text is never persisted here.
     dailyState.completed=Object.fromEntries(Object.entries(dailyState.completed).sort(([a],[b])=>b.localeCompare(a)).slice(0,120));
     saveJSON('sela.daily.completed',dailyState.completed);renderDaily();
   });
+  $('dailyStart').addEventListener('click',()=>{setDailyOpen(true);renderDailyFlow();});
+  $('dailyBack').addEventListener('click',()=>setDailyStep(dailyJourney().step-1));
+  $('dailyNext').addEventListener('click',()=>setDailyStep(dailyJourney().step+1));
+  $('dailySteps').addEventListener('click',event=>{const b=event.target.closest('[data-daily-step]');if(b&&!b.disabled&&Number(b.dataset.dailyStep)<=dailyJourney().reached)setDailyStep(Number(b.dataset.dailyStep));});
+  $('dailySuggest').addEventListener('click',()=>{dailyJourney().practice=dailyText(dailyLesson(dailyState.anchor,dailyState.date).entry.practice);saveDailyJourney();renderDailyFlow();});
+  $('dailyIntention').addEventListener('input',event=>{dailyJourney().practice=event.target.value;saveDailyJourney();});
+  $('dailyReflection').addEventListener('input',event=>{
+    const reference=dailyLesson(dailyState.anchor,dailyState.date).entry.reference;
+    if(event.target.value.trim())state.notes[reference]=event.target.value;else delete state.notes[reference];
+    saveJSON('sela.notes',state.notes);
+    if(refKey()===reference)$('noteInput').value=event.target.value;
+    $('savedCount').textContent=new Set([...Object.keys(state.highlight),...Object.keys(state.notes)]).size;
+  });
   $('dailyVerseCard').addEventListener('click',event=>{
     const link=event.target.closest('[data-daily-ref]');
     const action=event.target.closest('[data-daily-open]');
+    const tool=event.target.closest('[data-daily-tool]');
     if(link)void openDailyPassage(link.dataset.dailyRef);
     if(action)void openDailyPassage(dailyLesson(dailyState.anchor,dailyState.date).entry.reference,action.dataset.dailyOpen);
+    if(tool)void openDailyTool(tool.dataset.dailyTool);
   });
   $('dailyNav').addEventListener('click',()=>{
     showView('read');closePanel();void refreshDaily();setDailyOpen(true);

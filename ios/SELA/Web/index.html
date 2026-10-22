@@ -54,12 +54,42 @@
           <p id="dailyVerseText" class="daily-verse" aria-live="polite"></p>
           <div id="dailyCredit" class="source-credit daily-credit"></div>
           <button id="dailyRetry" type="button" class="daily-text-button hidden" data-daily-label="Try again">Try again</button>
-          <div class="daily-actions"><button type="button" class="primary-btn" data-daily-open="study" data-daily-label="Read &amp; study">Read &amp; study</button><button id="dailyExpand" type="button" class="daily-text-button" aria-expanded="false" aria-controls="dailyDetails" data-daily-label="Show today’s prompt">Show today’s prompt</button><button id="dailyLater" type="button" class="daily-text-button" data-daily-label="Later today">Later today</button></div>
+          <div class="daily-actions"><button id="dailyStart" type="button" class="primary-btn">Begin daily study</button><button id="dailyExpand" type="button" class="daily-text-button" aria-expanded="false" aria-controls="dailyDetails" data-daily-label="Show today’s prompt">Show today’s prompt</button><button id="dailyLater" type="button" class="daily-text-button" data-daily-label="Later today">Later today</button></div>
           <div id="dailyDetails" class="daily-details">
-            <div class="daily-block"><h3 data-daily-label="Build on what you learned">Build on what you learned</h3><p id="dailyBridge"></p><div id="dailyPrevious"></div></div>
-            <div class="daily-reflection"><div><h3 data-daily-label="Reflect">Reflect</h3><p id="dailyQuestion"></p></div><div><h3 data-daily-label="Practice today">Practice today</h3><p id="dailyPractice"></p></div></div>
-            <div class="daily-block"><h3 data-daily-label="Explore the connections">Explore the connections</h3><div id="dailyLinks" class="daily-links"></div></div>
-            <div class="daily-actions"><button type="button" class="daily-secondary" data-daily-open="context" data-daily-label="Read in context">Read in context</button><button type="button" class="daily-secondary" data-daily-open="notes" data-daily-label="Write a reflection">Write a reflection</button><button id="dailyComplete" type="button" class="daily-secondary">Mark reflected</button></div>
+            <nav id="dailySteps" class="daily-steps" aria-label="Daily study steps"></nav>
+            <p id="dailyStepStatus" class="daily-step-status" aria-live="polite"></p>
+            <div data-daily-stage="0" class="daily-stage">
+              <p class="daily-coaching" data-daily-label="Read slowly. What does the verse actually say? Notice the speaker, repeated words and the surrounding passage."></p>
+              <div class="daily-block"><h3 data-daily-label="Build on what you learned">Build on what you learned</h3><p id="dailyBridge"></p><div id="dailyPrevious"></div></div>
+              <div class="daily-actions"><button type="button" class="daily-secondary" data-daily-open="context" data-daily-label="Read in context">Read in context</button></div>
+            </div>
+            <div data-daily-stage="1" class="daily-stage hidden">
+              <h3 data-daily-label="Explore the original words"></h3>
+              <p class="daily-coaching" data-daily-label="Choose one Greek or Hebrew word. Compare its meaning with its use in this sentence; a dictionary gloss alone does not determine the verse’s meaning."></p>
+              <button type="button" class="daily-secondary" data-daily-tool="study" data-daily-label="Explore the original words"></button>
+            </div>
+            <div data-daily-stage="2" class="daily-stage hidden">
+              <h3 data-daily-label="Understand the author’s message"></h3>
+              <p class="daily-coaching" data-daily-label="Read the historical and literary context. What was the author communicating to the first readers? Explore the linked passages before applying the verse."></p>
+              <button type="button" class="daily-secondary" data-daily-tool="meaning" data-daily-label="Open meaning &amp; context"></button>
+              <p class="daily-coaching daily-small" data-daily-label="Generate a verse study there if you want a fuller explanation."></p>
+              <div class="daily-block"><h3 data-daily-label="Explore the connections">Explore the connections</h3><div id="dailyLinks" class="daily-links"></div></div>
+            </div>
+            <div data-daily-stage="3" class="daily-stage hidden">
+              <h3 data-daily-label="Reflect">Reflect</h3><p id="dailyQuestion" class="daily-coaching"></p>
+              <label class="daily-field-label" for="dailyReflection" data-daily-label="Your reflection"></label>
+              <textarea id="dailyReflection" class="daily-journal" rows="5"></textarea>
+              <p class="daily-small" data-daily-label="Saved on this device"></p>
+            </div>
+            <div data-daily-stage="4" class="daily-stage hidden">
+              <h3 data-daily-label="Practice today">Practice today</h3><p id="dailyPractice" class="daily-coaching"></p>
+              <label class="daily-field-label" for="dailyIntention" data-daily-label="My next step"></label>
+              <textarea id="dailyIntention" class="daily-journal" rows="3"></textarea>
+              <button id="dailySuggest" type="button" class="daily-text-button" data-daily-label="Use today’s suggestion"></button>
+              <p class="daily-small" data-daily-label="Saved on this device"></p>
+            </div>
+            <div class="daily-actions"><button id="dailyBack" type="button" class="daily-secondary" data-daily-label="Back">Back</button><button id="dailyNext" type="button" class="primary-btn">Continue</button><button id="dailyComplete" type="button" class="primary-btn hidden">Finish today’s study</button></div>
+            <p class="daily-small" data-daily-label="You can revisit each step. Your place and practice plan are saved on this device."></p>
             <div id="dailyThemePath" class="daily-theme-path" role="list" aria-label="Weekly themes"></div>
             <label class="daily-preference"><input type="checkbox" id="dailyPromptToggle" checked><span data-daily-label="Open this prompt each day">Open this prompt each day</span></label>
           </div>
