@@ -37,12 +37,34 @@
         </div>
         <div class="topbar-right">
           <span class="quiet-label"><span data-i18n="A QUIET MOMENT WITH THE WORD">A QUIET MOMENT WITH THE WORD</span></span>
+          <button class="icon-button" id="dailyNav" type="button" title="Verse of the day" aria-label="Verse of the day"><span data-icon="sparkles"></span></button>
           <button class="icon-button" id="searchButton" title="Search" aria-label="Search Bible" data-i18n-title="Search" data-i18n-aria-label="Search Bible"><span data-icon="search"></span></button>
           <button class="icon-button" id="fontButton" title="Change text size" aria-label="Change text size" data-i18n-title="Change text size" data-i18n-aria-label="Change text size"><span data-icon="type"></span></button>
         </div>
       </header>
 
       <main id="readerView" class="page-area">
+<!-- BEGIN SELA DAILY -->
+        <section id="dailyVerseCard" class="daily-card hidden" aria-labelledby="dailyTitle">
+          <div class="daily-top"><span id="dailyEyebrow" class="daily-eyebrow">Verse of the day</span><span id="dailyVersion" class="daily-version">v1.2</span><time id="dailyDate"></time></div>
+          <p id="dailySubtitle" class="daily-subtitle">A daily path of spiritual growth</p>
+          <div class="daily-plan-line"><span id="dailyProgress"></span><span id="dailyTheme"></span></div>
+          <h2 id="dailyTitle" tabindex="-1"></h2>
+          <p id="dailyReference" class="daily-reference"></p>
+          <p id="dailyVerseText" class="daily-verse" aria-live="polite"></p>
+          <div id="dailyCredit" class="source-credit daily-credit"></div>
+          <button id="dailyRetry" type="button" class="daily-text-button hidden" data-daily-label="Try again">Try again</button>
+          <div class="daily-actions"><button type="button" class="primary-btn" data-daily-open="study" data-daily-label="Read &amp; study">Read &amp; study</button><button id="dailyExpand" type="button" class="daily-text-button" aria-expanded="false" aria-controls="dailyDetails" data-daily-label="Show today’s prompt">Show today’s prompt</button><button id="dailyLater" type="button" class="daily-text-button" data-daily-label="Later today">Later today</button></div>
+          <div id="dailyDetails" class="daily-details">
+            <div class="daily-block"><h3 data-daily-label="Build on what you learned">Build on what you learned</h3><p id="dailyBridge"></p><div id="dailyPrevious"></div></div>
+            <div class="daily-reflection"><div><h3 data-daily-label="Reflect">Reflect</h3><p id="dailyQuestion"></p></div><div><h3 data-daily-label="Practice today">Practice today</h3><p id="dailyPractice"></p></div></div>
+            <div class="daily-block"><h3 data-daily-label="Explore the connections">Explore the connections</h3><div id="dailyLinks" class="daily-links"></div></div>
+            <div class="daily-actions"><button type="button" class="daily-secondary" data-daily-open="context" data-daily-label="Read in context">Read in context</button><button type="button" class="daily-secondary" data-daily-open="notes" data-daily-label="Write a reflection">Write a reflection</button><button id="dailyComplete" type="button" class="daily-secondary">Mark reflected</button></div>
+            <div id="dailyThemePath" class="daily-theme-path" role="list" aria-label="Weekly themes"></div>
+            <label class="daily-preference"><input type="checkbox" id="dailyPromptToggle" checked><span data-daily-label="Open this prompt each day">Open this prompt each day</span></label>
+          </div>
+        </section>
+<!-- END SELA DAILY -->
         <section class="reading-header">
           <div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="SCRIPTURE READING">SCRIPTURE READING</span></div>
           <div class="reading-title-row">

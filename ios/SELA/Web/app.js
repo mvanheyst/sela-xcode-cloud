@@ -131,7 +131,7 @@ function applyLocale(){
 }
 
 function updateNavigation() {
-  applyLocale();renderBooks($('bookFilter').value);
+  applyLocale();void refreshDaily();renderBooks($('bookFilter').value);
   $('bookSelect').value = state.book;
   $('chapterSelect').innerHTML = Array.from({length:state.books.find(b=>b.name===state.book)?.chapters || 1},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('');
   $('chapterSelect').value = state.chapter;
@@ -403,7 +403,375 @@ async function init(){
   saveJSON('sela.translation',state.translation);
   renderTranslationOptions();
   $('bookSelect').innerHTML=state.books.map(b=>`<option value="${escapeHTML(b.name)}">${escapeHTML(b.name)}</option>`).join('');
-  renderBooks();updateNavigation();$('savedCount').textContent=new Set([...Object.keys(state.highlight),...Object.keys(state.notes)]).size;
+  initDaily();renderBooks();updateNavigation();$('savedCount').textContent=new Set([...Object.keys(state.highlight),...Object.keys(state.notes)]).size;
   await loadChapter();
 }
+// BEGIN SELA DAILY
+// SELA 1.2: authored reading prompts, not quotations or generated Bible text.
+// Each entry links yesterday's lesson to today's focus and two further readings.
+const pair=(en,ro)=>({en,ro});
+const link=(reference,en,ro)=>({reference,...pair(en,ro)});
+const DAILY_PLAN_ID='spiritual-growth-v1';
+const DAILY_THEMES=[
+  pair('Rooted in Christ','Înrădăcinați în Hristos'),
+  pair('A renewed mind','O minte înnoită'),
+  pair('Christlike character','Un caracter asemenea lui Hristos'),
+  pair('Faith in action','Credința în acțiune')
+];
+const DAILY_PLAN=[
+  {
+    reference:'John 15:5',title:pair('Begin by abiding','Începe prin a rămâne în Hristos'),
+    bridge:pair('Our path begins with Jesus: spiritual fruit grows from remaining in him. Revisit this foundation throughout the coming weeks.','Drumul nostru începe cu Isus: rodirea spirituală izvorăște din rămânerea în El. Revino la această temelie pe parcursul săptămânilor următoare.'),
+    question:pair('What does depending on Jesus look like in one ordinary part of your day?','Cum arată dependența de Isus într-un lucru obișnuit din ziua ta?'),
+    practice:pair('Pause before your next task and ask Jesus to shape your motives and actions.','Oprește-te înainte de următoarea activitate și roagă-L pe Isus să-ți călăuzească motivațiile și faptele.'),
+    links:[link('Psalms 1:3','A tree nourished by water pictures a rooted life.','Pomul hrănit de apă ilustrează o viață înrădăcinată.'),link('Colossians 2:7','Being rooted in Christ leads to growth and gratitude.','Înrădăcinarea în Hristos duce la creștere și recunoștință.')]
+  },
+  {
+    reference:'Ephesians 2:8',title:pair('Receive grace','Primește harul'),
+    bridge:pair('Yesterday we began with dependence on Christ. Today grace reminds us that our relationship with God begins with his gift.','Ieri am început cu dependența de Hristos. Astăzi, harul ne amintește că relația noastră cu Dumnezeu începe cu darul Lui.'),
+    question:pair('Where are you trying to earn what God gives by grace?','Unde încerci să câștigi ceea ce Dumnezeu dă prin har?'),
+    practice:pair('Thank God for one gift you could not earn; read verses 8–10 together.','Mulțumește-I lui Dumnezeu pentru un dar pe care nu l-ai putea câștiga; citește împreună versetele 8–10.'),
+    links:[link('Romans 3:24','Justification is described as a gift of grace.','Îndreptățirea este prezentată ca un dar al harului.'),link('Titus 3:5','Mercy grounds salvation rather than our achievements.','Mântuirea se întemeiază pe îndurare, nu pe realizările noastre.')]
+  },
+  {
+    reference:'Romans 8:15',title:pair('Live as a child of God','Trăiește ca un copil al lui Dumnezeu'),
+    bridge:pair('Grace welcomes us into relationship. Paul now describes belonging to God as adoption rather than slavery to fear.','Harul ne primește într-o relație. Pavel descrie acum apartenența la Dumnezeu ca înfiere, în locul robiei fricii.'),
+    question:pair('How might belonging to God change the way you pray today?','Cum ar putea apartenența la Dumnezeu să schimbe felul în care te rogi astăzi?'),
+    practice:pair('Bring one fear honestly to your heavenly Father in prayer.','Adu cu sinceritate înaintea Tatălui ceresc o teamă pe care o ai.'),
+    links:[link('Galatians 4:6','The Spirit shapes the prayer of God’s children.','Duhul modelează rugăciunea copiilor lui Dumnezeu.'),link('1 John 3:1','The Father’s love is expressed in calling us his children.','Dragostea Tatălui se arată prin faptul că ne numește copiii Lui.')]
+  },
+  {
+    reference:'Proverbs 3:5',title:pair('Trust beyond your understanding','Încrede-te dincolo de înțelegerea ta'),
+    bridge:pair('Knowing God as Father gives us a foundation for trust, even when we cannot see the whole path.','Cunoașterea lui Dumnezeu ca Tată ne oferă temelia încrederii, chiar când nu vedem întregul drum.'),
+    question:pair('Which decision are you holding too tightly to bring before God?','Ce hotărâre încerci să controlezi fără să o aduci înaintea lui Dumnezeu?'),
+    practice:pair('Pray about that decision and seek wise counsel before acting.','Roagă-te pentru acea hotărâre și caută un sfat înțelept înainte de a acționa.'),
+    links:[link('Psalms 56:3','Fear can become an occasion to turn toward God.','Frica poate deveni un prilej de a ne întoarce spre Dumnezeu.'),link('James 1:5','Those who lack wisdom are invited to ask God.','Cei cărora le lipsește înțelepciunea sunt invitați să o ceară de la Dumnezeu.')]
+  },
+  {
+    reference:'1 John 1:9',title:pair('Return with honesty','Întoarce-te cu sinceritate'),
+    bridge:pair('Trust includes honesty about sin. Confession brings our failures into the light of God’s faithfulness.','Încrederea cuprinde sinceritatea cu privire la păcat. Mărturisirea aduce greșelile noastre în lumina credincioșiei lui Dumnezeu.'),
+    question:pair('What do you need to acknowledge before God without excuses?','Ce trebuie să recunoști înaintea lui Dumnezeu fără scuze?'),
+    practice:pair('Confess a specific wrong and take one appropriate step toward making it right.','Mărturisește un păcat concret și fă un pas potrivit pentru a îndrepta lucrurile.'),
+    links:[link('Psalms 32:5','The psalmist connects confession with forgiveness.','Psalmistul leagă mărturisirea de iertare.'),link('Proverbs 28:13','Confession includes turning away from wrongdoing.','Mărturisirea cuprinde și părăsirea răului.')]
+  },
+  {
+    reference:'Philippians 1:6',title:pair('Trust God’s continuing work','Încrede-te în lucrarea continuă a lui Dumnezeu'),
+    bridge:pair('After confession, growth continues. Paul’s confidence rests in God’s faithfulness to complete his work among believers.','După mărturisire, creșterea continuă. Încrederea lui Pavel se sprijină pe credincioșia lui Dumnezeu de a-Și duce la capăt lucrarea în credincioși.'),
+    question:pair('Where do you need patient confidence rather than instant results?','Unde ai nevoie de încredere răbdătoare în locul rezultatelor imediate?'),
+    practice:pair('Notice one small sign of growth and thank God for it.','Observă un mic semn de creștere și mulțumește-I lui Dumnezeu pentru el.'),
+    links:[link('Philippians 2:13','God’s work reaches both our desires and our actions.','Lucrarea lui Dumnezeu atinge atât dorințele, cât și faptele noastre.'),link('1 Thessalonians 5:24','God’s faithfulness supports the call to holiness.','Credincioșia lui Dumnezeu susține chemarea la sfințenie.')]
+  },
+  {
+    reference:'Colossians 2:7',title:pair('Review your roots','Privește din nou la rădăcini'),
+    bridge:pair('Gather this week’s lessons: abiding, grace, adoption, trust, confession and God’s continuing work support a rooted life.','Adună învățăturile acestei săptămâni: rămânerea în Hristos, harul, înfierea, încrederea, mărturisirea și lucrarea continuă a lui Dumnezeu susțin o viață înrădăcinată.'),
+    question:pair('Which foundation do you most need to revisit next week?','La care dintre aceste temelii ai cea mai mare nevoie să revii săptămâna viitoare?'),
+    practice:pair('Write one sentence about what you learned and one habit you will carry forward.','Scrie o propoziție despre ce ai învățat și un obicei pe care îl vei păstra.'),
+    links:[link('John 15:5','Return to our starting point: remaining in Jesus.','Revino la punctul de plecare: rămânerea în Isus.'),link('Ephesians 3:17','Paul prays for believers to be rooted in love.','Pavel se roagă ca cei credincioși să fie înrădăcinați în dragoste.')]
+  },
+  {
+    reference:'Romans 12:2',title:pair('Let your mind be renewed','Lasă-ți mintea să fie înnoită'),
+    bridge:pair('A rooted life changes how we think. This week explores how Scripture, prayer and obedience shape discernment.','O viață înrădăcinată schimbă felul în care gândim. Săptămâna aceasta urmărim cum Scriptura, rugăciunea și ascultarea modelează discernământul.'),
+    question:pair('Which assumption needs to be examined in the light of Scripture?','Ce convingere trebuie cercetată în lumina Scripturii?'),
+    practice:pair('Name one recurring thought and test it against the surrounding passage.','Numește un gând care revine des și cercetează-l în lumina întregului pasaj.'),
+    links:[link('Ephesians 4:23','Renewal belongs to putting on a new way of life.','Înnoirea ține de îmbrăcarea unui fel nou de a trăi.'),link('Colossians 3:10','The new self grows in knowledge of its Creator.','Omul cel nou crește în cunoașterea Creatorului său.')]
+  },
+  {
+    reference:'2 Timothy 3:16',title:pair('Learn from Scripture','Învață din Scriptură'),
+    bridge:pair('Renewal needs a trustworthy source. Paul describes Scripture as useful for teaching, correction and training.','Înnoirea are nevoie de o sursă demnă de încredere. Pavel descrie Scriptura ca folositoare pentru învățătură, îndreptare și formare.'),
+    question:pair('What does this passage teach, correct or train in you?','Ce te învață, ce îndreaptă și ce formează în tine acest pasaj?'),
+    practice:pair('Read verses 14–17 and write one observation before applying them.','Citește versetele 14–17 și notează o observație înainte de a le aplica.'),
+    links:[link('Psalms 119:105','God’s word is pictured as a lamp for the path.','Cuvântul lui Dumnezeu este asemănat cu o candelă pentru drum.'),link('Hebrews 4:12','God’s word exposes the intentions of the heart.','Cuvântul lui Dumnezeu descoperă intențiile inimii.')]
+  },
+  {
+    reference:'James 1:5',title:pair('Ask for wisdom','Cere înțelepciune'),
+    bridge:pair('Scripture trains us, and prayer expresses our need for wisdom. James places this invitation in the setting of trials.','Scriptura ne formează, iar rugăciunea exprimă nevoia noastră de înțelepciune. Iacov așază această invitație în contextul încercărilor.'),
+    question:pair('Where do you need wisdom to respond faithfully to difficulty?','Unde ai nevoie de înțelepciune pentru a răspunde cu credincioșie unei greutăți?'),
+    practice:pair('Ask God for wisdom about one situation, then listen before responding.','Cere-I lui Dumnezeu înțelepciune într-o situație concretă, apoi ascultă înainte de a răspunde.'),
+    links:[link('Proverbs 2:6','Wisdom has its source in God.','Înțelepciunea își are izvorul în Dumnezeu.'),link('James 3:17','Wisdom from above bears recognizable moral fruit.','Înțelepciunea de sus aduce roade morale care pot fi recunoscute.')]
+  },
+  {
+    reference:'Psalms 1:2',title:pair('Dwell on the Word','Cugetă la Cuvânt'),
+    bridge:pair('Wisdom deepens as we return to Scripture. Meditation gives attention to God’s instruction rather than rushing past it.','Înțelepciunea se adâncește când revenim la Scriptură. Meditația acordă atenție învățăturii lui Dumnezeu, în loc să treacă în grabă peste ea.'),
+    question:pair('What do you notice when you read the same passage slowly a second time?','Ce observi când citești același pasaj încet, a doua oară?'),
+    practice:pair('Read Psalm 1 slowly and carry one observation into the rest of your day.','Citește Psalmul 1 încet și păstrează o observație pentru restul zilei.'),
+    links:[link('Joshua 1:8','Meditation is connected with faithful action.','Cugetarea este legată de împlinirea cu credincioșie.'),link('Colossians 3:16','The word of Christ is to dwell richly among believers.','Cuvântul lui Hristos trebuie să locuiască din belșug între credincioși.')]
+  },
+  {
+    reference:'Philippians 4:6',title:pair('Bring your concerns to God','Adu-ți grijile înaintea lui Dumnezeu'),
+    bridge:pair('What we dwell on shapes our response to worry. Paul invites believers to bring their requests to God with thanksgiving.','Lucrurile la care cugetăm modelează răspunsul nostru la îngrijorare. Pavel îi invită pe credincioși să-și aducă cererile înaintea lui Dumnezeu cu mulțumire.'),
+    question:pair('Which concern can you turn into a specific prayer today?','Ce grijă poți transforma astăzi într-o rugăciune concretă?'),
+    practice:pair('Name your concern in prayer and thank God for one evidence of his care.','Numește-ți grija în rugăciune și mulțumește-I lui Dumnezeu pentru un semn al purtării Sale de grijă.'),
+    links:[link('1 Peter 5:7','God’s care gives a reason to entrust anxieties to him.','Purtarea de grijă a lui Dumnezeu ne dă motiv să-I încredințăm îngrijorările.'),link('Matthew 6:33','Jesus directs anxious disciples toward God’s kingdom.','Isus îi îndreaptă pe ucenicii îngrijorați spre Împărăția lui Dumnezeu.')]
+  },
+  {
+    reference:'James 1:22',title:pair('Put learning into practice','Pune în practică ceea ce înveți'),
+    bridge:pair('Prayer and meditation prepare us to act. James warns that hearing alone can leave us self-deceived.','Rugăciunea și meditația ne pregătesc să acționăm. Iacov avertizează că simpla ascultare ne poate lăsa să ne înșelăm singuri.'),
+    question:pair('What specific response does your reading call for?','La ce răspuns concret te cheamă lectura ta?'),
+    practice:pair('Choose one small act of obedience and do it today.','Alege o faptă mică de ascultare și împlinește-o astăzi.'),
+    links:[link('Matthew 7:24','Hearing and doing are pictured as building on rock.','A auzi și a împlini sunt asemănate cu zidirea pe stâncă.'),link('John 14:21','Jesus connects love for him with keeping his commands.','Isus leagă dragostea față de El de păzirea poruncilor Sale.')]
+  },
+  {
+    reference:'Colossians 3:16',title:pair('Let knowledge become shared wisdom','Lasă cunoașterea să devină înțelepciune împărtășită'),
+    bridge:pair('Review this week: a renewed mind learns, asks, meditates, prays and acts. Paul also places this learning within a worshiping community.','Privește la săptămâna aceasta: mintea înnoită învață, cere, cugetă, se roagă și acționează. Pavel așază această învățare și în comunitatea care se închină.'),
+    question:pair('How can you share something you learned with humility?','Cum poți împărtăși cu smerenie ceva ce ai învățat?'),
+    practice:pair('Discuss one passage with someone and listen to what they noticed.','Discută un pasaj cu cineva și ascultă ce a observat acea persoană.'),
+    links:[link('Romans 12:2','Return to the renewal that began this week.','Revino la înnoirea cu care am început săptămâna.'),link('Hebrews 10:24','Consider how to encourage love and good works in others.','Gândește-te cum să-i îndemni pe alții la dragoste și fapte bune.')]
+  },
+  {
+    reference:'Galatians 5:22',title:pair('Grow in the Spirit’s fruit','Crește în rodul Duhului'),
+    bridge:pair('Learning is meant to shape character. Read verses 22–25 together as Paul describes the fruit of life by the Spirit.','Învățarea trebuie să modeleze caracterul. Citește împreună versetele 22–25, unde Pavel descrie rodul vieții prin Duhul.'),
+    question:pair('Which aspect of this fruit most challenges your current reactions?','Ce aspect al acestui rod pune cel mai mult la încercare reacțiile tale de acum?'),
+    practice:pair('Ask the Spirit to shape one interaction you expect to have today.','Roagă-L pe Duhul să modeleze o întâlnire pe care o vei avea astăzi.'),
+    links:[link('John 15:5','Fruit returns us to our first lesson about abiding.','Rodirea ne întoarce la prima lecție despre rămânerea în Hristos.'),link('2 Peter 1:5','Peter describes qualities to cultivate alongside faith.','Petru descrie însușirile care trebuie cultivate alături de credință.')]
+  },
+  {
+    reference:'Philippians 2:3',title:pair('Choose humility','Alege smerenia'),
+    bridge:pair('The Spirit’s fruit changes relationships. Paul points away from rivalry and toward the humility displayed by Christ.','Rodul Duhului schimbă relațiile. Pavel ne îndepărtează de rivalitate și ne îndreaptă spre smerenia arătată de Hristos.'),
+    question:pair('Where is the desire to be noticed shaping your behavior?','Unde îți modelează purtarea dorința de a fi remarcat?'),
+    practice:pair('Listen carefully to another person before offering your own view.','Ascultă cu atenție o altă persoană înainte de a-ți exprima părerea.'),
+    links:[link('Philippians 2:5','The following passage presents Christ’s example.','Pasajul care urmează prezintă exemplul lui Hristos.'),link('James 4:6','God’s grace is associated with humility.','Harul lui Dumnezeu este legat de smerenie.')]
+  },
+  {
+    reference:'Ephesians 4:32',title:pair('Practice forgiveness','Practică iertarea'),
+    bridge:pair('Humility makes room to remember the grace we received. Paul grounds forgiveness in God’s forgiveness in Christ.','Smerenia ne ajută să ne amintim harul primit. Pavel întemeiază iertarea pe iertarea lui Dumnezeu în Hristos.'),
+    question:pair('How can remembering God’s mercy shape your response to an offense?','Cum poate amintirea îndurării lui Dumnezeu să-ți modeleze răspunsul la o jignire?'),
+    practice:pair('Pray for a forgiving heart; seek wise support where hurt is ongoing.','Roagă-te pentru o inimă iertătoare; caută sprijin înțelept acolo unde rănirea continuă.'),
+    links:[link('Colossians 3:13','Bearing with one another accompanies forgiveness.','Îngăduința reciprocă însoțește iertarea.'),link('Matthew 18:33','Jesus’ parable connects receiving mercy with showing it.','Pilda lui Isus leagă primirea milei de arătarea ei altora.')]
+  },
+  {
+    reference:'James 1:19',title:pair('Be ready to listen','Fii gata să asculți'),
+    bridge:pair('Forgiveness and kindness affect our speech. James calls for attentive listening and restraint in anger.','Iertarea și bunătatea ne influențează vorbirea. Iacov ne cheamă la ascultare atentă și stăpânire în mânie.'),
+    question:pair('What changes when you seek to understand before answering?','Ce se schimbă când cauți să înțelegi înainte de a răspunde?'),
+    practice:pair('In a difficult conversation, pause and ask one honest clarifying question.','Într-o conversație dificilă, oprește-te și pune o întrebare sinceră pentru a înțelege mai bine.'),
+    links:[link('Proverbs 15:1','A gentle answer can change a heated exchange.','Un răspuns blând poate schimba o discuție aprinsă.'),link('Ephesians 4:29','Speech is directed toward building others up.','Vorbirea trebuie îndreptată spre zidirea celorlalți.')]
+  },
+  {
+    reference:'James 1:3',title:pair('Persevere with purpose','Stăruie cu un scop'),
+    bridge:pair('Character also grows under pressure. James describes tested faith producing endurance, not an easy life.','Caracterul crește și sub presiune. Iacov descrie credința încercată ca producând răbdare, fără a promite o viață ușoară.'),
+    question:pair('What would faithfulness look like in a trial you cannot quickly resolve?','Cum ar arăta credincioșia într-o încercare pe care nu o poți rezolva repede?'),
+    practice:pair('Choose one faithful step and ask a trusted believer for support.','Alege un pas de credincioșie și cere sprijinul unui credincios de încredere.'),
+    links:[link('Romans 5:4','Endurance is linked with tested character and hope.','Răbdarea este legată de caracterul încercat și de speranță.'),link('Hebrews 12:2','Endurance looks toward Jesus as its example.','Stăruința privește la Isus ca exemplu.')]
+  },
+  {
+    reference:'1 Thessalonians 5:18',title:pair('Cultivate gratitude','Cultivă recunoștința'),
+    bridge:pair('Endurance and gratitude can grow together. Giving thanks in circumstances does not require calling evil good.','Răbdarea și recunoștința pot crește împreună. A mulțumi în orice împrejurare nu înseamnă a numi răul bine.'),
+    question:pair('What can you honestly thank God for amid today’s circumstances?','Pentru ce Îi poți mulțumi sincer lui Dumnezeu în împrejurările de astăzi?'),
+    practice:pair('Write down three particular reasons for gratitude.','Notează trei motive concrete de recunoștință.'),
+    links:[link('Colossians 3:17','Gratitude accompanies ordinary words and actions.','Recunoștința însoțește cuvintele și faptele obișnuite.'),link('Psalms 103:2','Remembering God’s benefits nourishes praise.','Amintirea binefacerilor lui Dumnezeu hrănește lauda.')]
+  },
+  {
+    reference:'2 Peter 1:5',title:pair('Connect faith and character','Leagă credința de caracter'),
+    bridge:pair('Review this week’s character lessons. Read verses 5–8 to see how Peter connects faith, knowledge, endurance and love.','Recapitulează lecțiile de caracter ale săptămânii. Citește versetele 5–8 pentru a vedea cum leagă Petru credința, cunoașterea, răbdarea și dragostea.'),
+    question:pair('Where has knowing more begun to change how you live?','Unde a început cunoașterea să schimbe felul în care trăiești?'),
+    practice:pair('Choose one quality to keep practicing as we move into faith in action.','Alege o însușire pe care să o practici în continuare, pe măsură ce trecem la credința în acțiune.'),
+    links:[link('Galatians 5:22','Compare Peter’s sequence with Paul’s account of spiritual fruit.','Compară înșiruirea lui Petru cu descrierea rodului Duhului făcută de Pavel.'),link('Colossians 1:10','Knowing God and bearing fruit belong together.','Cunoașterea lui Dumnezeu și rodirea merg împreună.')]
+  },
+  {
+    reference:'Mark 10:45',title:pair('Follow Jesus in service','Urmează-L pe Isus în slujire'),
+    bridge:pair('Growing character moves outward in service. Jesus’ example challenges the disciples’ pursuit of status.','Caracterul în creștere se exprimă prin slujire. Exemplul lui Isus pune sub semnul întrebării dorința ucenicilor de a avea întâietate.'),
+    question:pair('Who could benefit from an act of service that brings you no recognition?','Cine ar putea primi ajutor printr-o slujire care nu-ți aduce recunoaștere?'),
+    practice:pair('Do one useful, quiet act of service today.','Fă astăzi o faptă folositoare de slujire, în liniște.'),
+    links:[link('John 13:14','Jesus models humble service by washing feet.','Isus arată slujirea smerită prin spălarea picioarelor.'),link('Philippians 2:3','Recall the humility we explored last week.','Amintește-ți smerenia pe care am cercetat-o săptămâna trecută.')]
+  },
+  {
+    reference:'Luke 10:37',title:pair('Become a neighbor','Fii aproapele celuilalt'),
+    bridge:pair('Service becomes concrete in mercy. Jesus ends the Samaritan story by calling his hearer to act.','Slujirea devine concretă prin milă. Isus încheie pilda samariteanului chemându-l pe ascultător la faptă.'),
+    question:pair('Whose need are you tempted to pass by?','Pe lângă a cui nevoie ești ispitit să treci nepăsător?'),
+    practice:pair('Read Luke 10:25–37 and offer appropriate help to someone within reach.','Citește Luca 10:25–37 și oferă un ajutor potrivit cuiva aflat aproape de tine.'),
+    links:[link('Leviticus 19:18','The command to love one’s neighbor underlies the discussion.','Porunca de a iubi aproapele stă la baza discuției.'),link('1 John 3:18','Love is expressed through deeds and truth.','Dragostea se exprimă prin faptă și adevăr.')]
+  },
+  {
+    reference:'2 Corinthians 9:7',title:pair('Give with a willing heart','Dăruiește cu o inimă binevoitoare'),
+    bridge:pair('Mercy includes how we share resources. Paul encourages willing generosity in a collection for other believers.','Mila se vede și în felul în care împărțim resursele. Pavel încurajează generozitatea de bunăvoie într-o strângere de ajutoare pentru alți credincioși.'),
+    question:pair('What could you share freely rather than reluctantly?','Ce ai putea împărți de bunăvoie, fără părere de rău?'),
+    practice:pair('Choose a thoughtful way to share time, attention or resources with someone.','Alege un mod chibzuit de a oferi cuiva timp, atenție sau resurse.'),
+    links:[link('Acts 20:35','Paul recalls Jesus’ teaching about giving.','Pavel amintește învățătura lui Isus despre dăruire.'),link('1 Timothy 6:18','Generosity is described as readiness to share.','Generozitatea este descrisă ca disponibilitate de a împărți cu alții.')]
+  },
+  {
+    reference:'Hebrews 10:24',title:pair('Encourage growth in others','Încurajează creșterea celorlalți'),
+    bridge:pair('We can give encouragement as well as resources. Spiritual growth includes helping one another love and do good.','Putem oferi încurajare, nu doar resurse. Creșterea spirituală cuprinde ajutorul reciproc pentru dragoste și fapte bune.'),
+    question:pair('Who could you encourage toward a faithful next step?','Pe cine ai putea încuraja să facă următorul pas în credincioșie?'),
+    practice:pair('Offer someone a specific word of encouragement grounded in what you have observed.','Oferă cuiva o încurajare concretă, întemeiată pe ceea ce ai observat.'),
+    links:[link('1 Thessalonians 5:11','Believers are called to build one another up.','Credincioșii sunt chemați să se zidească unii pe alții.'),link('Colossians 3:16','Return to learning together through Christ’s word.','Revino la învățarea împreună prin cuvântul lui Hristos.')]
+  },
+  {
+    reference:'1 Peter 3:15',title:pair('Share hope with gentleness','Împărtășește speranța cu blândețe'),
+    bridge:pair('Encouragement can open a conversation about hope. Peter joins readiness to speak with gentleness and respect.','Încurajarea poate deschide o conversație despre speranță. Petru unește pregătirea de a vorbi cu blândețea și respectul.'),
+    question:pair('How would you describe your hope without turning the conversation into an argument?','Cum ți-ai descrie speranța fără a transforma conversația într-o ceartă?'),
+    practice:pair('Write a brief account of why you hope in Christ, using respectful, ordinary language.','Scrie pe scurt de ce îți pui speranța în Hristos, folosind un limbaj obișnuit și respectuos.'),
+    links:[link('Colossians 4:6','Grace should shape our conversation.','Harul trebuie să modeleze conversația noastră.'),link('James 1:19','Recall the practice of listening before speaking.','Amintește-ți practica ascultării înainte de a vorbi.')]
+  },
+  {
+    reference:'Micah 6:8',title:pair('Walk humbly in everyday life','Umblă smerit în viața de zi cu zi'),
+    bridge:pair('Hopeful words belong beside faithful conduct. Micah brings justice, steadfast kindness and humble walking together.','Cuvintele pline de speranță trebuie însoțite de o purtare credincioasă. Mica aduce împreună dreptatea, bunătatea statornică și umblarea smerită.'),
+    question:pair('Where can you practice fairness, mercy and humility in the same decision?','Unde poți practica dreptatea, mila și smerenia în aceeași hotărâre?'),
+    practice:pair('Examine one ordinary decision through those three qualities.','Cercetează o hotărâre obișnuită prin prisma acestor trei însușiri.'),
+    links:[link('Matthew 23:23','Jesus highlights justice, mercy and faithfulness.','Isus subliniază dreptatea, mila și credincioșia.'),link('James 2:17','James challenges a faith that never takes practical form.','Iacov pune la încercare credința care nu ia niciodată o formă practică.')]
+  },
+  {
+    reference:'Colossians 1:10',title:pair('Keep growing in knowing God','Continuă să crești în cunoașterea lui Dumnezeu'),
+    bridge:pair('Gather the whole path: rooted in Christ, renewed in mind, formed in character and active in love. Knowing God and bearing fruit keep nourishing one another.','Adună întregul drum: înrădăcinare în Hristos, înnoire a minții, formare a caracterului și dragoste în acțiune. Cunoașterea lui Dumnezeu și rodirea continuă să se hrănească reciproc.'),
+    question:pair('Which connection between knowing and doing will you carry into the next cycle?','Ce legătură între cunoaștere și faptă vei păstra în ciclul următor?'),
+    practice:pair('Review your reflections, choose one continuing habit and return to abiding in Christ tomorrow.','Recitește-ți reflecțiile, alege un obicei de păstrat și revino mâine la rămânerea în Hristos.'),
+    links:[link('John 15:5','The path returns to its source: life in Christ.','Drumul revine la izvorul său: viața în Hristos.'),link('2 Peter 3:18','Growth in grace and knowledge remains an ongoing calling.','Creșterea în har și cunoaștere rămâne o chemare continuă.')]
+  }
+];
+
+// Compare local calendar dates as day numbers, avoiding 23/25-hour DST days.
+function dailyDateKey(date=new Date()) {
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+function dailyDayNumber(value) {
+  if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/u.test(value))return NaN;
+  const [y,m,d]=value.split('-').map(Number),stamp=Date.UTC(y,m-1,d),check=new Date(stamp);
+  return check.getUTCFullYear()===y&&check.getUTCMonth()===m-1&&check.getUTCDate()===d?stamp/86400000:NaN;
+}
+function dailyLesson(anchor,today=dailyDateKey()) {
+  const elapsed=Math.max(0,(dailyDayNumber(today)-dailyDayNumber(anchor))||0);
+  const index=elapsed%DAILY_PLAN.length;
+  return {entry:DAILY_PLAN[index],index,day:index+1,cycle:Math.floor(elapsed/DAILY_PLAN.length)+1,theme:DAILY_THEMES[Math.floor(index/7)]};
+}
+
+// Embedded into both readers by scripts/build-daily.mjs; no new runtime import.
+const DAILY_LABELS={
+  'Verse of the day':'Versetul zilei',
+  'A daily path of spiritual growth':'Un parcurs zilnic de creștere spirituală',
+  'Today’s focus':'Tema de astăzi','Reflect':'Reflectează','Practice today':'Aplică astăzi',
+  'Build on what you learned':'Continuă ceea ce ai învățat',
+  'Explore the connections':'Explorează legăturile',
+  'Previous lesson':'Lecția precedentă','Read & study':'Citește și studiază',
+  'Read in context':'Citește în context','Write a reflection':'Scrie o reflecție',
+  'Mark reflected':'Marchează ca reflectat','Reflected today ✓':'Ai reflectat astăzi ✓',
+  'Show today’s prompt':'Arată îndemnul de astăzi','Later today':'Mai târziu astăzi',
+  'Open this prompt each day':'Deschide acest îndemn în fiecare zi',
+  'Loading today’s verse…':'Se încarcă versetul de astăzi…',
+  'Today’s verse could not be loaded in this translation. Retry or choose another translation.':'Versetul de astăzi nu a putut fi încărcat în această traducere. Reîncearcă sau alege altă traducere.',
+  'Try again':'Reîncearcă','Day':'Ziua','of':'din','Cycle':'Ciclul',
+  'Weekly themes':'Temele săptămânale','Today':'Astăzi','SELA version 1.2':'SELA versiunea 1.2'
+};
+const dt=label=>uiLanguage()==='ro'?(DAILY_LABELS[label]||label):label;
+const dailyText=value=>value[uiLanguage()]||value.en;
+let dailyState=null;
+
+function dailyReference(reference) {
+  const match=reference.match(/^(.+) (\d+):(\d+)$/u);
+  return {book:match[1],chapter:Number(match[2]),verse:Number(match[3])};
+}
+function dailyRefLabel(reference){const r=dailyReference(reference);return displayReference(r.book,r.chapter,r.verse);}
+function dailySeen(){saveJSON('sela.daily.lastPrompt',dailyState.date);}
+function renderDaily() {
+  if(!dailyState||!$('dailyVerseCard'))return;
+  const d=dailyState,lesson=dailyLesson(d.anchor,d.date),entry=lesson.entry;
+  const complete=d.completed[d.date]===true;
+  $('dailyVerseCard').lang=uiLanguage();
+  $('dailyVerseCard').classList.remove('hidden');
+  $('dailyDate').dateTime=d.date;
+  $('dailyEyebrow').textContent=dt('Verse of the day');
+  $('dailyDate').textContent=new Date(`${d.date}T12:00:00`).toLocaleDateString(uiLanguage()==='ro'?'ro-RO':'en-CA',{month:'long',day:'numeric',year:'numeric'});
+  $('dailyProgress').textContent=`${dt('Day')} ${lesson.day} ${dt('of')} 28 · ${dt('Cycle')} ${lesson.cycle}`;
+  $('dailyTheme').textContent=dailyText(lesson.theme);
+  $('dailyTitle').textContent=dailyText(entry.title);
+  $('dailyReference').textContent=`${dailyRefLabel(entry.reference)} · ${editionAbbreviation()}`;
+  $('dailySubtitle').textContent=dt('A daily path of spiritual growth');
+  $('dailyDetails').classList.toggle('hidden',!d.open);
+  $('dailyExpand').classList.toggle('hidden',d.open);
+  $('dailyLater').classList.toggle('hidden',!d.open);
+  $('dailyExpand').setAttribute('aria-expanded',String(d.open));
+  for(const el of document.querySelectorAll('[data-daily-label]'))el.textContent=dt(el.dataset.dailyLabel);
+  $('dailyPromptToggle').checked=d.auto;
+  $('dailyComplete').textContent=dt(complete?'Reflected today ✓':'Mark reflected');
+  $('dailyComplete').disabled=complete;
+  $('dailyVerseCard').classList.toggle('daily-complete',complete);
+  $('dailyBridge').textContent=dailyText(entry.bridge);
+  $('dailyQuestion').textContent=dailyText(entry.question);
+  $('dailyPractice').textContent=dailyText(entry.practice);
+  const previous=lesson.index>0?DAILY_PLAN[lesson.index-1]:lesson.cycle>1?DAILY_PLAN.at(-1):null;
+  $('dailyPrevious').innerHTML=previous?`<button type="button" class="daily-previous" data-daily-ref="${escapeHTML(previous.reference)}">${escapeHTML(dt('Previous lesson'))}: ${escapeHTML(dailyRefLabel(previous.reference))} · ${escapeHTML(dailyText(previous.title))}</button>`:'';
+  $('dailyLinks').innerHTML=entry.links.map(item=>`<button type="button" class="daily-link" data-daily-ref="${escapeHTML(item.reference)}"><strong>${escapeHTML(dailyRefLabel(item.reference))} <span aria-hidden="true">↗</span></strong><span>${escapeHTML(dailyText(item))}</span></button>`).join('');
+  $('dailyThemePath').innerHTML=DAILY_THEMES.map((theme,i)=>`<span role="listitem" ${i===Math.floor(lesson.index/7)?'aria-current="step"':''}>${i+1}. ${escapeHTML(dailyText(theme))}</span>`).join('');
+  $('dailyThemePath').setAttribute('aria-label',dt('Weekly themes'));
+  $('dailyVersion').setAttribute('aria-label',dt('SELA version 1.2'));
+  $('dailyNav').setAttribute('aria-label',dt('Verse of the day'));
+  $('dailyNav').title=dt('Verse of the day');
+  const key=`${d.date}:${state.translation}`;
+  if(d.key!==key){$('dailyVerseText').textContent=dt('Loading today’s verse…');translationCredits(null,'dailyCredit');}
+  else if(d.payload){
+    $('dailyVerseText').textContent=d.payload.verseText;
+    translationCredits(d.payload,'dailyCredit');
+  }else $('dailyVerseText').textContent=dt(d.loading?'Loading today’s verse…':'Today’s verse could not be loaded in this translation. Retry or choose another translation.');
+  $('dailyRetry').classList.toggle('hidden',d.key!==key||d.loading||!!d.payload);
+}
+
+async function refreshDaily(force=false,now=new Date()) {
+  if(!dailyState)return;
+  const d=dailyState,today=dailyDateKey(now);
+  if(today!==d.date){
+    d.date=today;d.open=d.auto&&savedJSON('sela.daily.lastPrompt','')!==today;
+    if(d.open)dailySeen();
+  }
+  const key=`${d.date}:${state.translation}`;
+  if(!force&&d.key===key){renderDaily();return;}
+  d.abort?.abort();const ctrl=new AbortController();d.abort=ctrl;
+  d.key=key;d.payload=null;d.loading=true;renderDaily();
+  const ref=dailyReference(dailyLesson(d.anchor,d.date).entry.reference);
+  try {
+    const params=new URLSearchParams({book:ref.book,chapter:ref.chapter,translation:state.translation});
+    const data=await api(`/api/chapter?${params}`,{signal:ctrl.signal});
+    if(ctrl.signal.aborted||d.abort!==ctrl)return;
+    const verse=data.verses?.find(item=>Number(item.verse)===ref.verse);
+    if(!verse?.text)throw new Error('Daily verse unavailable');
+    d.payload={verseText:verse.text,copyright:data.copyright,attribution:data.attribution};
+  }catch(error){if(ctrl.signal.aborted||d.abort!==ctrl)return;}
+  finally{if(d.abort===ctrl&&!ctrl.signal.aborted){d.loading=false;renderDaily();}}
+}
+
+function setDailyOpen(open) {
+  if(!dailyState)return;
+  dailyState.open=open;dailySeen();renderDaily();
+}
+async function openDailyPassage(reference,mode='study') {
+  const ref=dailyReference(reference);setDailyOpen(false);
+  await navigate(ref.book,ref.chapter,mode==='context'?null:ref.verse);
+  if(mode==='notes'&&state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse)switchTab('notes');
+}
+function initDaily() {
+  if(!$('dailyVerseCard'))return; // Older HTML can still start the reader.
+  const today=dailyDateKey();let anchor=savedJSON('sela.daily.anchor','');
+  if(!Number.isFinite(dailyDayNumber(anchor))){anchor=today;saveJSON('sela.daily.anchor',anchor);}
+  const completed=savedJSON('sela.daily.completed',{});
+  dailyState={anchor,date:today,auto:savedJSON('sela.daily.auto',true)!==false,
+    completed:completed&&typeof completed==='object'&&!Array.isArray(completed)?completed:{},key:'',payload:null,loading:false,abort:null};
+  dailyState.open=dailyState.auto&&savedJSON('sela.daily.lastPrompt','')!==today;
+  if(dailyState.open)dailySeen();
+  $('dailyExpand').addEventListener('click',()=>setDailyOpen(true));
+  $('dailyLater').addEventListener('click',()=>setDailyOpen(false));
+  $('dailyRetry').addEventListener('click',()=>void refreshDaily(true));
+  $('dailyPromptToggle').addEventListener('change',event=>{dailyState.auto=event.target.checked;saveJSON('sela.daily.auto',dailyState.auto);});
+  $('dailyComplete').addEventListener('click',()=>{
+    dailyState.completed[dailyState.date]=true;
+    // Bound date-only history; Scripture text is never persisted here.
+    dailyState.completed=Object.fromEntries(Object.entries(dailyState.completed).sort(([a],[b])=>b.localeCompare(a)).slice(0,120));
+    saveJSON('sela.daily.completed',dailyState.completed);renderDaily();
+  });
+  $('dailyVerseCard').addEventListener('click',event=>{
+    const link=event.target.closest('[data-daily-ref]');
+    const action=event.target.closest('[data-daily-open]');
+    if(link)void openDailyPassage(link.dataset.dailyRef);
+    if(action)void openDailyPassage(dailyLesson(dailyState.anchor,dailyState.date).entry.reference,action.dataset.dailyOpen);
+  });
+  $('dailyNav').addEventListener('click',()=>{
+    showView('read');closePanel();void refreshDaily();setDailyOpen(true);
+    $('dailyVerseCard').scrollIntoView?.({behavior:'smooth',block:'start'});
+    $('dailyTitle').focus();
+  });
+  const resume=()=>{if(document.visibilityState!=='hidden')void refreshDaily();};
+  document.addEventListener?.('visibilitychange',resume);
+  window.addEventListener('focus',resume);
+  // A short interval also handles midnight while the app remains in the foreground.
+  // Lifecycle events handle resuming after iOS suspends timers.
+  if(typeof setInterval==='function')setInterval(resume,60000);
+  void refreshDaily();
+}
+
+// END SELA DAILY
 init();
