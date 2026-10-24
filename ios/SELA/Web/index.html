@@ -46,7 +46,7 @@
       <main id="readerView" class="page-area">
 <!-- BEGIN SELA DAILY -->
         <section id="dailyVerseCard" class="daily-card hidden" aria-labelledby="dailyTitle">
-          <div class="daily-top"><span id="dailyEyebrow" class="daily-eyebrow">Verse of the day</span><span id="dailyVersion" class="daily-version">v1.2.2</span><time id="dailyDate"></time></div>
+          <div class="daily-top"><span id="dailyEyebrow" class="daily-eyebrow">Verse of the day</span><span id="dailyVersion" class="daily-version">v1.2.3</span><time id="dailyDate"></time></div>
           <p id="dailySubtitle" class="daily-subtitle">A daily path of spiritual growth</p>
           <div class="daily-plan-line"><span id="dailyProgress"></span><span id="dailyTheme"></span></div>
           <h2 id="dailyTitle" tabindex="-1"></h2>
@@ -55,6 +55,14 @@
           <div id="dailyCredit" class="source-credit daily-credit"></div>
           <button id="dailyRetry" type="button" class="daily-text-button hidden" data-daily-label="Try again">Try again</button>
           <div class="daily-actions"><button id="dailyStart" type="button" class="primary-btn">Begin daily study</button><button id="dailyExpand" type="button" class="daily-text-button" aria-expanded="false" aria-controls="dailyDetails" data-daily-label="Show today’s prompt">Show today’s prompt</button><button id="dailyLater" type="button" class="daily-text-button" data-daily-label="Later today">Later today</button></div>
+          <div class="daily-actions"><button id="dailyResume" type="button" class="daily-secondary hidden" data-daily-label="Resume where I left off">Resume where I left off</button><button id="dailyJournalOpen" type="button" class="daily-secondary" data-daily-label="Study journal">Study journal</button></div>
+          <p id="dailyEntryDates" class="daily-small"></p>
+          <section id="dailyJournal" class="daily-history hidden" aria-labelledby="dailyJournalTitle">
+            <div class="journal-heading"><h2 id="dailyJournalTitle">Study journal</h2><button type="button" id="dailyJournalClose" class="daily-text-button" data-daily-label="Close journal">Close journal</button></div>
+            <p id="dailyJournalNote" class="daily-small"></p>
+            <label class="daily-field-label" for="dailyJournalCycle" data-daily-label="Study cycle">Study cycle</label><select id="dailyJournalCycle" class="journal-cycle"></select>
+            <div id="dailyJournalList"></div><div id="dailyLegacyNotes"></div>
+          </section>
           <div id="dailyDetails" class="daily-details">
             <nav id="dailySteps" class="daily-steps" aria-label="Daily study steps"></nav>
             <p id="dailyStepStatus" class="daily-step-status" aria-live="polite"></p>
@@ -79,6 +87,7 @@
               <h3 data-daily-label="Reflect">Reflect</h3><p id="dailyQuestion" class="daily-coaching"></p>
               <label class="daily-field-label" for="dailyReflection" data-daily-label="Your reflection"></label>
               <textarea id="dailyReflection" class="daily-journal" rows="5"></textarea>
+              <p id="dailyLegacyReflection" class="daily-small journal-writing hidden"></p>
               <p class="daily-small" data-daily-label="Saved on this device"></p>
             </div>
             <div data-daily-stage="4" class="daily-stage hidden">
@@ -89,6 +98,7 @@
               <p class="daily-small" data-daily-label="Saved on this device"></p>
             </div>
             <div class="daily-actions"><button id="dailyBack" type="button" class="daily-secondary" data-daily-label="Back">Back</button><button id="dailyNext" type="button" class="primary-btn">Continue</button><button id="dailyComplete" type="button" class="primary-btn hidden">Finish today’s study</button></div>
+            <p id="dailySaveStatus" class="daily-small" role="status" aria-live="polite"></p>
             <p class="daily-small" data-daily-label="You can revisit each step. Your place and practice plan are saved on this device."></p>
             <div id="dailyThemePath" class="daily-theme-path" role="list" aria-label="Weekly themes"></div>
             <label class="daily-preference"><input type="checkbox" id="dailyPromptToggle" checked><span data-daily-label="Open this prompt each day">Open this prompt each day</span></label>
@@ -125,6 +135,7 @@
         <div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="YOUR COLLECTION">YOUR COLLECTION</span></div>
         <h1 class="secondary-title"><span data-i18n="Saved">Saved</span> <em><span data-i18n="Scripture">Scripture</span></em></h1>
         <p class="secondary-subtitle"><span data-i18n="The verses that have spoken to you, gathered in one place.">The verses that have spoken to you, gathered in one place.</span></p>
+        <button type="button" id="savedJournalOpen" class="daily-secondary saved-journal-link" data-daily-label="Study journal">Study journal</button>
         <div id="savedList" class="saved-list"></div>
       </main>
       <main id="searchView" class="page-area hidden">

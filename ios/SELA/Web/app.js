@@ -79,7 +79,7 @@ const state = {
   book:'2 Peter', chapter:3, translation:savedJSON('sela.translation','web'), selected:null, verses:[],
   translations:initialTranslations(), loaded:null, catalogPending:null,
   books:fallbackBooks, view:'read', aiEnabled:false, original:null, tab:'words',
-  selectedToken:0, highlight:savedJSON('sela.highlights',{}), notes:savedJSON('sela.notes',{}),
+  selectedToken:null, highlight:savedJSON('sela.highlights',{}), notes:savedJSON('sela.notes',{}),
   studies:savedJSON('sela.studies',{}), passageAbort:null, studySerial:0,
   fontSize:Number(localStorage.getItem('sela.fontsize')) || 19, toastTimer:null
 };
@@ -240,7 +240,7 @@ async function loadChapter(){
   state.passageAbort?.abort();
   const ctrl=new AbortController();state.passageAbort=ctrl;
   const target={book:state.book,chapter:state.chapter,translation:state.translation};
-  state.selected=null;state.original=null;state.studySerial++;
+  state.selected=null;state.original=null;state.selectedToken=null;state.studySerial++;
   closePanel();updateNavigation();renderTranslationOptions();
   const label=state.translations.find(e=>e.id===target.translation)?.abbreviation||target.translation.toUpperCase();
   const retained=state.verses.length?rt('Your current chapter is still here.'):'';
@@ -382,7 +382,7 @@ async function selectVerse(number) {
   if(!displayedMatches())return;
   const verse=state.verses.find(v=>Number(v.verse)===Number(number));
   if (!verse) return;
-  state.selected=Number(number);state.original=null;renderDailyFlow();
+  state.selected=Number(number);state.original=null;state.selectedToken=null;renderDailyFlow();
   const serial=++state.studySerial;
   renderVerses(); $('studyEmpty').classList.add('hidden');$('studyContent').classList.remove('hidden');
   $('selectedReference').textContent=displayReference();$('selectedVersion').textContent=editionAbbreviation();
@@ -405,6 +405,7 @@ async function selectVerse(number) {
 function renderPalette(){document.querySelectorAll('#highlightPalette button').forEach(btn=>btn.classList.toggle('active',(state.highlight[refKey()]||'none')===btn.dataset.color))}
 function renderOriginal() {
   const orig=state.original;if(!orig)return;
+  state.selectedToken=null;
   const isHebrew=['Hebrew','Aramaic','Hebrew / Aramaic'].includes(orig.language);
   $('originalHeading').textContent=t(['Greek','Hebrew','Aramaic','Hebrew / Aramaic'].includes(orig.language)?orig.language+' original':'Original text');
   const words=(orig.words||[]).map((w,i)=>{
@@ -412,20 +413,26 @@ function renderOriginal() {
     const gloss=w.gloss||entry.gloss||'';
     const languageNote=orig.language==='Hebrew / Aramaic'&&w.sourceLanguage?` · ${t(w.sourceLanguage+' original')}`:'';
     const parts=Array.isArray(w.parts)&&w.parts.length?` · ${t('parts:')} ${w.parts.map(p=>[p.surface,p.gloss].filter(Boolean).join(' = ')).join(' / ')}`:'';
-    return `<button class="word-row" data-token="${i}"><div><div class="word-original" ${isHebrew?'dir="rtl"':''}>${escapeHTML(w.surface)}</div><div class="word-translit">${escapeHTML(entry.transliteration||w.strong||'—')}</div></div><div><div class="word-gloss">${escapeHTML(gloss||t('Lexical gloss unavailable'))}</div><div class="word-morph">${escapeHTML([w.strong,w.morph].filter(Boolean).join(' · ')+parts+languageNote)}</div></div></button>`;
+    return `<div class="word-item"><button type="button" class="word-row" id="word-token-${i}" data-token="${i}" aria-expanded="false" aria-controls="word-detail-${i}"><div><div class="word-original" ${isHebrew?'dir="rtl"':''}>${escapeHTML(w.surface)}</div><div class="word-translit">${escapeHTML(entry.transliteration||w.strong||'—')}</div></div><div><div class="word-gloss">${escapeHTML(gloss||t('Lexical gloss unavailable'))}</div><div class="word-morph">${escapeHTML([w.strong,w.morph].filter(Boolean).join(' · ')+parts+languageNote)}</div></div></button><div id="word-detail-${i}" class="word-inline-detail hidden" role="region" aria-labelledby="word-token-${i}"></div></div>`;
   }).join('');
   const attribution=(orig.attribution||[]).map(a=>{
     try{if(new URL(a.url).protocol==='https:')return `<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(a.name||a.id)}</a> (${escapeHTML(a.license||'')})`;}catch{}
     return escapeHTML(a.name||a.id);
   }).join(' · ');
-  $('originalContent').innerHTML=`<div class="original-text" ${isHebrew?'dir="rtl"':''}>${escapeHTML(orig.text)}</div><div class="source-label">${escapeHTML(orig.edition)} · ${t('Tap any word for its lexicon details.')}</div>${orig.annotationNotice?`<div class="source-label">${escapeHTML(orig.annotationNotice)}</div>`:''}<div class="word-table">${words||`<p class="source-label">${t('No morphological tags were returned for this verse.')}</p>`}</div><div id="wordDetail"></div><div class="source-credit">${t('Text and lexical data:')} ${attribution||'Bible API / eBible.org'}. ${t('Different manuscript editions may have variant readings.')}</div>`;
+  $('originalContent').innerHTML=`<div class="original-text" ${isHebrew?'dir="rtl"':''}>${escapeHTML(orig.text)}</div><div class="source-label">${escapeHTML(orig.edition)} · ${t('Tap any word for its lexicon details.')}</div>${orig.annotationNotice?`<div class="source-label">${escapeHTML(orig.annotationNotice)}</div>`:''}<div class="word-table">${words||`<p class="source-label">${t('No morphological tags were returned for this verse.')}</p>`}</div><div class="source-credit">${t('Text and lexical data:')} ${attribution||'Bible API / eBible.org'}. ${t('Different manuscript editions may have variant readings.')}</div>`;
 }
 function selectToken(index) {
-  const word=state.original?.words?.[index];if(!word)return;
+  const word=state.original?.words?.[index];if(!word||!Number.isInteger(index))return;
+  const close=state.selectedToken===index;
+  document.querySelectorAll('.word-inline-detail').forEach(el=>{el.classList.add('hidden');el.innerHTML='';});
+  document.querySelectorAll('[data-token]').forEach(el=>el.setAttribute('aria-expanded','false'));
+  state.selectedToken=null;if(close)return;
   const entry=state.original.lexicon?.[word.strong]||{};
-  const detail=$('wordDetail');
-  detail.innerHTML=`<div class="word-detail"><strong>${escapeHTML(word.surface)} ${entry.transliteration?`(${escapeHTML(entry.transliteration)})`:''}</strong><div>${escapeHTML(word.romanianDefinition || entry.definition || word.gloss || t('A full lexicon definition is unavailable for this token.'))}</div>${entry.partOfSpeech?`<div>Part of speech: ${escapeHTML(entry.partOfSpeech)}</div>`:''}</div>`;
-  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+  const detail=$(`word-detail-${index}`),button=$(`word-token-${index}`);if(!detail||!button)return;
+  const definition=uiLanguage()==='ro'?(word.romanianDefinition||word.gloss||'O definiție completă nu este disponibilă pentru acest cuvânt.'):(entry.definition||word.gloss||t('A full lexicon definition is unavailable for this token.'));
+  detail.innerHTML=`<div class="word-detail"><strong>${escapeHTML(word.surface)} ${entry.transliteration?`(${escapeHTML(entry.transliteration)})`:''}</strong><div>${escapeHTML(definition)}</div>${entry.partOfSpeech?`<div>${uiLanguage()==='ro'?'Parte de vorbire':'Part of speech'}: ${escapeHTML(entry.partOfSpeech)}</div>`:''}</div>`;
+  detail.classList.remove('hidden');button.setAttribute('aria-expanded','true');state.selectedToken=index;
+  button.scrollIntoView?.({behavior:'auto',block:'nearest'});
 }
 function block(title, content) {return `<div class="study-block"><h4>${escapeHTML(title)}</h4><p>${escapeHTML(content||t('Not available'))}</p></div>`;}
 function renderMeaning() {
@@ -755,6 +762,58 @@ function dailyLesson(anchor,today=dailyDateKey()) {
   return {entry:DAILY_PLAN[index],index,day:index+1,cycle:Math.floor(elapsed/DAILY_PLAN.length)+1,theme:DAILY_THEMES[Math.floor(index/7)]};
 }
 
+
+// Persist only user writing and progress. No reading text, credits or credentials.
+const STUDY_JOURNAL_KEY='sela.studyJournal.v1';
+const journalObject=value=>value&&typeof value==='object'&&!Array.isArray(value);
+const journalOrdinal=value=>(typeof value==='number'||typeof value==='string'&&/^\d+$/u.test(value))&&Number.isSafeInteger(Number(value))&&Number(value)>=0;
+const journalStep=value=>Math.max(0,Math.min(4,Math.trunc(Number(value))||0));
+function journalPosition(ordinal){
+  ordinal=journalOrdinal(ordinal)?Number(ordinal):0;
+  return {ordinal,index:ordinal%28,day:ordinal%28+1,cycle:Math.floor(ordinal/28)+1};
+}
+function journalNext(journal){
+  let ordinal=0;
+  while(journal.entries[String(ordinal)]?.completedDate)ordinal++;
+  return ordinal;
+}
+function journalEntry(journal,ordinal,create=false,date=''){
+  const key=String(ordinal);if(!journalOrdinal(ordinal))return null;
+  if(!journal.entries[key]&&create)journal.entries[key]={ordinal:Number(ordinal),reference:DAILY_PLAN[Number(ordinal)%28].reference,step:0,reached:0,reflection:'',practice:'',startedDate:date,updatedDate:date};
+  return journal.entries[key]||null;
+}
+function loadStudyJournal(saved,{anchor,journeys={},completed={}}={}){
+  const journal={schema:1,planId:DAILY_PLAN_ID,entries:{},migratedLegacy:true};
+  if(journalObject(saved)&&saved.schema===1&&journalObject(saved.entries)){
+    for(const [key,value]of Object.entries(saved.entries)){
+      if(!journalOrdinal(key)||!journalObject(value))continue;
+      const entry={...value,ordinal:Number(key),reference:value.reference||DAILY_PLAN[Number(key)%28].reference,reached:journalStep(value.reached)};
+      entry.step=Math.min(entry.reached,journalStep(value.step));
+      for(const name of ['reflection','practice'])if(typeof entry[name]!=='string')entry[name]='';
+      // Dates are calendar labels, not timestamps; never recompute them on travel.
+      for(const name of ['startedDate','updatedDate','completedDate','legacyDate'])if(entry[name]&&!Number.isFinite(dailyDayNumber(entry[name])))delete entry[name];
+      journal.entries[String(Number(key))]=entry;
+    }
+    return journal;
+  }
+  const anchorDay=dailyDayNumber(anchor);
+  if(!Number.isFinite(anchorDay))return journal;
+  journeys=journalObject(journeys)?journeys:{};completed=journalObject(completed)?completed:{};
+  for(const date of new Set([...Object.keys(journeys),...Object.keys(completed)])){
+    const ordinal=dailyDayNumber(date)-anchorDay;
+    if(!journalOrdinal(ordinal))continue;
+    const prior=journalObject(journeys[date])?journeys[date]:{};
+    const done=completed[date]===true;
+    const entry={ordinal,reference:DAILY_PLAN[ordinal%28].reference,step:done?4:journalStep(prior.step),reached:done?4:journalStep(prior.reached),
+      reflection:'',practice:typeof prior.practice==='string'?prior.practice:'',legacyDate:date};
+    entry.step=Math.min(entry.step,entry.reached);
+    if(done)entry.completedDate=date;
+    // Old reflections have only verse keys. Keep them undated in sela.notes.
+    journal.entries[String(ordinal)]=entry;
+  }
+  return journal;
+}
+
 // Embedded into both readers by scripts/build-daily.mjs; no new runtime import.
 const DAILY_LABELS={
   'Verse of the day':'Versetul zilei',
@@ -794,206 +853,199 @@ Object.assign(DAILY_LABELS,{
 });
 const dt=label=>uiLanguage()==='ro'?(DAILY_LABELS[label]||label):label;
 const dailyText=value=>value[uiLanguage()]||value.en;
+Object.assign(DAILY_LABELS,{
+  'Study journal':'Jurnal de studiu','Close journal':'Închide jurnalul','Study cycle':'Ciclul de studiu',
+  'Resume where I left off':'Continuă de unde am rămas','Continue my path':'Continuă parcursul meu',
+  'Finish this study':'Încheie acest studiu','Completed':'Încheiat','In progress':'În desfășurare','Not started':'Neînceput',
+  'Earlier record':'Înregistrare anterioară','Started':'Început','Last edited':'Ultima modificare',
+  'No reflection yet.':'Nu există încă o reflecție.','No practice response yet.':'Nu există încă un răspuns de aplicare.',
+  'Review this study':'Recapitulează acest studiu','Open this study':'Deschide acest studiu',
+  'Existing verse note (undated)':'Notiță existentă la verset (fără dată)',
+  'Existing verse notes (undated)':'Notițe existente la versete (fără dată)','Open verse notes':'Deschide notițele versetului',
+  'Progress follows lessons, not calendar days. Complete more than one lesson whenever you want.':'Progresul urmează lecțiile, nu zilele calendaristice. Poți încheia mai multe lecții când dorești.',
+  'Older reflections were saved by verse. Their dates cannot be reconstructed. Earlier records removed by the old history limit cannot be recovered.':'Reflecțiile mai vechi au fost salvate pe verset. Datele lor nu pot fi reconstituite. Înregistrările eliminate de vechea limită a istoricului nu pot fi recuperate.',
+  'Loading this lesson’s verse…':'Se încarcă versetul acestei lecții…',
+  'This verse could not be loaded. Retry or choose another translation.':'Acest verset nu a putut fi încărcat. Reîncearcă sau alege altă traducere.',
+  'Not saved. Keep this app open and copy your writing.':'Nu s-a salvat. Păstrează aplicația deschisă și copiază textul scris.',
+  'SELA version 1.2.3':'SELA versiunea 1.2.3'
+});
 let dailyState=null;
 
-function dailyReference(reference) {
-  const match=reference.match(/^(.+) (\d+):(\d+)$/u);
-  return {book:match[1],chapter:Number(match[2]),verse:Number(match[3])};
-}
+// Lesson progress is independent of the calendar; dates label actual activity.
+const DAILY_STEPS=['Read','Word study','Meaning','Reflection','Practice'];
+const dailyReference=reference=>{const m=reference.match(/^(.+) (\d+):(\d+)$/u);return {book:m[1],chapter:Number(m[2]),verse:Number(m[3])};};
 function dailyRefLabel(reference){const r=dailyReference(reference);return displayReference(r.book,r.chapter,r.verse);}
+function currentDailyLesson(){const p=journalPosition(dailyState.selected);return {...p,entry:DAILY_PLAN[p.index],theme:DAILY_THEMES[Math.floor(p.index/7)]};}
+function dailyJourney(){return journalEntry(dailyState.journal,dailyState.selected)||{step:0,reached:0,reflection:'',practice:''};}
+function dailyTouch(){return journalEntry(dailyState.journal,dailyState.selected,true,dailyDateKey());}
 function dailySeen(){saveJSON('sela.daily.lastPrompt',dailyState.date);}
-function renderDaily() {
+function saveDailyJourney(){
+  const d=dailyState;
+  try{
+    if(d.storageBlocked)throw new Error('Unrecognized journal');
+    localStorage.setItem(STUDY_JOURNAL_KEY,JSON.stringify(d.journal));d.storageError=false;
+  }catch{d.storageError=true;}
+  const el=$('dailySaveStatus');if(el)el.textContent=dt(d.storageError?'Not saved. Keep this app open and copy your writing.':'Saved on this device');
+  if(d.journalOpen)renderDailyJournal();
+  return !d.storageError;
+}
+function dailyStatus(j){return j?.completedDate?'Completed':j?'In progress':'Not started';}
+function dailyDates(j){
+  if(!j)return '';
+  return [['Earlier record',j.legacyDate],['Started',j.startedDate],['Last edited',j.updatedDate],['Completed',j.completedDate]]
+    .filter(([,date])=>date).map(([name,date])=>`${dt(name)}: ${date}`).join(' · ');
+}
+function renderDaily(){
   if(!dailyState||!$('dailyVerseCard'))return;
-  const d=dailyState,lesson=dailyLesson(d.anchor,d.date),entry=lesson.entry;
-  const complete=d.completed[d.date]===true;
-  $('dailyVerseCard').lang=uiLanguage();
-  $('dailyVerseCard').classList.remove('hidden');
-  $('dailyDate').dateTime=d.date;
-  $('dailyEyebrow').textContent=dt('Verse of the day');
-  $('dailyDate').textContent=new Date(`${d.date}T12:00:00`).toLocaleDateString(uiLanguage()==='ro'?'ro-RO':'en-CA',{month:'long',day:'numeric',year:'numeric'});
-  $('dailyProgress').textContent=`${dt('Day')} ${lesson.day} ${dt('of')} 28 · ${dt('Cycle')} ${lesson.cycle}`;
-  $('dailyTheme').textContent=dailyText(lesson.theme);
-  $('dailyTitle').textContent=dailyText(entry.title);
+  const d=dailyState,lesson=currentDailyLesson(),entry=lesson.entry,j=dailyJourney(),complete=!!j.completedDate;
+  $('dailyVerseCard').lang=uiLanguage();$('dailyVerseCard').classList.remove('hidden');
+  $('dailyDate').dateTime=d.date;$('dailyDate').textContent=new Date(`${d.date}T12:00:00`).toLocaleDateString(uiLanguage()==='ro'?'ro-RO':'en-CA',{month:'long',day:'numeric',year:'numeric'});
+  $('dailyEyebrow').textContent=dt('Verse of the day');$('dailySubtitle').textContent=dt('A daily path of spiritual growth');
+  $('dailyProgress').textContent=`${dt('Day')} ${lesson.day} ${dt('of')} 28 · ${dt('Cycle')} ${lesson.cycle} · ${dt(dailyStatus(journalEntry(d.journal,d.selected)))}`;
+  $('dailyTheme').textContent=dailyText(lesson.theme);$('dailyTitle').textContent=dailyText(entry.title);
   $('dailyReference').textContent=`${dailyRefLabel(entry.reference)} · ${editionAbbreviation()}`;
-  $('dailySubtitle').textContent=dt('A daily path of spiritual growth');
-  $('dailyDetails').classList.toggle('hidden',!d.open);
-  $('dailyExpand').classList.toggle('hidden',d.open);
-  $('dailyLater').classList.toggle('hidden',!d.open);
+  $('dailyDetails').classList.toggle('hidden',!d.open);$('dailyExpand').classList.toggle('hidden',d.open);$('dailyLater').classList.toggle('hidden',!d.open);
   $('dailyExpand').setAttribute('aria-expanded',String(d.open));
   for(const el of document.querySelectorAll('[data-daily-label]'))el.textContent=dt(el.dataset.dailyLabel);
-  $('dailyPromptToggle').checked=d.auto;
-  $('dailyComplete').textContent=dt(complete?'Reflected today ✓':'Mark reflected');
-  $('dailyComplete').disabled=complete;
-  $('dailyVerseCard').classList.toggle('daily-complete',complete);
-  $('dailyBridge').textContent=dailyText(entry.bridge);
-  $('dailyQuestion').textContent=dailyText(entry.question);
-  $('dailyPractice').textContent=dailyText(entry.practice);
-  const previous=lesson.index>0?DAILY_PLAN[lesson.index-1]:lesson.cycle>1?DAILY_PLAN.at(-1):null;
-  $('dailyPrevious').innerHTML=previous?`<button type="button" class="daily-previous" data-daily-ref="${escapeHTML(previous.reference)}">${escapeHTML(dt('Previous lesson'))}: ${escapeHTML(dailyRefLabel(previous.reference))} · ${escapeHTML(dailyText(previous.title))}</button>`:'';
+  $('dailyPromptToggle').checked=d.auto;$('dailyComplete').disabled=complete;$('dailyVerseCard').classList.toggle('daily-complete',complete);
+  $('dailyBridge').textContent=dailyText(entry.bridge).replace(/\bYesterday\b/gu,'In the previous lesson').replace(/\bIeri\b/gu,'În lecția precedentă');
+  $('dailyQuestion').textContent=dailyText(entry.question);$('dailyPractice').textContent=dailyText(entry.practice);
+  $('dailyEntryDates').textContent=dailyDates(journalEntry(d.journal,d.selected));
+  $('dailyResume').classList.toggle('hidden',d.selected===journalNext(d.journal));
+  $('dailyPrevious').innerHTML=d.selected>0?`<button type="button" class="daily-previous" data-daily-lesson="${d.selected-1}">${escapeHTML(dt('Previous lesson'))}: ${escapeHTML(dailyRefLabel(DAILY_PLAN[(d.selected-1)%28].reference))}</button>`:'';
   $('dailyLinks').innerHTML=entry.links.map(item=>`<button type="button" class="daily-link" data-daily-ref="${escapeHTML(item.reference)}"><strong>${escapeHTML(dailyRefLabel(item.reference))} <span aria-hidden="true">↗</span></strong><span>${escapeHTML(dailyText(item))}</span></button>`).join('');
   $('dailyThemePath').innerHTML=DAILY_THEMES.map((theme,i)=>`<span role="listitem" ${i===Math.floor(lesson.index/7)?'aria-current="step"':''}>${i+1}. ${escapeHTML(dailyText(theme))}</span>`).join('');
-  $('dailyThemePath').setAttribute('aria-label',dt('Weekly themes'));
-  $('dailyVersion').setAttribute('aria-label',dt('SELA version 1.2.2'));
-  $('dailyNav').setAttribute('aria-label',dt('Verse of the day'));
-  $('dailyNav').title=dt('Verse of the day');
-  const key=`${d.date}:${state.translation}`;
-  if(d.key!==key){$('dailyVerseText').textContent=dt('Loading today’s verse…');translationCredits(null,'dailyCredit');}
-  else if(d.payload){
-    $('dailyVerseText').textContent=d.payload.verseText;
-    translationCredits(d.payload,'dailyCredit');
-  }else $('dailyVerseText').textContent=dt(d.loading?'Loading today’s verse…':'Today’s verse could not be loaded in this translation. Retry or choose another translation.');
+  $('dailyThemePath').setAttribute('aria-label',dt('Weekly themes'));$('dailyVersion').setAttribute('aria-label',dt('SELA version 1.2.3'));
+  $('dailyNav').setAttribute('aria-label',dt('Verse of the day'));$('dailyNav').title=dt('Verse of the day');
+  const key=`${d.selected}:${state.translation}`;
+  if(d.key===key&&d.payload){$('dailyVerseText').textContent=d.payload.verseText;translationCredits(d.payload,'dailyCredit');}
+  else{$('dailyVerseText').textContent=dt(d.loading||d.key!==key?'Loading this lesson’s verse…':'This verse could not be loaded. Retry or choose another translation.');translationCredits(null,'dailyCredit');}
   $('dailyRetry').classList.toggle('hidden',d.key!==key||d.loading||!!d.payload);
-  renderDailyFlow();
-}
-
-const DAILY_STEPS=['Read','Word study','Meaning','Reflection','Practice'];
-function dailyJourney(){
-  const d=dailyState;let journey=d.journeys[d.date];
-  if(!journey||typeof journey!=='object'||Array.isArray(journey))journey=d.journeys[d.date]={step:0,reached:0,practice:''};
-  journey.reached=Math.max(0,Math.min(4,Math.trunc(Number(journey.reached))||0));
-  journey.step=Math.max(0,Math.min(journey.reached,Math.trunc(Number(journey.step))||0));
-  if(typeof journey.practice!=='string')journey.practice='';
-  return journey;
-}
-function saveDailyJourney(){
-  dailyState.journeys=Object.fromEntries(Object.entries(dailyState.journeys).sort(([a],[b])=>b.localeCompare(a)).slice(0,120));
-  saveJSON('sela.daily.journeys',dailyState.journeys);
+  renderDailyFlow();if(d.journalOpen)renderDailyJournal();
 }
 function renderDailyFlow(){
   if(!dailyState||!$('dailySteps'))return;
-  const d=dailyState,j=dailyJourney(),finished=d.completed[d.date]===true;
+  const d=dailyState,j=dailyJourney(),finished=!!j.completedDate;
   $('dailySteps').innerHTML=DAILY_STEPS.map((name,i)=>`<button type="button" data-daily-step="${i}" ${i>j.reached?'disabled':''} ${i===j.step?'aria-current="step"':''}><span>${i+1}</span>${escapeHTML(dt(name))}</button>`).join('');
   $('dailySteps').setAttribute('aria-label',dt('Daily study steps'));
   document.querySelectorAll('[data-daily-stage]').forEach(el=>el.classList.toggle('hidden',Number(el.dataset.dailyStage)!==j.step));
   $('dailyStepStatus').textContent=`${j.step+1} / 5 · ${dt(DAILY_STEPS[j.step])}`;
-  $('dailyBack').disabled=j.step===0;
-  $('dailyNext').classList.toggle('hidden',j.step===4);
+  $('dailyBack').disabled=j.step===0;$('dailyNext').classList.toggle('hidden',j.step===4);
   $('dailyNext').textContent=j.step<4?`${dt('Continue')}: ${dt(DAILY_STEPS[j.step+1])} →`:dt('Continue');
-  $('dailyStart').textContent=dt(finished?'Review today’s study':j.reached>0?'Resume daily study':'Begin daily study');
-  const reference=dailyLesson(d.anchor,d.date).entry.reference;
-  if(document.activeElement!==$('dailyReflection'))$('dailyReflection').value=state.notes[reference]||'';
+  $('dailyStart').textContent=dt(finished?'Continue my path':j.reached>0?'Resume where I left off':'Begin daily study');
+  if(document.activeElement!==$('dailyReflection'))$('dailyReflection').value=j.reflection;
   if(document.activeElement!==$('dailyIntention'))$('dailyIntention').value=j.practice;
   $('dailyReflection').placeholder=dt('In your own words, what have you learned about God, yourself or your response?');
   $('dailyIntention').placeholder=dt('What will you do, and when will you do it?');
-  $('dailyComplete').textContent=dt(finished?'Study completed ✓':'Finish today’s study');
-  $('dailyComplete').classList.toggle('hidden',j.step!==4);
+  $('dailyComplete').textContent=dt(finished?'Study completed ✓':'Finish this study');$('dailyComplete').classList.toggle('hidden',j.step!==4);
+  $('dailySaveStatus').textContent=dt(d.storageError?'Not saved. Keep this app open and copy your writing.':'Saved on this device');
+  const legacy=state.notes[currentDailyLesson().entry.reference];
+  $('dailyLegacyReflection').classList.toggle('hidden',!legacy?.trim());
+  $('dailyLegacyReflection').textContent=legacy?`${dt('Existing verse note (undated)')}: ${legacy}`:'';
   let continuation=$('dailyStudyContinue');
   if(!continuation&&$('studyContent')){
-    continuation=document.createElement('button');continuation.id='dailyStudyContinue';continuation.type='button';continuation.className='daily-panel-continue primary-btn';
-    $('studyContent').append?.(continuation);
-    continuation.addEventListener('click',()=>{closePanel();setDailyStep(Math.min(4,dailyJourney().step+1));$('dailyVerseCard').scrollIntoView?.({behavior:'smooth',block:'start'});});
+    continuation=document.createElement('button');continuation.id='dailyStudyContinue';continuation.type='button';continuation.className='daily-panel-continue primary-btn';$('studyContent').append?.(continuation);
+    continuation.addEventListener('click',()=>{closePanel();setDailyStep(Math.min(4,dailyJourney().step+1));$('dailyVerseCard').scrollIntoView?.({behavior:'auto',block:'start'});});
   }
   if(continuation){
-    const ref=dailyReference(reference),isDaily=state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse;
+    const ref=dailyReference(currentDailyLesson().entry.reference),isDaily=state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse;
     continuation.classList.toggle('hidden',!isDaily||!d.open||![1,2].includes(j.step));
     continuation.textContent=`${dt('Continue daily study')}: ${dt(DAILY_STEPS[Math.min(4,j.step+1)])} →`;
   }
 }
 function setDailyStep(step){
-  const j=dailyJourney();j.step=Math.max(0,Math.min(4,step));j.reached=Math.max(j.reached,j.step);
+  if(!dailyState)return;const j=dailyTouch();j.step=Math.max(0,Math.min(4,step));j.reached=Math.max(j.reached,j.step);j.updatedDate=dailyDateKey();
   saveDailyJourney();dailyState.open=true;dailySeen();renderDaily();
 }
-async function openDailyTool(mode){
-  const date=dailyState.date,reference=dailyLesson(dailyState.anchor,date).entry.reference;
-  const ref=dailyReference(reference);
-  if(state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse){
-    openPanel();switchTab(mode==='meaning'?'meaning':'words');
-  }else await openDailyPassage(reference,mode);
-  if(dailyState.date!==date)return;
-  dailyState.open=true;renderDaily();
+async function selectDailyLesson(ordinal){
+  if(!Number.isSafeInteger(ordinal)||ordinal<0)return;
+  dailyState.selected=ordinal;dailyState.open=true;dailyState.journalOpen=false;$('dailyJournal').classList.add('hidden');
+  showView('read');closePanel();dailySeen();await refreshDaily();
+  $('dailyVerseCard').scrollIntoView?.({behavior:'auto',block:'start'});
 }
-
-async function refreshDaily(force=false,now=new Date()) {
-  if(!dailyState)return;
-  const d=dailyState,today=dailyDateKey(now);
-  if(today!==d.date){
-    d.date=today;d.open=d.auto&&savedJSON('sela.daily.lastPrompt','')!==today;
-    if(d.open)dailySeen();
-  }
-  const key=`${d.date}:${state.translation}`;
+function openDailyJournal(){
+  if(!dailyState)return;showView('read');closePanel();dailyState.journalOpen=true;$('dailyJournal').classList.remove('hidden');
+  dailyState.journalCycle=journalPosition(dailyState.selected).cycle;renderDailyJournal();$('dailyJournal').scrollIntoView?.({behavior:'auto',block:'start'});
+}
+function renderDailyJournal(){
+  const d=dailyState;if(!d||!$('dailyJournalList'))return;
+  $('dailyJournalTitle').textContent=dt('Study journal');$('dailyJournalNote').textContent=dt('Progress follows lessons, not calendar days. Complete more than one lesson whenever you want.');
+  const cycles=new Set([journalPosition(journalNext(d.journal)).cycle,d.journalCycle||1]);
+  for(const key of Object.keys(d.journal.entries))cycles.add(journalPosition(Number(key)).cycle);
+  const picker=$('dailyJournalCycle');picker.innerHTML=[...cycles].sort((a,b)=>b-a).map(c=>`<option value="${c}">${dt('Cycle')} ${c}</option>`).join('');picker.value=String(d.journalCycle||1);
+  picker.setAttribute('aria-label',dt('Study cycle'));
+  const offset=((d.journalCycle||1)-1)*28;
+  $('dailyJournalList').innerHTML=DAILY_PLAN.map((entry,index)=>{
+    const ordinal=offset+index,j=journalEntry(d.journal,ordinal);
+    return `<details class="journal-entry"><summary><span>${escapeHTML(dt('Day'))} ${index+1} · ${escapeHTML(dailyText(entry.title))}<small>${escapeHTML(dailyRefLabel(entry.reference))} · ${escapeHTML(dt(dailyStatus(j)))}</small></span></summary><div class="journal-entry-body"><p class="daily-small">${escapeHTML(dailyDates(j))}</p><h3>${escapeHTML(dt('Your reflection'))}</h3><p class="journal-writing">${escapeHTML(j?.reflection||dt('No reflection yet.'))}</p><h3>${escapeHTML(dt('My next step'))}</h3><p class="journal-writing">${escapeHTML(j?.practice||dt('No practice response yet.'))}</p><button type="button" class="daily-secondary" data-daily-lesson="${ordinal}">${escapeHTML(dt(j?.completedDate?'Review this study':'Open this study'))} →</button></div></details>`;
+  }).join('');
+  const refs=new Set(DAILY_PLAN.map(entry=>entry.reference));
+  const notes=Object.entries(state.notes).filter(([ref,note])=>refs.has(ref)&&note?.trim());
+  $('dailyLegacyNotes').innerHTML=`<h3>${escapeHTML(dt('Existing verse notes (undated)'))}</h3><p class="daily-small">${escapeHTML(dt('Older reflections were saved by verse. Their dates cannot be reconstructed. Earlier records removed by the old history limit cannot be recovered.'))}</p>`+notes.map(([ref,note])=>`<details class="journal-entry"><summary>${escapeHTML(dailyRefLabel(ref))}</summary><div class="journal-entry-body"><p class="journal-writing">${escapeHTML(note)}</p><button type="button" class="daily-secondary" data-legacy-note="${escapeHTML(ref)}">${escapeHTML(dt('Open verse notes'))} →</button></div></details>`).join('');
+}
+async function openDailyTool(mode){
+  const ordinal=dailyState.selected,ref=dailyReference(currentDailyLesson().entry.reference);
+  if(state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse){openPanel();switchTab(mode==='meaning'?'meaning':'words');}
+  else await openDailyPassage(currentDailyLesson().entry.reference,mode);
+  if(dailyState.selected!==ordinal)return;dailyState.open=true;renderDaily();
+}
+async function refreshDaily(force=false,now=new Date()){
+  if(!dailyState)return;const d=dailyState,today=dailyDateKey(now);
+  if(today!==d.date){d.date=today;d.open=d.auto&&savedJSON('sela.daily.lastPrompt','')!==today;if(d.open)dailySeen();}
+  const key=`${d.selected}:${state.translation}`;
   if(!force&&d.key===key){renderDaily();return;}
-  d.abort?.abort();const ctrl=new AbortController();d.abort=ctrl;
-  d.key=key;d.payload=null;d.loading=true;renderDaily();
-  const ref=dailyReference(dailyLesson(d.anchor,d.date).entry.reference);
-  try {
-    const params=new URLSearchParams({book:ref.book,chapter:ref.chapter,translation:state.translation});
-    const data=await requestChapter(params,ctrl.signal);
+  d.abort?.abort();const ctrl=new AbortController();d.abort=ctrl;d.key=key;d.payload=null;d.loading=true;renderDaily();
+  const ref=dailyReference(currentDailyLesson().entry.reference);
+  try{
+    const data=await requestChapter(new URLSearchParams({book:ref.book,chapter:ref.chapter,translation:state.translation}),ctrl.signal);
     if(ctrl.signal.aborted||d.abort!==ctrl)return;
-    const verse=data.verses?.find(item=>Number(item.verse)===ref.verse);
-    if(!verse?.text)throw new Error('Daily verse unavailable');
+    const verse=data.verses?.find(item=>Number(item.verse)===ref.verse);if(!verse?.text)throw new Error('Lesson verse unavailable');
     d.payload={verseText:verse.text,copyright:data.copyright,attribution:data.attribution};
-  }catch(error){if(ctrl.signal.aborted||d.abort!==ctrl)return;}
+  }catch{ /* The edition-specific retry state leaves the ordinary reader usable. */ }
   finally{if(d.abort===ctrl&&!ctrl.signal.aborted){d.loading=false;renderDaily();}}
 }
-
-function setDailyOpen(open) {
-  if(!dailyState)return;
-  dailyState.open=open;dailySeen();renderDaily();
+function setDailyOpen(open){if(!dailyState)return;dailyState.open=open;dailySeen();renderDaily();}
+async function openDailyPassage(reference,mode='study'){
+  const ref=dailyReference(reference);setDailyOpen(false);await navigate(ref.book,ref.chapter,mode==='context'?null:ref.verse);
+  if(state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse){if(mode==='notes')switchTab('notes');if(mode==='meaning')switchTab('meaning');}
 }
-async function openDailyPassage(reference,mode='study') {
-  const ref=dailyReference(reference);setDailyOpen(false);
-  await navigate(ref.book,ref.chapter,mode==='context'?null:ref.verse);
-  if(state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse){
-    if(mode==='notes')switchTab('notes');
-    if(mode==='meaning')switchTab('meaning');
-  }
-}
-function initDaily() {
-  if(!$('dailyVerseCard'))return; // Older HTML can still start the reader.
+function initDaily(){
+  if(!$('dailyVerseCard'))return;
   const today=dailyDateKey();let anchor=savedJSON('sela.daily.anchor','');
   if(!Number.isFinite(dailyDayNumber(anchor))){anchor=today;saveJSON('sela.daily.anchor',anchor);}
-  const completed=savedJSON('sela.daily.completed',{});
-  const savedJourneys=savedJSON('sela.daily.journeys',{});
-  dailyState={anchor,date:today,auto:savedJSON('sela.daily.auto',true)!==false,
-    journeys:savedJourneys&&typeof savedJourneys==='object'&&!Array.isArray(savedJourneys)?savedJourneys:{},
-    completed:completed&&typeof completed==='object'&&!Array.isArray(completed)?completed:{},key:'',payload:null,loading:false,abort:null};
-  dailyState.open=dailyState.auto&&savedJSON('sela.daily.lastPrompt','')!==today;
-  if(dailyState.open)dailySeen();
-  $('dailyExpand').addEventListener('click',()=>setDailyOpen(true));
-  $('dailyLater').addEventListener('click',()=>setDailyOpen(false));
+  let raw=null,saved=null,storageBlocked=false;
+  try{raw=localStorage.getItem(STUDY_JOURNAL_KEY);saved=raw?JSON.parse(raw):null;if(raw&&(!saved||saved.schema!==1||!journalObject(saved.entries)||saved.planId&&saved.planId!==DAILY_PLAN_ID))storageBlocked=true;}catch{storageBlocked=true;}
+  const journal=loadStudyJournal(saved,{anchor,journeys:savedJSON('sela.daily.journeys',{}),completed:savedJSON('sela.daily.completed',{})});
+  dailyState={anchor,date:today,auto:savedJSON('sela.daily.auto',true)!==false,journal,selected:journalNext(journal),journalOpen:false,journalCycle:1,storageBlocked,storageError:false,key:'',payload:null,loading:false,abort:null};
+  dailyState.open=dailyState.auto&&savedJSON('sela.daily.lastPrompt','')!==today;if(dailyState.open)dailySeen();
+  // Do not touch the original legacy keys or ordinary verse notes during migration.
+  saveDailyJourney();
+  $('dailyExpand').addEventListener('click',()=>setDailyOpen(true));$('dailyLater').addEventListener('click',()=>setDailyOpen(false));
   $('dailyRetry').addEventListener('click',()=>void refreshDaily(true));
   $('dailyPromptToggle').addEventListener('change',event=>{dailyState.auto=event.target.checked;saveJSON('sela.daily.auto',dailyState.auto);});
   $('dailyComplete').addEventListener('click',()=>{
-    if(dailyJourney().step!==4)return;
+    if(dailyJourney().step!==4||dailyJourney().completedDate)return;
     if(!dailyJourney().practice.trim()){toast(dt('Choose a concrete action before finishing.'));$('dailyIntention').focus();return;}
-    dailyState.completed[dailyState.date]=true;
-    // Bound date-only history; Scripture text is never persisted here.
-    dailyState.completed=Object.fromEntries(Object.entries(dailyState.completed).sort(([a],[b])=>b.localeCompare(a)).slice(0,120));
-    saveJSON('sela.daily.completed',dailyState.completed);renderDaily();
+    const j=dailyTouch();j.completedDate=dailyDateKey();j.updatedDate=j.completedDate;saveDailyJourney();renderDaily();
   });
-  $('dailyStart').addEventListener('click',()=>{setDailyOpen(true);renderDailyFlow();});
-  $('dailyBack').addEventListener('click',()=>setDailyStep(dailyJourney().step-1));
-  $('dailyNext').addEventListener('click',()=>setDailyStep(dailyJourney().step+1));
+  $('dailyStart').addEventListener('click',()=>{if(dailyJourney().completedDate){void selectDailyLesson(journalNext(dailyState.journal));return;}dailyTouch();saveDailyJourney();setDailyOpen(true);});
+  $('dailyResume').addEventListener('click',()=>void selectDailyLesson(journalNext(dailyState.journal)));
+  $('dailyJournalOpen').addEventListener('click',openDailyJournal);$('savedJournalOpen')?.addEventListener('click',openDailyJournal);
+  $('dailyJournalClose').addEventListener('click',()=>{dailyState.journalOpen=false;$('dailyJournal').classList.add('hidden');});
+  $('dailyJournalCycle').addEventListener('change',event=>{dailyState.journalCycle=Number(event.target.value);renderDailyJournal();});
+  $('dailyBack').addEventListener('click',()=>setDailyStep(dailyJourney().step-1));$('dailyNext').addEventListener('click',()=>setDailyStep(dailyJourney().step+1));
   $('dailySteps').addEventListener('click',event=>{const b=event.target.closest('[data-daily-step]');if(b&&!b.disabled&&Number(b.dataset.dailyStep)<=dailyJourney().reached)setDailyStep(Number(b.dataset.dailyStep));});
-  $('dailySuggest').addEventListener('click',()=>{dailyJourney().practice=dailyText(dailyLesson(dailyState.anchor,dailyState.date).entry.practice);saveDailyJourney();renderDailyFlow();});
-  $('dailyIntention').addEventListener('input',event=>{dailyJourney().practice=event.target.value;saveDailyJourney();});
-  $('dailyReflection').addEventListener('input',event=>{
-    const reference=dailyLesson(dailyState.anchor,dailyState.date).entry.reference;
-    if(event.target.value.trim())state.notes[reference]=event.target.value;else delete state.notes[reference];
-    saveJSON('sela.notes',state.notes);
-    if(refKey()===reference)$('noteInput').value=event.target.value;
-    $('savedCount').textContent=new Set([...Object.keys(state.highlight),...Object.keys(state.notes)]).size;
-  });
+  $('dailySuggest').addEventListener('click',()=>{const j=dailyTouch();j.practice=dailyText(currentDailyLesson().entry.practice);j.updatedDate=dailyDateKey();saveDailyJourney();renderDailyFlow();});
+  for(const [id,field]of [['dailyIntention','practice'],['dailyReflection','reflection']])$(id).addEventListener('input',event=>{const j=dailyTouch();j[field]=event.target.value;j.updatedDate=dailyDateKey();saveDailyJourney();$('dailyEntryDates').textContent=dailyDates(j);});
   $('dailyVerseCard').addEventListener('click',event=>{
-    const link=event.target.closest('[data-daily-ref]');
-    const action=event.target.closest('[data-daily-open]');
-    const tool=event.target.closest('[data-daily-tool]');
-    if(link)void openDailyPassage(link.dataset.dailyRef);
-    if(action)void openDailyPassage(dailyLesson(dailyState.anchor,dailyState.date).entry.reference,action.dataset.dailyOpen);
-    if(tool)void openDailyTool(tool.dataset.dailyTool);
+    const lesson=event.target.closest('[data-daily-lesson]'),legacy=event.target.closest('[data-legacy-note]');
+    if(lesson){void selectDailyLesson(Number(lesson.dataset.dailyLesson));return;}if(legacy){void openDailyPassage(legacy.dataset.legacyNote,'notes');return;}
+    const link=event.target.closest('[data-daily-ref]'),action=event.target.closest('[data-daily-open]'),tool=event.target.closest('[data-daily-tool]');
+    if(link)void openDailyPassage(link.dataset.dailyRef);if(action)void openDailyPassage(currentDailyLesson().entry.reference,action.dataset.dailyOpen);if(tool)void openDailyTool(tool.dataset.dailyTool);
   });
-  $('dailyNav').addEventListener('click',()=>{
-    showView('read');closePanel();void refreshDaily();setDailyOpen(true);
-    $('dailyVerseCard').scrollIntoView?.({behavior:'smooth',block:'start'});
-    $('dailyTitle').focus();
-  });
-  const resume=()=>{if(document.visibilityState!=='hidden')void refreshDaily();};
-  document.addEventListener?.('visibilitychange',resume);
-  window.addEventListener('focus',resume);
-  // A short interval also handles midnight while the app remains in the foreground.
-  // Lifecycle events handle resuming after iOS suspends timers.
-  if(typeof setInterval==='function')setInterval(resume,60000);
-  void refreshDaily();
+  $('dailyNav').addEventListener('click',()=>{void selectDailyLesson(journalNext(dailyState.journal));$('dailyTitle').focus();});
+  const resume=()=>{if(document.visibilityState!=='hidden')void refreshDaily();};document.addEventListener?.('visibilitychange',resume);window.addEventListener('focus',resume);
+  if(typeof setInterval==='function')setInterval(resume,60000);void refreshDaily();
 }
 
 // END SELA DAILY
