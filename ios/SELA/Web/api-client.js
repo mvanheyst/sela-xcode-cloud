@@ -25,7 +25,10 @@ async function performRequest(path, options = {}) {
     data = await response.json().catch(() => ({}));
   }
   if (options.signal?.aborted) throw new DOMException('Aborted', 'AbortError');
-  if (status < 200 || status >= 300) throw new Error(data?.error || `Request failed (${status})`);
+  if (status < 200 || status >= 300) throw Object.assign(new Error(data?.error || `Request failed (${status})`), {
+    status, code:data?.code||'service-error', retryAfter:data?.retryAfter||0,
+    retryable:!!data?.retryable, retriesExhausted:!!data?.retriesExhausted
+  });
   return data;
 }
 
@@ -38,7 +41,7 @@ export async function requestJSON(path, options = {}) {
   try {
     return await abortable(()=>performRequest(path,{...options,signal:controller.signal}),controller.signal);
   } catch(error) {
-    if(timedOut)throw new Error('The study server took too long to respond. Please try again.');
+    if(timedOut)throw Object.assign(new Error('The study server took too long to respond. Please try again.'),{code:'timeout',retryable:true});
     throw error;
   } finally {clearTimeout(timer);options.signal?.removeEventListener('abort',abort);}
 }

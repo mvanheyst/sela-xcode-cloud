@@ -19,6 +19,9 @@
 
 /* Localized text labels inherit typography; decorative footer symbols retain their styling. */
 .reader-footer [data-i18n]{color:inherit;font-size:inherit}
+
+/* SELA 1.2.2 translation reliability */
+.version-control select{max-width:160px}.reader-notice-title{font-weight:650}.reader-notice-detail{margin-top:4px}.reader-retry{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin-top:10px;padding:9px 15px;border:0;border-radius:7px;background:#285a4a;color:#fff;font:600 12px var(--sans);cursor:pointer}.reader-retry:disabled{opacity:.6;cursor:wait}.verse:disabled{opacity:1;cursor:text}.verse:disabled:hover{background:transparent}@media(max-width:420px){.version-control select{max-width:145px}.reading-controls{gap:12px}.version-control{max-width:100%}}
 /* BEGIN SELA DAILY */
 /* SELA 1.2: daily growth path, using the existing paper and forest palette. */
 .daily-card{padding:25px;border:1px solid #dce5d8;border-radius:17px;background:linear-gradient(135deg,#f0f4ec,#fafbf6);margin:0 0 38px;scroll-margin-top:20px;overflow-wrap:anywhere}

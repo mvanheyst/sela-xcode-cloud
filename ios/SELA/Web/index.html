@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#fcfbf8">
-  <meta name="description" content="A quiet place to read Scripture, highlight verses, and explore the original Greek and Hebrew.">
+  <meta name="description" content="A quiet place to read Scripture, highlight verses, and explore the original Greek, Hebrew and Aramaic.">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/styles.css">
@@ -46,7 +46,7 @@
       <main id="readerView" class="page-area">
 <!-- BEGIN SELA DAILY -->
         <section id="dailyVerseCard" class="daily-card hidden" aria-labelledby="dailyTitle">
-          <div class="daily-top"><span id="dailyEyebrow" class="daily-eyebrow">Verse of the day</span><span id="dailyVersion" class="daily-version">v1.2</span><time id="dailyDate"></time></div>
+          <div class="daily-top"><span id="dailyEyebrow" class="daily-eyebrow">Verse of the day</span><span id="dailyVersion" class="daily-version">v1.2.2</span><time id="dailyDate"></time></div>
           <p id="dailySubtitle" class="daily-subtitle">A daily path of spiritual growth</p>
           <div class="daily-plan-line"><span id="dailyProgress"></span><span id="dailyTheme"></span></div>
           <h2 id="dailyTitle" tabindex="-1"></h2>
@@ -65,7 +65,7 @@
             </div>
             <div data-daily-stage="1" class="daily-stage hidden">
               <h3 data-daily-label="Explore the original words"></h3>
-              <p class="daily-coaching" data-daily-label="Choose one Greek or Hebrew word. Compare its meaning with its use in this sentence; a dictionary gloss alone does not determine the verse’s meaning."></p>
+              <p class="daily-coaching" data-daily-label="Choose one Greek, Hebrew or Aramaic word. Compare its meaning with its use in this sentence; a dictionary gloss alone does not determine the verse’s meaning."></p>
               <button type="button" class="daily-secondary" data-daily-tool="study" data-daily-label="Explore the original words"></button>
             </div>
             <div data-daily-stage="2" class="daily-stage hidden">
@@ -109,7 +109,7 @@
               <label class="select-wrap"><span data-icon="book-open"></span><select id="bookSelect" aria-label="Book" data-i18n-aria-label="Book"></select><span data-icon="chevron-down"></span></label>
               <label class="select-wrap chapter-select"><span><span data-i18n="CH.">CH.</span></span><select id="chapterSelect" aria-label="Chapter" data-i18n-aria-label="Chapter"></select><span data-icon="chevron-down"></span></label>
             </div>
-            <label class="version-control"><span data-icon="layers"></span><select id="translationSelect" aria-label="Bible translation" data-i18n-aria-label="Bible translation"><option value="web">WEB</option><option value="kjv">KJV</option><option value="niv" disabled>NIV</option><option value="ntr" disabled>NTR · RO</option></select><span data-icon="chevron-down"></span></label>
+            <label class="version-control"><span data-icon="layers"></span><select id="translationSelect" aria-label="Bible translation" data-i18n-aria-label="Bible translation"><option value="web">WEB</option><option value="kjv">KJV</option><option value="niv" disabled>NIV</option><option value="ntr" disabled>NTR · RO</option><option value="nasb2020" disabled>NASB2020</option><option value="amp" disabled>AMP</option><option value="asv" disabled>ASV</option><option value="nirv" disabled>NIrV</option></select><span data-icon="chevron-down"></span></label>
           </div>
         </section>
 
@@ -139,7 +139,7 @@
     <aside class="study-panel" id="studyPanel" aria-label="Verse study panel" data-i18n-aria-label="Verse study panel">
       <div class="study-topbar"><div><span class="study-overline"><span data-i18n="DIG DEEPER">DIG DEEPER</span></span><h2><span data-i18n="Verse">Verse</span> <em><span data-i18n="study">study</span></em></h2></div><button class="icon-button" id="closeStudy" aria-label="Close study" data-i18n-aria-label="Close study"><span data-icon="x"></span></button></div>
       <div class="study-scroller" id="studyScroller">
-        <div class="study-empty" id="studyEmpty"><div class="study-empty-icon">✳</div><h3><span data-i18n="Every word has a story.">Every word has a story.</span></h3><p><span data-i18n="Select a verse in the reading pane to see the original Greek or Hebrew, word meanings, and historical context.">Select a verse in the reading pane to see the original Greek or Hebrew, word meanings, and historical context.</span></p><div class="empty-steps"><span><span data-i18n="01   Read">01   Read</span></span><span><span data-i18n="02   Select">02   Select</span></span><span><span data-i18n="03   Discover">03   Discover</span></span></div></div>
+        <div class="study-empty" id="studyEmpty"><div class="study-empty-icon">✳</div><h3><span data-i18n="Every word has a story.">Every word has a story.</span></h3><p><span data-i18n="Select a verse in the reading pane to see the original Greek, Hebrew or Aramaic, word meanings, and historical context.">Select a verse in the reading pane to see the original Greek, Hebrew or Aramaic, word meanings, and historical context.</span></p><div class="empty-steps"><span><span data-i18n="01   Read">01   Read</span></span><span><span data-i18n="02   Select">02   Select</span></span><span><span data-i18n="03   Discover">03   Discover</span></span></div></div>
         <div id="studyContent" class="hidden">
           <div class="selected-verse-card"><div class="selected-meta"><span id="selectedReference">2 Peter 3:10</span><span id="selectedVersion">WEB</span></div><p id="selectedText"></p></div>
           <div class="study-actions"><div><span class="tiny-label"><span data-i18n="MARK THIS VERSE">MARK THIS VERSE</span></span><div class="highlight-palette" id="highlightPalette" aria-label="Highlight colors" data-i18n-aria-label="Highlight colors"><button data-color="honey" aria-label="Highlight gold" title="Gold" data-i18n-title="Gold" data-i18n-aria-label="Highlight gold"></button><button data-color="sage" aria-label="Highlight green" title="Green" data-i18n-title="Green" data-i18n-aria-label="Highlight green"></button><button data-color="lavender" aria-label="Highlight lavender" title="Lavender" data-i18n-title="Lavender" data-i18n-aria-label="Highlight lavender"></button><button data-color="rose" aria-label="Highlight pink" title="Pink" data-i18n-title="Pink" data-i18n-aria-label="Highlight pink"></button><button class="erase-highlight" data-color="none" aria-label="Remove highlight" title="Remove highlight" data-i18n-aria-label="Remove highlight" data-i18n-title="Remove highlight"><span data-icon="x"></span></button></div></div><button id="copyVerse" class="copy-verse" title="Copy verse" data-i18n-title="Copy verse"><span data-icon="copy"></span><span><span data-i18n="Copy">Copy</span></span></button></div>
@@ -160,7 +160,7 @@
           </section>
         </div>
       </div>
-      <div class="study-bottom"><span data-icon="shield-check"></span><span><span data-i18n="Word study uses Greek/Hebrew sources. AI commentary uses WEB and those sources, independently of your reading translation.">Word study uses Greek/Hebrew sources. AI commentary uses WEB and those sources, independently of your reading translation.</span></span></div>
+      <div class="study-bottom"><span data-icon="shield-check"></span><span><span data-i18n="Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.">Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.</span></span></div>
     </aside>
   </div>
 

@@ -68,7 +68,7 @@ struct SettingsView: View {
                 }
                 Section(selaText("About SELA")) {
                     Text(selaText("Scripture & Study"))
-                    Text(selaText("A quiet place to read, mark verses, and explore Greek and Hebrew."))
+                    Text(selaText("A quiet place to read, mark verses, and explore Greek, Hebrew and Aramaic."))
                     Text("\(selaText("Version")) \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0") (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"))")
                         .font(.footnote)
                 }
@@ -123,12 +123,12 @@ func selaText(_ text: String) -> String {
         "Your administrator provides this address. Leave it blank to use the included example verses. Complete chapters and original-language study require an internet connection to the server.": "Administratorul furnizează această adresă. Las-o necompletată pentru exemplele incluse. Capitolele complete și studiul textului original necesită conexiune la server.",
         "Your reading": "Lectura ta",
         "Highlights and notes stay on this device. They are not synchronized with other devices and may be removed when the app is deleted.": "Evidențierile și notițele rămân pe acest dispozitiv. Nu sunt sincronizate și se pot pierde dacă ștergi aplicația.",
-        "AI studies use the original Greek/Hebrew source and lexical data, in the language of your selected edition. English studies may also use WEB context. Licensed reading text and personal notes are not sent to the AI provider. Verify commentary against trusted scholarship.": "Studiile AI folosesc textul original grecesc sau ebraic și date lexicale, în limba versiunii selectate. Studiile englezești pot folosi și contextul WEB. Textul edițiilor licențiate și notițele personale nu sunt trimise serviciului AI. Verifică explicațiile în lucrări de specialitate.",
+        "AI studies use the original Greek/Hebrew source and lexical data, in the language of your selected edition. English studies may also use WEB context. Licensed reading text and personal notes are not sent to the AI provider. Verify commentary against trusted scholarship.": "Studiile AI folosesc textul original grecesc, ebraic sau aramaic și date lexicale, în limba versiunii selectate. Studiile englezești pot folosi și contextul WEB. Textul edițiilor licențiate și notițele personale nu sunt trimise serviciului AI. Verifică explicațiile în lucrări de specialitate.",
         "Scripture sources": "Sursele biblice",
         "Authorized Bible reading editions are supplied by YouVersion through your study server. WEB and KJV can use the existing Scripture service when YouVersion access is unavailable. Passage requests identify the Bible reference and the server application. Your notes and random device/session identifiers are not sent to Scripture providers.": "Edițiile biblice autorizate sunt furnizate de YouVersion prin serverul de studiu. WEB și KJV pot folosi sursa existentă dacă accesul YouVersion nu este disponibil. Solicitările identifică pasajul și aplicația serverului. Notițele și identificatori aleatorii ai dispozitivului sau sesiunii nu sunt trimiși furnizorilor biblici.",
         "About SELA": "Despre SELA",
         "Scripture & Study": "Scriptură și studiu",
-        "A quiet place to read, mark verses, and explore Greek and Hebrew.": "Un loc liniștit pentru a citi, a evidenția versete și a explora greaca și ebraica.",
+        "A quiet place to read, mark verses, and explore Greek, Hebrew and Aramaic.": "Un loc liniștit pentru a citi, a evidenția versete și a explora greaca, ebraica și aramaica.",
         "Settings": "Setări",
         "Cancel": "Anulează",
         "Save": "Salvează",
