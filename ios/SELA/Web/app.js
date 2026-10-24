@@ -96,6 +96,16 @@ const readerMessages={
   'Server access issue':'Problemă de acces a serverului','Reading':'Citești'
 };
 const rt=text=>uiLanguage()==='ro'?(readerMessages[text]||text):text;
+function translationOptionLabel(entry){
+  const labels={web:'WEB — World English Bible',kjv:'KJV — King James Version',
+    niv:'NIV — New International Version',ntr:'NTR — Noua Traducere Românească',
+    nasb2020:'NASB 2020 — New American Standard Bible',amp:'AMP — Amplified Bible',
+    asv:'ASV — American Standard Version',nirv:'NIrV — New International Reader’s Version'};
+  if(entry.id==='ntr')return labels.ntr+(uiLanguage()==='ro'?' (Română)':' (Romanian)');
+  if(entry.id==='niv'&&(entry.bibleId===113||/^NIVUK/iu.test(entry.abbreviation||'')))return 'NIVUK — New International Version (Anglicised)';
+  if(entry.id==='esv')return `${entry.abbreviation||'ESV'} — ${entry.name||editionNames.esv}`;
+  return labels[entry.id]||entry.name||entry.id;
+}
 function initialTranslations(){
   const defaults=['web','kjv','niv','ntr','nasb2020','amp','asv','nirv'].map(id=>({id,available:['web','kjv'].includes(id),youversionAccess:'unverified'}));
   const stored=savedJSON('sela.translationCatalog.v1',null);
@@ -127,8 +137,7 @@ async function refreshTranslationStatus(){
 function renderTranslationOptions(){
   $('translationSelect').innerHTML=state.translations.map(entry=>{
     const reason=entry.available?'':entry.youversionAccess==='not-configured'?'Setup required':entry.youversionAccess==='authentication'?'Server access issue':['not-licensed','access-denied'].includes(entry.youversionAccess)?'Access required':'Checking access';
-    const abbreviation=entry.abbreviation||({nasb2020:'NASB2020',nirv:'NIrV'})[entry.id]||entry.id.toUpperCase();
-    return `<option value="${escapeHTML(entry.id)}" ${entry.available?'':'disabled'}>${escapeHTML(abbreviation)}${entry.id==='ntr'?' · RO':''}${reason?' ('+rt(reason)+')':''}</option>`;
+    return `<option value="${escapeHTML(entry.id)}" ${entry.available?'':'disabled'}>${escapeHTML(translationOptionLabel(entry))}${reason?' ('+rt(reason)+')':''}</option>`;
   }).join('');
   $('translationSelect').value=state.translation;
 }
