@@ -63,12 +63,14 @@ projectDirPath = ""; projectRoot = ""; targets = (000000000000000000000032, 0000
 0000000000000000000000DC = {isa = PBXNativeTarget; buildConfigurationList = 0000000000000000000000DD; buildPhases = (0000000000000000000000D2, 0000000000000000000000D3, 0000000000000000000000D4); buildRules = (); dependencies = (0000000000000000000000D6); name = SELATests; productName = SELATests; productReference = 0000000000000000000000CA; productType = "com.apple.product-type.bundle.unit-test";};
 0000000000000000000000DD = {isa = XCConfigurationList; buildConfigurations = (0000000000000000000000DE, 0000000000000000000000DF); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;};
 0000000000000000000000DE = {isa = XCBuildConfiguration; baseConfigurationReference = 000000000000000000000015; buildSettings = {GENERATE_INFOPLIST_FILE = YES; PRODUCT_NAME = "$(TARGET_NAME)";
+IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 PRODUCT_BUNDLE_IDENTIFIER = "$(SELA_TEST_BUNDLE_ID)"; BUNDLE_LOADER = "$(TEST_HOST)";
 TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SELA.app/SELA"; TARGETED_DEVICE_FAMILY = "1,2";
 SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 CODE_SIGN_STYLE = Automatic;}; name = Debug;};
 0000000000000000000000DF = {isa = XCBuildConfiguration; baseConfigurationReference = 000000000000000000000015; buildSettings = {GENERATE_INFOPLIST_FILE = YES; PRODUCT_NAME = "$(TARGET_NAME)";
+IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 PRODUCT_BUNDLE_IDENTIFIER = "$(SELA_TEST_BUNDLE_ID)"; BUNDLE_LOADER = "$(TEST_HOST)";
 TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SELA.app/SELA"; TARGETED_DEVICE_FAMILY = "1,2";
 SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
