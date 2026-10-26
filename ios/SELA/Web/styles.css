@@ -25,6 +25,9 @@
 
 /* Full translation names fit on their own row on phones. */
 .reading-controls{flex-wrap:wrap}.version-control{flex:1 1 320px;min-width:0;max-width:100%}.version-control select{flex:1;width:100%;max-width:none;min-width:0;text-overflow:ellipsis}.version-control>span{flex-shrink:0}@media(max-width:700px){.version-control{flex-basis:100%}}
+
+/* Consecutive selection uses the existing word rows. */
+.passage-original{white-space:pre-line}.passage-word-label{margin:17px 0 7px}#selectedText{white-space:pre-line}
 /* BEGIN SELA DAILY */
 /* SELA 1.2: daily growth path, using the existing paper and forest palette. */
 .daily-card{padding:25px;border:1px solid #dce5d8;border-radius:17px;background:linear-gradient(135deg,#f0f4ec,#fafbf6);margin:0 0 38px;scroll-margin-top:20px;overflow-wrap:anywhere}

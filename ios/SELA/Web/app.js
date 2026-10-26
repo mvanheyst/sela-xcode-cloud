@@ -1,6 +1,7 @@
 import {requestJSON, copyText} from './api-client.js';
 const BOOK_NAMES_RO={"Genesis": "Geneza", "Exodus": "Exodul", "Leviticus": "Leviticul", "Numbers": "Numeri", "Deuteronomy": "Deuteronomul", "Joshua": "Iosua", "Judges": "Judecători", "Ruth": "Rut", "1 Samuel": "1 Samuel", "2 Samuel": "2 Samuel", "1 Kings": "1 Împărați", "2 Kings": "2 Împărați", "1 Chronicles": "1 Cronici", "2 Chronicles": "2 Cronici", "Ezra": "Ezra", "Nehemiah": "Neemia", "Esther": "Estera", "Job": "Iov", "Psalms": "Psalmii", "Proverbs": "Proverbe", "Ecclesiastes": "Eclesiastul", "Song of Solomon": "Cântarea Cântărilor", "Isaiah": "Isaia", "Jeremiah": "Ieremia", "Lamentations": "Plângerile lui Ieremia", "Ezekiel": "Ezechiel", "Daniel": "Daniel", "Hosea": "Osea", "Joel": "Ioel", "Amos": "Amos", "Obadiah": "Obadia", "Jonah": "Iona", "Micah": "Mica", "Nahum": "Naum", "Habakkuk": "Habacuc", "Zephaniah": "Țefania", "Haggai": "Hagai", "Zechariah": "Zaharia", "Malachi": "Maleahi", "Matthew": "Matei", "Mark": "Marcu", "Luke": "Luca", "John": "Ioan", "Acts": "Faptele Apostolilor", "Romans": "Romani", "1 Corinthians": "1 Corinteni", "2 Corinthians": "2 Corinteni", "Galatians": "Galateni", "Ephesians": "Efeseni", "Philippians": "Filipeni", "Colossians": "Coloseni", "1 Thessalonians": "1 Tesaloniceni", "2 Thessalonians": "2 Tesaloniceni", "1 Timothy": "1 Timotei", "2 Timothy": "2 Timotei", "Titus": "Tit", "Philemon": "Filimon", "Hebrews": "Evrei", "James": "Iacov", "1 Peter": "1 Petru", "2 Peter": "2 Petru", "1 John": "1 Ioan", "2 John": "2 Ioan", "3 John": "3 Ioan", "Jude": "Iuda", "Revelation": "Apocalipsa"};
 const ROMANIAN={"SELA — Scripture, deeply understood": "SELA — Scriptura, înțeleasă în profunzime", "SCRIPTURE & STUDY": "SCRIPTURĂ ȘI STUDIU", "YOUR SPACE": "SPAȚIUL TĂU", "Read Scripture": "Citește Scriptura", "Highlights & notes": "Evidențieri și notițe", "Search the Bible": "Caută în Biblie", "THE BIBLE": "BIBLIA", "A deeper kind of reading": "O lectură mai profundă", "Original words. Timeless context.": "Cuvinte originale. Context pentru toate timpurile.", "A QUIET MOMENT WITH THE WORD": "UN MOMENT DE LINIȘTE CU SCRIPTURA", "SCRIPTURE READING": "LECTURA SCRIPTURII", "The promise of His coming": "Promisiunea venirii Sale", "CH.": "CAP.", "Go beyond the translation": "Descoperă dincolo de traducere", "Tap any verse to uncover its original language, historical setting, and deeper meaning.": "Atinge un verset pentru a descoperi textul original, cadrul istoric și sensul său profund.", "THE WORD": "CUVÂNTUL", "Opening Scripture…": "Se deschide Scriptura…", "Read slowly. Discover deeply. Let the words dwell.": "Citește încet. Descoperă în profunzime. Lasă cuvintele să prindă rădăcini.", "YOUR COLLECTION": "COLECȚIA TA", "Saved": "Salvate", "Scripture": "Scriptura", "The verses that have spoken to you, gathered in one place.": "Versetele care ți-au vorbit, adunate într-un singur loc.", "EXPLORE THE WORD": "EXPLOREAZĂ SCRIPTURA", "Find a": "Găsește un", "passage": "pasaj", "Keyword searches use WEB. References like “2 Peter 3:10” open your selected reading translation.": "Căutarea folosește versiunea selectată. Poți introduce o trimitere precum „Ioan 3:16”.", "Search": "Caută", "Try: John 3:16 · Psalm 23 · covenant · peace": "Încearcă: Ioan 3:16 · Psalmii 23 · legământ · pace", "DIG DEEPER": "APROFUNDEAZĂ", "Verse": "Studiul", "study": "versetului", "Every word has a story.": "Fiecare cuvânt are o poveste.", "Select a verse in the reading pane to see the original Greek, Hebrew or Aramaic, word meanings, and historical context.": "Selectează un verset pentru a vedea textul original grecesc, ebraic sau aramaic, sensurile cuvintelor și contextul istoric.", "01   Read": "01   Citește", "02   Select": "02   Selectează", "03   Discover": "03   Descoperă", "MARK THIS VERSE": "EVIDENȚIAZĂ VERSETUL", "Copy": "Copiază", "Original text": "Textul original", "Meaning & context": "Sens și context", "My notes": "Notițele mele", "Greek original": "Originalul grecesc", "Hebrew original": "Originalul ebraic", "Aramaic original": "Originalul aramaic", "Hebrew / Aramaic original": "Originalul ebraic / aramaic", "Loading original text…": "Se încarcă textul original…", "Personal reflection": "Reflecție personală", "Your thoughts are saved privately in this browser.": "Gândurile tale sunt salvate doar pe acest dispozitiv.", "Notes save automatically.": "Notițele se salvează automat.", "Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.": "Analiza folosește textul original grecesc, ebraic sau aramaic. Glosările și studiul sunt generate direct în română; textul NTR nu este trimis serviciului AI.", "Read": "Citește", "Study": "Studiu", "Find a book…": "Găsește o carte…", "Filter Bible books": "Filtrează cărțile Bibliei", "Bible books": "Cărțile Bibliei", "Main navigation": "Navigare principală", "Mobile navigation": "Navigare mobilă", "Open menu": "Deschide meniul", "Search Bible": "Caută în Biblie", "Change text size": "Schimbă mărimea textului", "Previous chapter": "Capitolul anterior", "Next chapter": "Capitolul următor", "Book": "Cartea", "Chapter": "Capitolul", "Bible translation": "Traducerea Bibliei", "Search Scripture": "Caută în Scriptură", "Search for a word or reference…": "Caută un cuvânt sau o trimitere…", "What is God teaching you through this verse? Write a reflection, question, or prayer…": "Ce te învață Dumnezeu prin acest verset? Scrie o reflecție, o întrebare sau o rugăciune…", "No books found.": "Nu s-au găsit cărți.", "OLD TESTAMENT": "VECHIUL TESTAMENT", "NEW TESTAMENT": "NOUL TESTAMENT", "Read • reflect • understand": "Citește • reflectează • înțelege", "No verses available for this chapter.": "Nu sunt disponibile versete pentru acest capitol.", "Study this verse": "Studiază acest verset", "Your collection begins with a single verse.": "Colecția ta începe cu un singur verset.", "Highlight or write a note while you read.": "Evidențiază un verset sau scrie o notiță în timp ce citești.", "Tap to open this passage.": "Atinge pentru a deschide pasajul.", "Verse not available in this passage preview": "Versetul nu este disponibil în acest pasaj.", "Loading original text and word definitions…": "Se încarcă textul original și sensurile cuvintelor…", "Original-language data is currently unavailable.": "Datele textului original nu sunt disponibile acum.", "Please check your connection and retry by reselecting the verse.": "Verifică conexiunea și selectează din nou versetul.", "Lexical gloss unavailable": "Glosare lexicală indisponibilă", "parts:": "componente:", "Tap any word for its lexicon details.": "Atinge un cuvânt pentru detalii lexicale.", "No morphological tags were returned for this verse.": "Sursa nu a furnizat analiza morfologică pentru acest verset.", "Text and lexical data:": "Text și date lexicale:", "Different manuscript editions may have variant readings.": "Edițiile manuscriselor pot avea variante textuale.", "A full lexicon definition is unavailable for this token.": "Definiția lexicală completă nu este disponibilă pentru acest cuvânt.", "Not available": "Indisponibil", "Explore the original meaning": "Explorează sensul original", "Add AI-powered historical context": "Adaugă context istoric cu AI", "Generate a careful explanation of this verse, including literal translation, literary and first-century context, different interpretations, and cross-references.": "Generează în română explicația versetului, traducerea literală din original, contextul literar și istoric, interpretări și trimiteri biblice.", "The word-by-word original text is available from the Scripture source. To generate in-depth context for any passage, add your OpenAI API key to the server environment.": "Textul original este disponibil din sursa biblică. Glosările românești și explicațiile necesită activarea serviciului AI pe server.", "Generate verse study": "Generează studiul versetului", "See README.md for optional AI setup.": "Activează serviciul de studiu pe server.", "Included example commentary · not an AI-generated manuscript analysis": "Comentariu exemplificativ inclus", "AI-generated study · verify interpretive claims with trusted commentaries.": "Studiu generat cu AI · verifică interpretările în comentarii de încredere.", "A direct translation": "O traducere literală din original", "What the author is saying": "Ce spune autorul", "Key expressions": "Expresii-cheie", "Historical setting": "Cadrul istoric", "Literary context": "Contextul literar", "Interpretations & nuances": "Interpretări și nuanțe", "Connected Scripture": "Trimiteri biblice", "Reflect & apply": "Reflectează și aplică", "Textual / translation notes": "Observații textuale și de traducere", "Regenerate explanation": "Regenerează explicația", "Generate fuller explanation": "Generează o explicație detaliată", "Lexicon glosses are not automatically a complete contextual translation. AI commentary may contain mistakes and should be checked against the text and reputable biblical scholarship.": "Glosările lexicale nu reprezintă automat o traducere contextuală completă. Comentariul AI poate conține erori; verifică-l în text și în lucrări biblice de încredere.", "Add an API key on the server to enable AI studies": "Activează serviciul AI pe server pentru studii.", "Creating study…": "Se generează studiul…", "Study ready": "Studiul este gata", "Try again": "Reîncearcă", "Enter a reference or a word": "Introdu o trimitere sau un cuvânt", "Searching Scripture…": "Se caută în Scriptură…", "matching verses in": "versete găsite în", "(showing first results)": "(primele rezultate)", "No verses found. Try another phrase.": "Nu s-au găsit versete. Încearcă altă expresie.", "Unknown": "Necunoscut", "Open verse": "Deschide versetul", "Highlight removed": "Evidențiere eliminată", "Verse highlighted": "Verset evidențiat", "Verse copied": "Verset copiat", "Clipboard requires a secure connection": "Copierea necesită o conexiune securizată", "Saved on this device ✓": "Salvat pe acest dispozitiv ✓", "Select a verse to begin studying": "Selectează un verset pentru a începe studiul", "Browser storage is unavailable": "Stocarea locală nu este disponibilă", "Study unavailable": "Studiul nu este disponibil", "Unable to load": "Nu se poate încărca", "Please try again or choose another translation.": "Reîncearcă sau alege altă traducere.", "Verse text:": "Mărimea textului:", "unavailable": "indisponibil", "An error occurred. Check your connection and try again.": "Serviciul nu este disponibil momentan. Verifică conexiunea și reîncearcă.", "The study server took too long to respond. Please try again.": "Serverul de studiu nu a răspuns la timp. Reîncearcă.", "Highlight color": "Culoarea evidențierii", "Remove highlight": "Elimină evidențierea", "Honey": "Auriu", "Sage": "Verde", "Lavender": "Lavandă", "Rose": "Roz", "Close study": "Închide studiul", "Dismiss": "Închide", "Search by reference or keyword": "Caută după trimitere sau cuvânt", "Search uses the selected translation. References such as “John 3:16” open that passage.": "Căutarea folosește versiunea selectată. O trimitere precum „Ioan 3:16” deschide pasajul.", "Dismiss tip": "Închide sugestia", "Verse, reference, or phrase…": "Verset, trimitere sau expresie…", "Verse study panel": "Panoul de studiu al versetului", "Highlight colors": "Culorile evidențierii", "Highlight gold": "Evidențiază cu auriu", "Gold": "Auriu", "Highlight green": "Evidențiază cu verde", "Green": "Verde", "Highlight lavender": "Evidențiază cu lavandă", "Highlight pink": "Evidențiază cu roz", "Pink": "Roz", "Copy verse": "Copiază versetul", "Study sections": "Secțiunile studiului", "Source": "Sursa"};
+Object.assign(ROMANIAN,{"Select up to 20 consecutive verses.": "Selectează cel mult 20 de versete consecutive.", "Select consecutive verses to study this passage.": "Selectează versete consecutive pentru a studia pasajul.", "MARK SELECTED VERSES": "EVIDENȚIAZĂ VERSETELE SELECTATE", "Study the full selected passage, including its original wording and surrounding context.": "Studiază întregul pasaj selectat, inclusiv formularea originală și contextul învecinat.", "Update the study server to generate passage studies.": "Actualizează serverul de studiu pentru a genera studii de pasaje."});
 function localize(text,language){return language==='ro'?(ROMANIAN[text]||text):text;}
 
 const ICONS = {
@@ -76,7 +77,7 @@ const PREVIEW_COMMENTARY = {
   }
 };
 const state = {
-  book:'2 Peter', chapter:3, translation:savedJSON('sela.translation','web'), selected:null, verses:[],
+  book:'2 Peter', chapter:3, translation:savedJSON('sela.translation','web'), selected:null, selectedVerses:[], originalLoadingKey:null, passageSupported:false, verses:[],
   translations:initialTranslations(), loaded:null, catalogPending:null,
   books:fallbackBooks, view:'read', aiEnabled:false, original:null, tab:'words',
   selectedToken:null, highlight:savedJSON('sela.highlights',{}), notes:savedJSON('sela.notes',{}),
@@ -128,7 +129,7 @@ function acceptTranslationStatus(entries){
 async function refreshTranslationStatus(){
   if(state.catalogPending)return state.catalogPending;
   state.catalogPending=(async()=>{
-    try{const status=await api('/api/status');state.aiEnabled=!!status.aiEnabled;if(Array.isArray(status.translations))acceptTranslationStatus(status.translations);}
+    try{const status=await api('/api/status');state.aiEnabled=!!status.aiEnabled;state.passageSupported=status.studyCapabilities?.passageSelection===true;if(Array.isArray(status.translations))acceptTranslationStatus(status.translations);}
     catch{ /* Keep verified UI metadata. The server still enforces actual access. */ }
     finally{state.catalogPending=null;}
   })();
@@ -168,7 +169,94 @@ function translationCredits(data,target='translationCredit') {
   el.innerHTML=`${escapeHTML(data?.copyright||'')}${data?.copyright&&links?'<br>':''}${links}`;
 }
 
-const refKey = (book = state.book, chapter = state.chapter, verse = state.selected) => `${book} ${chapter}:${verse}`;
+// Selection is transient; existing notes/study keys remain unchanged for one verse.
+const MAX_SELECTED_VERSES=20;
+const originalRequests=new Map(),originalCache=new Map();
+function selectionNumbers(){return state.selectedVerses.length?[...state.selectedVerses]:(state.selected?[state.selected]:[]);}
+function isPassage(){return selectionNumbers().length>1;}
+function completeSelection(numbers=selectionNumbers()){
+  return numbers.length>0&&numbers.length<=MAX_SELECTED_VERSES&&numbers.every((n,i)=>Number.isInteger(n)&&n>0&&(!i||n===numbers[i-1]+1));
+}
+function hasStudySelection(){return state.selected!==null&&completeSelection();}
+function compactStudy(){return window.matchMedia?.('(max-width: 1040px)').matches??false;}
+function refKey(...args){
+  const [book=state.book,chapter=state.chapter,verse=state.selected]=args;
+  const end=args.length?verse:selectionNumbers().at(-1);
+  return `${book} ${chapter}:${verse}${end>verse?'-'+end:''}`;
+}
+function updateSelectionLabel(){
+  const numbers=selectionNumbers(),button=$('mobileStudy'),label=button?.querySelector?.('[data-i18n="Study"]');
+  if(label)label.textContent=t('Study')+(numbers.length>1?` (${numbers.length})`:'');
+  button?.setAttribute('aria-disabled',String(!hasStudySelection()));
+  const mark=document.querySelector?.('[data-i18n="MARK THIS VERSE"]');
+  if(mark)mark.textContent=t(isPassage()?'MARK SELECTED VERSES':'MARK THIS VERSE');
+}
+async function toggleVerse(number){
+  if(!displayedMatches()||!state.verses.some(v=>Number(v.verse)===Number(number)))return;
+  const selected=new Set(selectionNumbers());number=Number(number);
+  if(selected.has(number))selected.delete(number);
+  else {
+    if(selected.size>=MAX_SELECTED_VERSES)return toast(t('Select up to 20 consecutive verses.'));
+    selected.add(number);
+  }
+  return updateSelection([...selected].sort((a,b)=>a-b),{open:false,keepTab:true});
+}
+async function selectionOriginal(numbers,serial){
+  // Reuse the existing single-verse source and Romanian annotation endpoint.
+  // Bound concurrency and stop starting work for a superseded selection.
+  const book=state.book,chapter=state.chapter,translation=state.translation,results=new Array(numbers.length);
+  let cursor=0,failed=false;
+  async function worker(){
+    while(!failed&&cursor<numbers.length&&serial===state.studySerial){
+      const index=cursor++,verse=numbers[index];
+      const path='/api/original?'+new URLSearchParams({book,chapter,verse,translation});
+      const cached=originalCache.get(path);
+      if(cached&&Date.now()-cached.time<5*60_000){results[index]=cached.value;continue;}
+      let pending=originalRequests.get(path);
+      if(!pending){
+        pending=api(path).then(value=>{
+          if(typeof value.language!=='string'||typeof value.text!=='string'||!Array.isArray(value.words))throw new Error('Original-language data is currently unavailable.');
+          if(value.reference&&value.reference!==`${book} ${chapter}:${verse}`)throw new Error('The original-language service returned a different verse.');
+          if(originalCache.size>=80)originalCache.delete(originalCache.keys().next().value);
+          originalCache.set(path,{value,time:Date.now()});return value;
+        }).finally(()=>originalRequests.delete(path));
+        originalRequests.set(path,pending);
+      }
+      try{results[index]=await pending;}catch(error){failed=true;throw error;}
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(2,numbers.length)},()=>worker()));
+  if(serial!==state.studySerial)return null;
+  if(results.length===1)return results[0];
+  const languages=[...new Set(results.flatMap(o=>o.languages||String(o.language).split(' / ')))];
+  return {...results[0],isPassage:true,reference:refKey(),
+    language:languages.length===1?languages[0]:'Hebrew / Aramaic',languages,
+    text:results.map((o,i)=>`${numbers[i]}. ${o.text}`).join('\n'),
+    words:results.flatMap((o,i)=>(o.words||[]).map(w=>({...w,verse:numbers[i]}))),
+    lexicon:Object.assign({},...results.map(o=>o.lexicon||{})),
+    attribution:[...new Map(results.flatMap(o=>o.attribution||[]).map(a=>[JSON.stringify(a),a])).values()],
+    annotationNotice:[...new Set(results.map(o=>o.annotationNotice).filter(Boolean))].join(' ')
+  };
+}
+async function loadSelectedOriginal(){
+  if(!hasStudySelection())return;
+  const serial=state.studySerial,numbers=selectionNumbers(),key=studyKey();
+  if(state.original||state.originalLoadingKey===key)return;
+  state.originalLoadingKey=key;
+  try {
+    const original=await selectionOriginal(numbers,serial);
+    if(serial!==state.studySerial||!original)return;
+    state.original=original;renderOriginal();
+  } catch(error){
+    if(serial!==state.studySerial)return;
+    $('originalContent').innerHTML=`<div class="status-note">${t('Original-language data is currently unavailable.')} ${escapeHTML(errorText(error))} ${t('Please check your connection and retry by reselecting the verse.')}</div>`;
+  } finally {if(serial===state.studySerial)state.originalLoadingKey=null;}
+}
+async function openSelectedStudy(){
+  if(!hasStudySelection()){toast(t(selectionNumbers().length?'Select consecutive verses to study this passage.':'Select a verse to begin studying'));showView('read');return;}
+  openPanel();await loadSelectedOriginal();
+}
+
 const keyForChapter = () => `${state.book}:${state.chapter}`;
 function toast(message) {
   const el = $('toast'); el.textContent = message; el.classList.remove('hidden');
@@ -181,8 +269,11 @@ function uiLanguage(){return state.translation==='ntr'?'ro':'en';}
 const t=text=>localize(text,uiLanguage());
 const bookName=name=>uiLanguage()==='ro'?(BOOK_NAMES_RO[name]||name):name;
 const fold=text=>String(text).normalize('NFD').replace(/[\u0300-\u036f]/gu,'').toLowerCase();
-function displayReference(book=state.book,chapter=state.chapter,verse=state.selected){return `${bookName(book)} ${chapter}${verse?':'+verse:''}`;}
-function displayRef(text){const ref=parseReference(text);return ref?displayReference(ref.book,ref.chapter,ref.verse):text;}
+function displayReference(...args){
+  const [book=state.book,chapter=state.chapter,verse=state.selected,end=args.length?verse:selectionNumbers().at(-1)]=args;
+  return `${bookName(book)} ${chapter}${verse?':'+verse:''}${end>verse?'–'+end:''}`;
+}
+function displayRef(text){const ref=parseReference(text);return ref?displayReference(ref.book,ref.chapter,ref.verse,ref.endVerse):text;}
 function studyKey(ref=refKey()){return `${state.translation}:${ref}`;}
 function errorText(error){return uiLanguage()==='ro'?(/[ăâîșțĂÂÎȘȚ]/u.test(error.message||'')?error.message:t('An error occurred. Check your connection and try again.')):error.message;}
 function applyLocale(){
@@ -240,7 +331,7 @@ async function loadChapter(){
   state.passageAbort?.abort();
   const ctrl=new AbortController();state.passageAbort=ctrl;
   const target={book:state.book,chapter:state.chapter,translation:state.translation};
-  state.selected=null;state.original=null;state.selectedToken=null;state.studySerial++;
+  state.selected=null;state.selectedVerses=[];state.original=null;state.originalLoadingKey=null;state.selectedToken=null;state.studySerial++;updateSelectionLabel();
   closePanel();updateNavigation();renderTranslationOptions();
   const label=state.translations.find(e=>e.id===target.translation)?.abbreviation||target.translation.toUpperCase();
   const retained=state.verses.length?rt('Your current chapter is still here.'):'';
@@ -305,7 +396,7 @@ function renderVerses(){
   $('verseList').innerHTML=state.verses.map(v=>{
     const ref=refKey(shown.book,shown.chapter,v.verse),color=state.highlight[ref];
     const number=v.verseEnd&&v.verseEnd!==v.verse?`${v.verse}–${v.verseEnd}`:v.verse;
-    return `<button class="verse ${color?'highlight-'+escapeHTML(color):''} ${Number(state.selected)===Number(v.verse)?'selected':''}" ${displayedMatches()?'':'disabled'} data-verse="${Number(v.verse)}" aria-label="${t('Study this verse')}: ${escapeHTML(displayReference(shown.book,shown.chapter,v.verse))}"><span class="verse-number">${number}</span><span class="verse-text">${escapeHTML(v.text)}</span></button>`;
+    return `<button class="verse ${color?'highlight-'+escapeHTML(color):''} ${selectionNumbers().includes(Number(v.verse))?'selected':''}" ${displayedMatches()?'':'disabled'} data-verse="${Number(v.verse)}" aria-pressed="${selectionNumbers().includes(Number(v.verse))}" aria-label="${t('Study this verse')}: ${escapeHTML(displayReference(shown.book,shown.chapter,v.verse))}"><span class="verse-number">${number}</span><span class="verse-text">${escapeHTML(v.text)}</span></button>`;
   }).join('');
 }
 function showView(view) {
@@ -330,21 +421,23 @@ function renderSaved() {
 }
 function parseReference(input) {
   const text=input.trim();
-  const match=text.match(/^(.+?)\s+(\d{1,3})(?:\s*:\s*(\d{1,3}))?$/i);
+  const match=text.match(/^(.+?)\s+(\d{1,3})(?:\s*:\s*(\d{1,3})(?:\s*[-–]\s*(\d{1,3}))?)?$/i);
   if (!match) return null;
   const name=match[1].trim();
   const aliases={'psalmul':'Psalms','psalmii':'Psalms','psalm':'Psalms','ps':'Psalms','song of songs':'Song of Solomon'};
   const canonical=state.books.find(b=>fold(b.name)===fold(name)||fold(BOOK_NAMES_RO[b.name])===fold(name)|| b.name.toLowerCase()===aliases[name.toLowerCase()]?.toLowerCase());
   const chapter=Number(match[2]), verse=match[3] ? Number(match[3]) : null;
   if (!canonical || chapter<1 || chapter>canonical.chapters || (verse!==null && (verse<1 || verse>176))) return null;
-  return {book:canonical.name,chapter,verse};
+  const endVerse=match[4]?Number(match[4]):verse;
+  if(endVerse!==null&&(endVerse<verse||endVerse>176||endVerse-verse+1>MAX_SELECTED_VERSES))return null;
+  return {book:canonical.name,chapter,verse,...(endVerse>verse?{endVerse}:{})};
 }
-async function navigate(book, chapter, verse = null) {
+async function navigate(book, chapter, verse = null, endVerse = verse) {
   state.book=book;state.chapter=Number(chapter);showView('read');renderBooks($('bookFilter').value);await loadChapter();
   if (verse!==null&&state.book===book&&state.chapter===Number(chapter)&&displayedMatches()) {
     const isThere=state.verses.some(v=>Number(v.verse)===Number(verse));
     if (isThere) {
-      await selectVerse(verse);
+      await selectVerse(verse,endVerse);
       const el=document.querySelector(`[data-verse="${Number(verse)}"]`);
       el?.scrollIntoView({behavior:'smooth',block:'center'});
     } else toast(t('Verse not available in this passage preview'));
@@ -378,31 +471,45 @@ function switchTab(tab) {
     b.classList.toggle('active',name===tab);b.setAttribute('aria-selected',String(name===tab));
   }
 }
-async function selectVerse(number) {
+async function selectVerse(number,endVerse=number){
+  number=Number(number);endVerse=Number(endVerse);
+  if(!Number.isInteger(number)||!Number.isInteger(endVerse)||endVerse<number||endVerse-number>=MAX_SELECTED_VERSES)return;
+  const numbers=Array.from({length:endVerse-number+1},(_,i)=>number+i);
+  if(numbers.some(n=>!state.verses.some(v=>Number(v.verse)===n)))return toast(t('Verse not available in this passage preview'));
+  return updateSelection(numbers,{open:true,keepTab:false});
+}
+async function updateSelection(numbers,{open=false,keepTab=false}={}){
   if(!displayedMatches())return;
-  const verse=state.verses.find(v=>Number(v.verse)===Number(number));
-  if (!verse) return;
-  state.selected=Number(number);state.original=null;state.selectedToken=null;renderDailyFlow();
-  const serial=++state.studySerial;
-  renderVerses(); $('studyEmpty').classList.add('hidden');$('studyContent').classList.remove('hidden');
+  state.selectedVerses=numbers;state.selected=completeSelection(numbers)?numbers[0]:null;
+  state.original=null;state.originalLoadingKey=null;state.selectedToken=null;++state.studySerial;
+  renderVerses();updateSelectionLabel();renderDailyFlow();
+  if(!hasStudySelection()){
+    $('studyEmpty').classList.remove('hidden');$('studyContent').classList.add('hidden');
+    const caption=$('studyEmpty').querySelector?.('p');
+    if(caption)caption.textContent=t(numbers.length?'Select consecutive verses to study this passage.':'Select a verse in the reading pane to see the original Greek, Hebrew or Aramaic, word meanings, and historical context.');
+    $('selectedText').textContent='';$('selectedReference').textContent='';
+    $('originalContent').innerHTML='';$('meaningContent').innerHTML='';$('noteInput').value='';
+    closePanel();if(numbers.length)toast(t('Select consecutive verses to study this passage.'));return;
+  }
+  $('studyEmpty').classList.add('hidden');$('studyContent').classList.remove('hidden');
   $('selectedReference').textContent=displayReference();$('selectedVersion').textContent=editionAbbreviation();
-  $('selectedText').textContent=verse.text;
-  $('noteInput').value=state.notes[refKey()]||''; $('noteStatus').textContent=t('Notes save automatically.');
-  renderPalette();switchTab('words');
+  $('selectedText').textContent=numbers.map(n=>{
+    const text=state.verses.find(v=>Number(v.verse)===n).text;return numbers.length>1?`${n}. ${text}`:text;
+  }).join('\n');
+  $('noteInput').value=state.notes[refKey()]||'';$('noteStatus').textContent=t('Notes save automatically.');
+  renderPalette();if(!keepTab)switchTab('words');
   $('originalHeading').textContent=t('Original text');
   $('originalContent').innerHTML=`<div class="section-loading"><span class="spinner"></span> ${t('Loading original text and word definitions…')}</div>`;
-  renderMeaning();openPanel(); $('studyScroller').scrollTop=0;
-  try {
-    const params=new URLSearchParams({book:state.book,chapter:state.chapter,verse:state.selected,translation:state.translation});
-    const original=await api(`/api/original?${params}`);
-    if(serial!==state.studySerial)return;
-    state.original=original;renderOriginal();
-  } catch(error) {
-    if(serial!==state.studySerial)return;
-    $('originalContent').innerHTML=`<div class="status-note">${t('Original-language data is currently unavailable.')} ${escapeHTML(errorText(error))} ${t('Please check your connection and retry by reselecting the verse.')}</div>`;
-  }
+  renderMeaning();
+  if(open){openPanel();$('studyScroller').scrollTop=0;}
+  else if(compactStudy())closePanel();
+  if(open||!compactStudy())await loadSelectedOriginal();
 }
-function renderPalette(){document.querySelectorAll('#highlightPalette button').forEach(btn=>btn.classList.toggle('active',(state.highlight[refKey()]||'none')===btn.dataset.color))}
+function renderPalette(){
+  const colors=selectionNumbers().map(n=>state.highlight[refKey(state.book,state.chapter,n)]||'none');
+  const color=colors.length&&colors.every(c=>c===colors[0])?colors[0]:null;
+  document.querySelectorAll('#highlightPalette button').forEach(btn=>btn.classList.toggle('active',color===btn.dataset.color));
+}
 function renderOriginal() {
   const orig=state.original;if(!orig)return;
   state.selectedToken=null;
@@ -413,13 +520,14 @@ function renderOriginal() {
     const gloss=w.gloss||entry.gloss||'';
     const languageNote=orig.language==='Hebrew / Aramaic'&&w.sourceLanguage?` · ${t(w.sourceLanguage+' original')}`:'';
     const parts=Array.isArray(w.parts)&&w.parts.length?` · ${t('parts:')} ${w.parts.map(p=>[p.surface,p.gloss].filter(Boolean).join(' = ')).join(' / ')}`:'';
-    return `<div class="word-item"><button type="button" class="word-row" id="word-token-${i}" data-token="${i}" aria-expanded="false" aria-controls="word-detail-${i}"><div><div class="word-original" ${isHebrew?'dir="rtl"':''}>${escapeHTML(w.surface)}</div><div class="word-translit">${escapeHTML(entry.transliteration||w.strong||'—')}</div></div><div><div class="word-gloss">${escapeHTML(gloss||t('Lexical gloss unavailable'))}</div><div class="word-morph">${escapeHTML([w.strong,w.morph].filter(Boolean).join(' · ')+parts+languageNote)}</div></div></button><div id="word-detail-${i}" class="word-inline-detail hidden" role="region" aria-labelledby="word-token-${i}"></div></div>`;
+    const boundary=orig.isPassage&&(i===0||orig.words[i-1].verse!==w.verse)?`<div class="source-label passage-word-label">${escapeHTML(displayReference(state.book,state.chapter,w.verse))}</div>`:'';
+    return `${boundary}<div class="word-item"><button type="button" class="word-row" id="word-token-${i}" data-token="${i}" aria-expanded="false" aria-controls="word-detail-${i}"><div><div class="word-original" ${isHebrew?'dir="rtl"':''}>${escapeHTML(w.surface)}</div><div class="word-translit">${escapeHTML(entry.transliteration||w.strong||'—')}</div></div><div><div class="word-gloss">${escapeHTML(gloss||t('Lexical gloss unavailable'))}</div><div class="word-morph">${escapeHTML([w.strong,w.morph].filter(Boolean).join(' · ')+parts+languageNote)}</div></div></button><div id="word-detail-${i}" class="word-inline-detail hidden" role="region" aria-labelledby="word-token-${i}"></div></div>`;
   }).join('');
   const attribution=(orig.attribution||[]).map(a=>{
     try{if(new URL(a.url).protocol==='https:')return `<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(a.name||a.id)}</a> (${escapeHTML(a.license||'')})`;}catch{}
     return escapeHTML(a.name||a.id);
   }).join(' · ');
-  $('originalContent').innerHTML=`<div class="original-text" ${isHebrew?'dir="rtl"':''}>${escapeHTML(orig.text)}</div><div class="source-label">${escapeHTML(orig.edition)} · ${t('Tap any word for its lexicon details.')}</div>${orig.annotationNotice?`<div class="source-label">${escapeHTML(orig.annotationNotice)}</div>`:''}<div class="word-table">${words||`<p class="source-label">${t('No morphological tags were returned for this verse.')}</p>`}</div><div class="source-credit">${t('Text and lexical data:')} ${attribution||'Bible API / eBible.org'}. ${t('Different manuscript editions may have variant readings.')}</div>`;
+  $('originalContent').innerHTML=`<div class="original-text${orig.isPassage?' passage-original':''}" ${isHebrew?'dir="rtl"':''}>${escapeHTML(orig.text)}</div><div class="source-label">${escapeHTML(orig.edition)} · ${t('Tap any word for its lexicon details.')}</div>${orig.annotationNotice?`<div class="source-label">${escapeHTML(orig.annotationNotice)}</div>`:''}<div class="word-table">${words||`<p class="source-label">${t('No morphological tags were returned for this verse.')}</p>`}</div><div class="source-credit">${t('Text and lexical data:')} ${attribution||'Bible API / eBible.org'}. ${t('Different manuscript editions may have variant readings.')}</div>`;
 }
 function selectToken(index) {
   const word=state.original?.words?.[index];if(!word||!Number.isInteger(index))return;
@@ -438,7 +546,7 @@ function block(title, content) {return `<div class="study-block"><h4>${escapeHTM
 function renderMeaning() {
   const ref=refKey(),key=studyKey(ref),cached=state.studies[key]; const study=(cached&&(uiLanguage()==='en'||cached.language==='ro')?cached:null) || (uiLanguage()==='en'?PREVIEW_COMMENTARY[ref]:null);
   if (!study) {
-    $('meaningContent').innerHTML=`<div class="ai-cta"><strong>${state.aiEnabled?t('Explore the original meaning'):t('Add AI-powered historical context')}</strong><p>${state.aiEnabled?t('Generate a careful explanation of this verse, including literal translation, literary and first-century context, different interpretations, and cross-references.'):t('The word-by-word original text is available from the Scripture source. To generate in-depth context for any passage, add your OpenAI API key to the server environment.')}</p>${state.aiEnabled?`<button class="primary-btn" id="generateStudy">✦ &nbsp; ${t('Generate verse study')}</button>`:`<span class="source-label">${t('See README.md for optional AI setup.')}</span>`}</div>`;
+    $('meaningContent').innerHTML=`<div class="ai-cta"><strong>${state.aiEnabled?t('Explore the original meaning'):t('Add AI-powered historical context')}</strong><p>${state.aiEnabled?t(isPassage()?'Study the full selected passage, including its original wording and surrounding context.':'Generate a careful explanation of this verse, including literal translation, literary and first-century context, different interpretations, and cross-references.'):t('The word-by-word original text is available from the Scripture source. To generate in-depth context for any passage, add your OpenAI API key to the server environment.')}</p>${state.aiEnabled?`<button class="primary-btn" id="generateStudy">✦ &nbsp; ${t('Generate verse study')}</button>`:`<span class="source-label">${t('See README.md for optional AI setup.')}</span>`}</div>`;
     return;
   }
   let html='';
@@ -456,11 +564,15 @@ function renderMeaning() {
 }
 async function generateStudy() {
   if(!state.aiEnabled)return toast(t('Add an API key on the server to enable AI studies'));
-  const button=$('generateStudy'),ref=refKey(),key=studyKey(ref),serial=state.studySerial,translation=state.translation;
+  if(!hasStudySelection())return;
+  const passage=isPassage();
+  if(passage&&!state.passageSupported)return toast(t('Update the study server to generate passage studies.'));
+  const button=$('generateStudy'),ref=refKey(),key=studyKey(ref),serial=state.studySerial,translation=state.translation,endVerse=selectionNumbers().at(-1);
   if(button){button.disabled=true;button.textContent=t('Creating study…');}
   try {
-    const data=await api('/api/study',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({book:state.book,chapter:state.chapter,verse:state.selected,translation})});
+    const data=await api('/api/study',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({book:state.book,chapter:state.chapter,verse:state.selected,...(passage?{endVerse}:{}),translation})});
     if(data.language!==(translation==='ntr'?'ro':'en'))throw new Error(t('An error occurred. Check your connection and try again.'));
+    if(passage&&data.reference!==ref)throw new Error(t('Update the study server to generate passage studies.'));
     state.studies[key]=data;saveJSON('sela.studies',state.studies);
     if(serial===state.studySerial)renderMeaning();
     toast(t('Study ready'));
@@ -469,7 +581,7 @@ async function generateStudy() {
 async function performSearch(query) {
   const term=query.trim();if(!term){toast(t('Enter a reference or a word'));return;}
   const ref=parseReference(term);
-  if(ref){await navigate(ref.book,ref.chapter,ref.verse);return;}
+  if(ref){await navigate(ref.book,ref.chapter,ref.verse,ref.endVerse);return;}
   const translation=state.translation;
   $('searchResults').innerHTML=`<div class="loading-passage"><span class="spinner"></span> ${t('Searching Scripture…')}</div>`;
   translationCredits(null,'searchCredit');
@@ -495,25 +607,26 @@ function bindEvents() {
   $('translationSelect').addEventListener('change',e=>{state.translation=e.target.value;saveJSON('sela.translation',state.translation);renderSaved();$('searchResults').innerHTML='';translationCredits(null,'searchCredit');loadChapter();});
   $('prevChapter').addEventListener('click',()=>nextChapter(-1));
   $('nextChapter').addEventListener('click',()=>nextChapter(1));
-  $('verseList').addEventListener('click',e=>{const btn=e.target.closest('[data-verse]');if(btn)selectVerse(btn.dataset.verse);});
-  $('highlightPalette').addEventListener('click',e=>{const btn=e.target.closest('[data-color]');if(!btn||!state.selected)return;const ref=refKey();if(btn.dataset.color==='none')delete state.highlight[ref];else state.highlight[ref]=btn.dataset.color;saveJSON('sela.highlights',state.highlight);renderPalette();renderVerses();renderSaved();toast(btn.dataset.color==='none'?t('Highlight removed'):t('Verse highlighted'));});
+  $('verseList').addEventListener('click',e=>{const btn=e.target.closest('[data-verse]');if(btn)void toggleVerse(btn.dataset.verse);});
+  $('highlightPalette').addEventListener('click',e=>{const btn=e.target.closest('[data-color]');if(!btn||!state.selected)return;for(const n of selectionNumbers()){const ref=refKey(state.book,state.chapter,n);if(btn.dataset.color==='none')delete state.highlight[ref];else state.highlight[ref]=btn.dataset.color;}saveJSON('sela.highlights',state.highlight);renderPalette();renderVerses();renderSaved();toast(btn.dataset.color==='none'?t('Highlight removed'):t('Verse highlighted'));});
   $('copyVerse').addEventListener('click',async()=>{
+    if(!hasStudySelection())return;
     const text=`${displayReference()} (${editionAbbreviation()}) — ${$('selectedText').textContent}`;
     try{await copyText(text);toast(t('Verse copied'));}catch{toast(t('Clipboard requires a secure connection'));}
   });
   document.querySelectorAll('.study-tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
   $('originalContent').addEventListener('click',e=>{const token=e.target.closest('[data-token]');if(token)selectToken(Number(token.dataset.token));});
-  $('meaningContent').addEventListener('click',e=>{if(e.target.closest('#generateStudy'))generateStudy();const ref=e.target.closest('[data-ref]');if(ref){const parsed=parseReference(ref.dataset.ref);if(parsed)navigate(parsed.book,parsed.chapter,parsed.verse);}});
+  $('meaningContent').addEventListener('click',e=>{if(e.target.closest('#generateStudy'))generateStudy();const ref=e.target.closest('[data-ref]');if(ref){const parsed=parseReference(ref.dataset.ref);if(parsed)navigate(parsed.book,parsed.chapter,parsed.verse,parsed.endVerse);}});
   $('noteInput').addEventListener('input',e=>{if(!state.selected)return;const ref=refKey();if(e.target.value.trim())state.notes[ref]=e.target.value;else delete state.notes[ref];saveJSON('sela.notes',state.notes);$('noteStatus').textContent=t('Saved on this device ✓');$('savedCount').textContent=new Set([...Object.keys(state.highlight),...Object.keys(state.notes)]).size;});
-  $('savedList').addEventListener('click',e=>{const btn=e.target.closest('[data-ref]');const ref=btn&&parseReference(btn.dataset.ref);if(ref)navigate(ref.book,ref.chapter,ref.verse);});
-  $('searchResults').addEventListener('click',e=>{const btn=e.target.closest('[data-ref]');const ref=btn&&parseReference(btn.dataset.ref);if(ref)navigate(ref.book,ref.chapter,ref.verse);});
+  $('savedList').addEventListener('click',e=>{const btn=e.target.closest('[data-ref]');const ref=btn&&parseReference(btn.dataset.ref);if(ref)navigate(ref.book,ref.chapter,ref.verse,ref.endVerse);});
+  $('searchResults').addEventListener('click',e=>{const btn=e.target.closest('[data-ref]');const ref=btn&&parseReference(btn.dataset.ref);if(ref)navigate(ref.book,ref.chapter,ref.verse,ref.endVerse);});
   $('searchForm').addEventListener('submit',e=>{e.preventDefault();performSearch($('searchInput').value);});
   $('dismissBanner').addEventListener('click',()=>{$('insightBanner').classList.add('hidden');localStorage.setItem('sela.bannerDismissed','true');});
   $('fontButton').addEventListener('click',()=>{state.fontSize=state.fontSize>=24?17:state.fontSize+1;document.documentElement.style.setProperty('--reader-font',`${state.fontSize}px`);localStorage.setItem('sela.fontsize',state.fontSize);toast(`${t('Verse text:')} ${state.fontSize}px`);});
   $('navRead').addEventListener('click',()=>showView('read'));$('navSaved').addEventListener('click',()=>showView('saved'));$('navSearch').addEventListener('click',()=>showView('search'));
   $('mobileRead').addEventListener('click',()=>{showView('read');closePanel();});$('mobileSaved').addEventListener('click',()=>{showView('saved');closePanel();});$('mobileSearch').addEventListener('click',()=>{showView('search');closePanel();});
   $('searchButton').addEventListener('click',()=>{closePanel();showView('search');});
-  $('mobileStudy').addEventListener('click',()=>{if(!state.selected){toast(t('Select a verse to begin studying'));showView('read');}else openPanel();});
+  $('mobileStudy').addEventListener('click',()=>{void openSelectedStudy();});
   $('closeStudy').addEventListener('click',closePanel);
   $('menuButton').addEventListener('click',openSidebar);
   $('mobileBackdrop').addEventListener('click',()=>{closePanel();closeSidebar();});
@@ -948,7 +1061,7 @@ function renderDailyFlow(){
     continuation.addEventListener('click',()=>{closePanel();setDailyStep(Math.min(4,dailyJourney().step+1));$('dailyVerseCard').scrollIntoView?.({behavior:'auto',block:'start'});});
   }
   if(continuation){
-    const ref=dailyReference(currentDailyLesson().entry.reference),isDaily=state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse;
+    const ref=dailyReference(currentDailyLesson().entry.reference),isDaily=state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse&&!isPassage();
     continuation.classList.toggle('hidden',!isDaily||!d.open||![1,2].includes(j.step));
     continuation.textContent=`${dt('Continue daily study')}: ${dt(DAILY_STEPS[Math.min(4,j.step+1)])} →`;
   }
@@ -985,7 +1098,7 @@ function renderDailyJournal(){
 }
 async function openDailyTool(mode){
   const ordinal=dailyState.selected,ref=dailyReference(currentDailyLesson().entry.reference);
-  if(state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse){openPanel();switchTab(mode==='meaning'?'meaning':'words');}
+  if(state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse&&!isPassage()){openPanel();switchTab(mode==='meaning'?'meaning':'words');}
   else await openDailyPassage(currentDailyLesson().entry.reference,mode);
   if(dailyState.selected!==ordinal)return;dailyState.open=true;renderDaily();
 }
@@ -1007,7 +1120,7 @@ async function refreshDaily(force=false,now=new Date()){
 function setDailyOpen(open){if(!dailyState)return;dailyState.open=open;dailySeen();renderDaily();}
 async function openDailyPassage(reference,mode='study'){
   const ref=dailyReference(reference);setDailyOpen(false);await navigate(ref.book,ref.chapter,mode==='context'?null:ref.verse);
-  if(state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse){if(mode==='notes')switchTab('notes');if(mode==='meaning')switchTab('meaning');}
+  if(state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse&&!isPassage()){if(mode==='notes')switchTab('notes');if(mode==='meaning')switchTab('meaning');}
 }
 function initDaily(){
   if(!$('dailyVerseCard'))return;
