@@ -980,7 +980,7 @@ Object.assign(DAILY_LABELS,{
   'Loading this lesson’s verse…':'Se încarcă versetul acestei lecții…',
   'This verse could not be loaded. Retry or choose another translation.':'Acest verset nu a putut fi încărcat. Reîncearcă sau alege altă traducere.',
   'Not saved. Keep this app open and copy your writing.':'Nu s-a salvat. Păstrează aplicația deschisă și copiază textul scris.',
-  'SELA version 1.2.3':'SELA versiunea 1.2.3'
+  'SELA version 1.2.4':'SELA versiunea 1.2.4'
 });
 let dailyState=null;
 
@@ -1028,7 +1028,7 @@ function renderDaily(){
   $('dailyPrevious').innerHTML=d.selected>0?`<button type="button" class="daily-previous" data-daily-lesson="${d.selected-1}">${escapeHTML(dt('Previous lesson'))}: ${escapeHTML(dailyRefLabel(DAILY_PLAN[(d.selected-1)%28].reference))}</button>`:'';
   $('dailyLinks').innerHTML=entry.links.map(item=>`<button type="button" class="daily-link" data-daily-ref="${escapeHTML(item.reference)}"><strong>${escapeHTML(dailyRefLabel(item.reference))} <span aria-hidden="true">↗</span></strong><span>${escapeHTML(dailyText(item))}</span></button>`).join('');
   $('dailyThemePath').innerHTML=DAILY_THEMES.map((theme,i)=>`<span role="listitem" ${i===Math.floor(lesson.index/7)?'aria-current="step"':''}>${i+1}. ${escapeHTML(dailyText(theme))}</span>`).join('');
-  $('dailyThemePath').setAttribute('aria-label',dt('Weekly themes'));$('dailyVersion').setAttribute('aria-label',dt('SELA version 1.2.3'));
+  $('dailyThemePath').setAttribute('aria-label',dt('Weekly themes'));$('dailyVersion').setAttribute('aria-label',dt('SELA version 1.2.4'));
   $('dailyNav').setAttribute('aria-label',dt('Verse of the day'));$('dailyNav').title=dt('Verse of the day');
   const key=`${d.selected}:${state.translation}`;
   if(d.key===key&&d.payload){$('dailyVerseText').textContent=d.payload.verseText;translationCredits(d.payload,'dailyCredit');}
