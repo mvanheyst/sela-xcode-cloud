@@ -15,10 +15,15 @@ async function performRequest(path, options = {}) {
   const bridge = globalThis.webkit?.messageHandlers?.sela;
   let data, status;
   if (bridge) {
-    const result = await abortable(() => bridge.postMessage({
-      action: 'request', path, method: options.method || 'GET', body: options.body || null
-    }), options.signal);
-    ({ data, status } = result);
+    const requestID=globalThis.crypto?.randomUUID?.()||'req-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
+    const cancel=()=>{Promise.resolve(bridge.postMessage({action:'cancel',requestID})).catch(()=>{});};
+    options.signal?.addEventListener('abort',cancel,{once:true});
+    try{
+      const result = await abortable(() => bridge.postMessage({
+        action: 'request',requestID,path,method:options.method||'GET',body:options.body||null
+      }),options.signal);
+      ({data,status}=result);
+    }finally{options.signal?.removeEventListener('abort',cancel);}
   } else {
     const response = await fetch(path, options);
     status = response.status;
@@ -37,7 +42,7 @@ export async function requestJSON(path, options = {}) {
   const abort=()=>controller.abort();
   if(options.signal?.aborted)abort();
   else options.signal?.addEventListener('abort',abort,{once:true});
-  const timer=setTimeout(()=>{timedOut=true;controller.abort();},(path==='/api/study'||path.startsWith('/api/original?'))?80000:35000);
+  const timer=setTimeout(()=>{timedOut=true;controller.abort();},(path==='/api/study'||path.startsWith('/api/original?'))?80000:['/api/word-study','/api/study-chat'].includes(path)?60000:35000);
   try {
     return await abortable(()=>performRequest(path,{...options,signal:controller.signal}),controller.signal);
   } catch(error) {

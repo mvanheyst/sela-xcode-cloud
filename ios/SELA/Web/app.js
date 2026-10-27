@@ -1,3 +1,6 @@
+// BEGIN SELA RELEASE
+const SELA_RELEASE={"version":"1.3.0","release":"sela-1.3.0-contextual-study-chat"};
+// END SELA RELEASE
 import {requestJSON, copyText} from './api-client.js';
 const BOOK_NAMES_RO={"Genesis": "Geneza", "Exodus": "Exodul", "Leviticus": "Leviticul", "Numbers": "Numeri", "Deuteronomy": "Deuteronomul", "Joshua": "Iosua", "Judges": "Judecători", "Ruth": "Rut", "1 Samuel": "1 Samuel", "2 Samuel": "2 Samuel", "1 Kings": "1 Împărați", "2 Kings": "2 Împărați", "1 Chronicles": "1 Cronici", "2 Chronicles": "2 Cronici", "Ezra": "Ezra", "Nehemiah": "Neemia", "Esther": "Estera", "Job": "Iov", "Psalms": "Psalmii", "Proverbs": "Proverbe", "Ecclesiastes": "Eclesiastul", "Song of Solomon": "Cântarea Cântărilor", "Isaiah": "Isaia", "Jeremiah": "Ieremia", "Lamentations": "Plângerile lui Ieremia", "Ezekiel": "Ezechiel", "Daniel": "Daniel", "Hosea": "Osea", "Joel": "Ioel", "Amos": "Amos", "Obadiah": "Obadia", "Jonah": "Iona", "Micah": "Mica", "Nahum": "Naum", "Habakkuk": "Habacuc", "Zephaniah": "Țefania", "Haggai": "Hagai", "Zechariah": "Zaharia", "Malachi": "Maleahi", "Matthew": "Matei", "Mark": "Marcu", "Luke": "Luca", "John": "Ioan", "Acts": "Faptele Apostolilor", "Romans": "Romani", "1 Corinthians": "1 Corinteni", "2 Corinthians": "2 Corinteni", "Galatians": "Galateni", "Ephesians": "Efeseni", "Philippians": "Filipeni", "Colossians": "Coloseni", "1 Thessalonians": "1 Tesaloniceni", "2 Thessalonians": "2 Tesaloniceni", "1 Timothy": "1 Timotei", "2 Timothy": "2 Timotei", "Titus": "Tit", "Philemon": "Filimon", "Hebrews": "Evrei", "James": "Iacov", "1 Peter": "1 Petru", "2 Peter": "2 Petru", "1 John": "1 Ioan", "2 John": "2 Ioan", "3 John": "3 Ioan", "Jude": "Iuda", "Revelation": "Apocalipsa"};
 const ROMANIAN={"SELA — Scripture, deeply understood": "SELA — Scriptura, înțeleasă în profunzime", "SCRIPTURE & STUDY": "SCRIPTURĂ ȘI STUDIU", "YOUR SPACE": "SPAȚIUL TĂU", "Read Scripture": "Citește Scriptura", "Highlights & notes": "Evidențieri și notițe", "Search the Bible": "Caută în Biblie", "THE BIBLE": "BIBLIA", "A deeper kind of reading": "O lectură mai profundă", "Original words. Timeless context.": "Cuvinte originale. Context pentru toate timpurile.", "A QUIET MOMENT WITH THE WORD": "UN MOMENT DE LINIȘTE CU SCRIPTURA", "SCRIPTURE READING": "LECTURA SCRIPTURII", "The promise of His coming": "Promisiunea venirii Sale", "CH.": "CAP.", "Go beyond the translation": "Descoperă dincolo de traducere", "Tap any verse to uncover its original language, historical setting, and deeper meaning.": "Atinge un verset pentru a descoperi textul original, cadrul istoric și sensul său profund.", "THE WORD": "CUVÂNTUL", "Opening Scripture…": "Se deschide Scriptura…", "Read slowly. Discover deeply. Let the words dwell.": "Citește încet. Descoperă în profunzime. Lasă cuvintele să prindă rădăcini.", "YOUR COLLECTION": "COLECȚIA TA", "Saved": "Salvate", "Scripture": "Scriptura", "The verses that have spoken to you, gathered in one place.": "Versetele care ți-au vorbit, adunate într-un singur loc.", "EXPLORE THE WORD": "EXPLOREAZĂ SCRIPTURA", "Find a": "Găsește un", "passage": "pasaj", "Keyword searches use WEB. References like “2 Peter 3:10” open your selected reading translation.": "Căutarea folosește versiunea selectată. Poți introduce o trimitere precum „Ioan 3:16”.", "Search": "Caută", "Try: John 3:16 · Psalm 23 · covenant · peace": "Încearcă: Ioan 3:16 · Psalmii 23 · legământ · pace", "DIG DEEPER": "APROFUNDEAZĂ", "Verse": "Studiul", "study": "versetului", "Every word has a story.": "Fiecare cuvânt are o poveste.", "Select a verse in the reading pane to see the original Greek, Hebrew or Aramaic, word meanings, and historical context.": "Selectează un verset pentru a vedea textul original grecesc, ebraic sau aramaic, sensurile cuvintelor și contextul istoric.", "01   Read": "01   Citește", "02   Select": "02   Selectează", "03   Discover": "03   Descoperă", "MARK THIS VERSE": "EVIDENȚIAZĂ VERSETUL", "Copy": "Copiază", "Original text": "Textul original", "Meaning & context": "Sens și context", "My notes": "Notițele mele", "Greek original": "Originalul grecesc", "Hebrew original": "Originalul ebraic", "Aramaic original": "Originalul aramaic", "Hebrew / Aramaic original": "Originalul ebraic / aramaic", "Loading original text…": "Se încarcă textul original…", "Personal reflection": "Reflecție personală", "Your thoughts are saved privately in this browser.": "Gândurile tale sunt salvate doar pe acest dispozitiv.", "Notes save automatically.": "Notițele se salvează automat.", "Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.": "Analiza folosește textul original grecesc, ebraic sau aramaic. Glosările și studiul sunt generate direct în română; textul NTR nu este trimis serviciului AI.", "Read": "Citește", "Study": "Studiu", "Find a book…": "Găsește o carte…", "Filter Bible books": "Filtrează cărțile Bibliei", "Bible books": "Cărțile Bibliei", "Main navigation": "Navigare principală", "Mobile navigation": "Navigare mobilă", "Open menu": "Deschide meniul", "Search Bible": "Caută în Biblie", "Change text size": "Schimbă mărimea textului", "Previous chapter": "Capitolul anterior", "Next chapter": "Capitolul următor", "Book": "Cartea", "Chapter": "Capitolul", "Bible translation": "Traducerea Bibliei", "Search Scripture": "Caută în Scriptură", "Search for a word or reference…": "Caută un cuvânt sau o trimitere…", "What is God teaching you through this verse? Write a reflection, question, or prayer…": "Ce te învață Dumnezeu prin acest verset? Scrie o reflecție, o întrebare sau o rugăciune…", "No books found.": "Nu s-au găsit cărți.", "OLD TESTAMENT": "VECHIUL TESTAMENT", "NEW TESTAMENT": "NOUL TESTAMENT", "Read • reflect • understand": "Citește • reflectează • înțelege", "No verses available for this chapter.": "Nu sunt disponibile versete pentru acest capitol.", "Study this verse": "Studiază acest verset", "Your collection begins with a single verse.": "Colecția ta începe cu un singur verset.", "Highlight or write a note while you read.": "Evidențiază un verset sau scrie o notiță în timp ce citești.", "Tap to open this passage.": "Atinge pentru a deschide pasajul.", "Verse not available in this passage preview": "Versetul nu este disponibil în acest pasaj.", "Loading original text and word definitions…": "Se încarcă textul original și sensurile cuvintelor…", "Original-language data is currently unavailable.": "Datele textului original nu sunt disponibile acum.", "Please check your connection and retry by reselecting the verse.": "Verifică conexiunea și selectează din nou versetul.", "Lexical gloss unavailable": "Glosare lexicală indisponibilă", "parts:": "componente:", "Tap any word for its lexicon details.": "Atinge un cuvânt pentru detalii lexicale.", "No morphological tags were returned for this verse.": "Sursa nu a furnizat analiza morfologică pentru acest verset.", "Text and lexical data:": "Text și date lexicale:", "Different manuscript editions may have variant readings.": "Edițiile manuscriselor pot avea variante textuale.", "A full lexicon definition is unavailable for this token.": "Definiția lexicală completă nu este disponibilă pentru acest cuvânt.", "Not available": "Indisponibil", "Explore the original meaning": "Explorează sensul original", "Add AI-powered historical context": "Adaugă context istoric cu AI", "Generate a careful explanation of this verse, including literal translation, literary and first-century context, different interpretations, and cross-references.": "Generează în română explicația versetului, traducerea literală din original, contextul literar și istoric, interpretări și trimiteri biblice.", "The word-by-word original text is available from the Scripture source. To generate in-depth context for any passage, add your OpenAI API key to the server environment.": "Textul original este disponibil din sursa biblică. Glosările românești și explicațiile necesită activarea serviciului AI pe server.", "Generate verse study": "Generează studiul versetului", "See README.md for optional AI setup.": "Activează serviciul de studiu pe server.", "Included example commentary · not an AI-generated manuscript analysis": "Comentariu exemplificativ inclus", "AI-generated study · verify interpretive claims with trusted commentaries.": "Studiu generat cu AI · verifică interpretările în comentarii de încredere.", "A direct translation": "O traducere literală din original", "What the author is saying": "Ce spune autorul", "Key expressions": "Expresii-cheie", "Historical setting": "Cadrul istoric", "Literary context": "Contextul literar", "Interpretations & nuances": "Interpretări și nuanțe", "Connected Scripture": "Trimiteri biblice", "Reflect & apply": "Reflectează și aplică", "Textual / translation notes": "Observații textuale și de traducere", "Regenerate explanation": "Regenerează explicația", "Generate fuller explanation": "Generează o explicație detaliată", "Lexicon glosses are not automatically a complete contextual translation. AI commentary may contain mistakes and should be checked against the text and reputable biblical scholarship.": "Glosările lexicale nu reprezintă automat o traducere contextuală completă. Comentariul AI poate conține erori; verifică-l în text și în lucrări biblice de încredere.", "Add an API key on the server to enable AI studies": "Activează serviciul AI pe server pentru studii.", "Creating study…": "Se generează studiul…", "Study ready": "Studiul este gata", "Try again": "Reîncearcă", "Enter a reference or a word": "Introdu o trimitere sau un cuvânt", "Searching Scripture…": "Se caută în Scriptură…", "matching verses in": "versete găsite în", "(showing first results)": "(primele rezultate)", "No verses found. Try another phrase.": "Nu s-au găsit versete. Încearcă altă expresie.", "Unknown": "Necunoscut", "Open verse": "Deschide versetul", "Highlight removed": "Evidențiere eliminată", "Verse highlighted": "Verset evidențiat", "Verse copied": "Verset copiat", "Clipboard requires a secure connection": "Copierea necesită o conexiune securizată", "Saved on this device ✓": "Salvat pe acest dispozitiv ✓", "Select a verse to begin studying": "Selectează un verset pentru a începe studiul", "Browser storage is unavailable": "Stocarea locală nu este disponibilă", "Study unavailable": "Studiul nu este disponibil", "Unable to load": "Nu se poate încărca", "Please try again or choose another translation.": "Reîncearcă sau alege altă traducere.", "Verse text:": "Mărimea textului:", "unavailable": "indisponibil", "An error occurred. Check your connection and try again.": "Serviciul nu este disponibil momentan. Verifică conexiunea și reîncearcă.", "The study server took too long to respond. Please try again.": "Serverul de studiu nu a răspuns la timp. Reîncearcă.", "Highlight color": "Culoarea evidențierii", "Remove highlight": "Elimină evidențierea", "Honey": "Auriu", "Sage": "Verde", "Lavender": "Lavandă", "Rose": "Roz", "Close study": "Închide studiul", "Dismiss": "Închide", "Search by reference or keyword": "Caută după trimitere sau cuvânt", "Search uses the selected translation. References such as “John 3:16” open that passage.": "Căutarea folosește versiunea selectată. O trimitere precum „Ioan 3:16” deschide pasajul.", "Dismiss tip": "Închide sugestia", "Verse, reference, or phrase…": "Verset, trimitere sau expresie…", "Verse study panel": "Panoul de studiu al versetului", "Highlight colors": "Culorile evidențierii", "Highlight gold": "Evidențiază cu auriu", "Gold": "Auriu", "Highlight green": "Evidențiază cu verde", "Green": "Verde", "Highlight lavender": "Evidențiază cu lavandă", "Highlight pink": "Evidențiază cu roz", "Pink": "Roz", "Copy verse": "Copiază versetul", "Study sections": "Secțiunile studiului", "Source": "Sursa"};
@@ -129,8 +132,8 @@ function acceptTranslationStatus(entries){
 async function refreshTranslationStatus(){
   if(state.catalogPending)return state.catalogPending;
   state.catalogPending=(async()=>{
-    try{const status=await api('/api/status');state.aiEnabled=!!status.aiEnabled;state.passageSupported=status.studyCapabilities?.passageSelection===true;if(Array.isArray(status.translations))acceptTranslationStatus(status.translations);}
-    catch{ /* Keep verified UI metadata. The server still enforces actual access. */ }
+    try{const status=await api('/api/status');state.aiEnabled=!!status.aiEnabled;acceptRelease(status);state.passageSupported=status.studyCapabilities?.passageSelection===true;if(Array.isArray(status.translations))acceptTranslationStatus(status.translations);}
+    catch{ releaseLive=false;renderRelease(); /* Keep verified UI metadata. The server still enforces actual access. */ }
     finally{state.catalogPending=null;}
   })();
   return state.catalogPending;
@@ -277,7 +280,7 @@ function displayRef(text){const ref=parseReference(text);return ref?displayRefer
 function studyKey(ref=refKey()){return `${state.translation}:${ref}`;}
 function errorText(error){return uiLanguage()==='ro'?(/[ăâîșțĂÂÎȘȚ]/u.test(error.message||'')?error.message:t('An error occurred. Check your connection and try again.')):error.message;}
 function applyLocale(){
-  document.documentElement.lang=uiLanguage();document.title=t('SELA — Scripture, deeply understood');
+  renderRelease();document.documentElement.lang=uiLanguage();document.title=t('SELA — Scripture, deeply understood');
   document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.getAttribute('data-i18n'));});
   for(const attr of ['placeholder','title','aria-label'])document.querySelectorAll(`[data-i18n-${attr}]`).forEach(el=>el.setAttribute(attr,t(el.getAttribute(`data-i18n-${attr}`))));
   $('bookSelect').innerHTML=state.books.map(b=>`<option value="${escapeHTML(b.name)}">${escapeHTML(bookName(b.name))}</option>`).join('');
@@ -331,7 +334,7 @@ async function loadChapter(){
   state.passageAbort?.abort();
   const ctrl=new AbortController();state.passageAbort=ctrl;
   const target={book:state.book,chapter:state.chapter,translation:state.translation};
-  state.selected=null;state.selectedVerses=[];state.original=null;state.originalLoadingKey=null;state.selectedToken=null;state.studySerial++;updateSelectionLabel();
+  cancelStudyInteractions();state.selected=null;state.selectedVerses=[];state.original=null;state.originalLoadingKey=null;state.selectedToken=null;state.studySerial++;updateSelectionLabel();
   closePanel();updateNavigation();renderTranslationOptions();
   const label=state.translations.find(e=>e.id===target.translation)?.abbreviation||target.translation.toUpperCase();
   const retained=state.verses.length?rt('Your current chapter is still here.'):'';
@@ -480,7 +483,7 @@ async function selectVerse(number,endVerse=number){
 }
 async function updateSelection(numbers,{open=false,keepTab=false}={}){
   if(!displayedMatches())return;
-  state.selectedVerses=numbers;state.selected=completeSelection(numbers)?numbers[0]:null;
+  cancelStudyInteractions();state.selectedVerses=numbers;state.selected=completeSelection(numbers)?numbers[0]:null;
   state.original=null;state.originalLoadingKey=null;state.selectedToken=null;++state.studySerial;
   renderVerses();updateSelectionLabel();renderDailyFlow();
   if(!hasStudySelection()){
@@ -530,6 +533,7 @@ function renderOriginal() {
   $('originalContent').innerHTML=`<div class="original-text${orig.isPassage?' passage-original':''}" ${isHebrew?'dir="rtl"':''}>${escapeHTML(orig.text)}</div><div class="source-label">${escapeHTML(orig.edition)} · ${t('Tap any word for its lexicon details.')}</div>${orig.annotationNotice?`<div class="source-label">${escapeHTML(orig.annotationNotice)}</div>`:''}<div class="word-table">${words||`<p class="source-label">${t('No morphological tags were returned for this verse.')}</p>`}</div><div class="source-credit">${t('Text and lexical data:')} ${attribution||'Bible API / eBible.org'}. ${t('Different manuscript editions may have variant readings.')}</div>`;
 }
 function selectToken(index) {
+  wordRequest?.abort();
   const word=state.original?.words?.[index];if(!word||!Number.isInteger(index))return;
   const close=state.selectedToken===index;
   document.querySelectorAll('.word-inline-detail').forEach(el=>{el.classList.add('hidden');el.innerHTML='';});
@@ -539,7 +543,7 @@ function selectToken(index) {
   const detail=$(`word-detail-${index}`),button=$(`word-token-${index}`);if(!detail||!button)return;
   const definition=uiLanguage()==='ro'?(word.romanianDefinition||word.gloss||'O definiție completă nu este disponibilă pentru acest cuvânt.'):(entry.definition||word.gloss||t('A full lexicon definition is unavailable for this token.'));
   detail.innerHTML=`<div class="word-detail"><strong>${escapeHTML(word.surface)} ${entry.transliteration?`(${escapeHTML(entry.transliteration)})`:''}</strong><div>${escapeHTML(definition)}</div>${entry.partOfSpeech?`<div>${uiLanguage()==='ro'?'Parte de vorbire':'Part of speech'}: ${escapeHTML(entry.partOfSpeech)}</div>`:''}</div>`;
-  detail.classList.remove('hidden');button.setAttribute('aria-expanded','true');state.selectedToken=index;
+  detail.classList.remove('hidden');button.setAttribute('aria-expanded','true');state.selectedToken=index;renderWordEnhancement(index);
   button.scrollIntoView?.({behavior:'auto',block:'nearest'});
 }
 function block(title, content) {return `<div class="study-block"><h4>${escapeHTML(title)}</h4><p>${escapeHTML(content||t('Not available'))}</p></div>`;}
@@ -560,12 +564,12 @@ function renderMeaning() {
   html+=block(t('Reflect & apply'),study.application)+block(t('Textual / translation notes'),study.textualNotes);
   if(state.aiEnabled)html+=`<button id="generateStudy" class="primary-btn"><span>✧</span> ${state.studies[key]?t('Regenerate explanation'):t('Generate fuller explanation')}</button>`;
   html+=`<p class="ai-disclaimer">${t('Lexicon glosses are not automatically a complete contextual translation. AI commentary may contain mistakes and should be checked against the text and reputable biblical scholarship.')}</p>`;
-  $('meaningContent').innerHTML=html;
+  $('meaningContent').innerHTML=html;mountPassageChat(study);
 }
 async function generateStudy() {
   if(!state.aiEnabled)return toast(t('Add an API key on the server to enable AI studies'));
   if(!hasStudySelection())return;
-  const passage=isPassage();
+  cancelStudyInteractions();const passage=isPassage();
   if(passage&&!state.passageSupported)return toast(t('Update the study server to generate passage studies.'));
   const button=$('generateStudy'),ref=refKey(),key=studyKey(ref),serial=state.studySerial,translation=state.translation,endVerse=selectionNumbers().at(-1);
   if(button){button.disabled=true;button.textContent=t('Creating study…');}
@@ -599,7 +603,7 @@ async function performSearch(query) {
 }
 function bindEvents() {
   $('readerNotice').addEventListener('click',e=>{const action=e.target.closest('[data-reader-action]');if(!action||action.disabled)return;if(action.dataset.readerAction==='choose')$('translationSelect').focus();else void loadChapter();});
-  window.addEventListener('online',()=>{void refreshTranslationStatus();});
+  window.addEventListener('online',()=>{void refreshTranslationStatus();});window.addEventListener('offline',()=>{releaseLive=false;renderRelease();});
   $('bookFilter').addEventListener('input',e=>renderBooks(e.target.value));
   $('bookList').addEventListener('click',e=>{const btn=e.target.closest('[data-book]');if(btn)navigate(btn.dataset.book,1);});
   $('bookSelect').addEventListener('change',e=>navigate(e.target.value,1));
@@ -615,7 +619,7 @@ function bindEvents() {
     try{await copyText(text);toast(t('Verse copied'));}catch{toast(t('Clipboard requires a secure connection'));}
   });
   document.querySelectorAll('.study-tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
-  $('originalContent').addEventListener('click',e=>{const token=e.target.closest('[data-token]');if(token)selectToken(Number(token.dataset.token));});
+  $('originalContent').addEventListener('click',e=>{if(e.target.closest('[data-word-cancel]')){wordRequest?.abort();return;}const explain=e.target.closest('[data-word-explain]');if(explain){void explainWord(Number(explain.dataset.wordExplain));return;}const token=e.target.closest('[data-token]');if(token)selectToken(Number(token.dataset.token));});
   $('meaningContent').addEventListener('click',e=>{if(e.target.closest('#generateStudy'))generateStudy();const ref=e.target.closest('[data-ref]');if(ref){const parsed=parseReference(ref.dataset.ref);if(parsed)navigate(parsed.book,parsed.chapter,parsed.verse,parsed.endVerse);}});
   $('noteInput').addEventListener('input',e=>{if(!state.selected)return;const ref=refKey();if(e.target.value.trim())state.notes[ref]=e.target.value;else delete state.notes[ref];saveJSON('sela.notes',state.notes);$('noteStatus').textContent=t('Saved on this device ✓');$('savedCount').textContent=new Set([...Object.keys(state.highlight),...Object.keys(state.notes)]).size;});
   $('savedList').addEventListener('click',e=>{const btn=e.target.closest('[data-ref]');const ref=btn&&parseReference(btn.dataset.ref);if(ref)navigate(ref.book,ref.chapter,ref.verse,ref.endVerse);});
@@ -649,6 +653,194 @@ async function init(){
   const refresh=()=>{void refreshTranslationStatus().finally(()=>setTimeout(refresh,60000));};
   setTimeout(refresh,60000);
 }
+// BEGIN SELA STUDY UI
+// Shared interaction UI, embedded identically in the browser and bundled reader.
+Object.assign(ROMANIAN,{
+  'Short gloss':'Glosare scurtă','Meaning in this verse':'Sensul în acest verset',
+  'Other documented senses':'Alte sensuri documentate','Translation alternatives here':'Variante de traducere aici',
+  'Explain this word in context':'Explică acest cuvânt în context','Explaining…':'Se explică…',
+  'Cancel':'Anulează','Try again':'Reîncearcă','Sources used':'Surse folosite',
+  'Source lexical record':'Înregistrarea lexicală a sursei','English lexical aid':'Ajutor lexical în engleză',
+  'Dictionary transliteration; correspondence to the surface form is not independently verified.':'Transliterare din dicționar; corespondența cu forma din text nu este verificată independent.',
+  'Surface form':'Forma din text','Lemma':'Lema','Morphology':'Morfologie',
+  'No separate documented senses were supplied. The available lexical record is shown above.':'Nu au fost furnizate sensuri documentate separat. Înregistrarea lexicală disponibilă apare mai sus.',
+  'No further renderings are supported by this explanation.':'Această explicație nu oferă alte variante susținute.',
+  'Ask about this passage':'Întreabă despre acest pasaj','Your question':'Întrebarea ta',
+  'Ask a question about the passage or its generated study…':'Pune o întrebare despre pasaj sau despre studiul generat…',
+  'Related Scripture (optional)':'Trimitere biblică suplimentară (opțional)',
+  'For example, John 1:1-3':'De exemplu, Ioan 1:1-3',
+  'Ask':'Întreabă','Answering…':'Se răspunde…','Clear conversation':'Șterge conversația',
+  'Save to notes':'Salvează în notițe','Saved to notes':'Salvat în notițe',
+  'Conversation stays in memory until you clear it or reload. Only answers you save are added to your notes. Questions and relevant study context are sent to the study service.':'Conversația rămâne în memorie până o ștergi sau reîncarci aplicația. Doar răspunsurile salvate explicit sunt adăugate în notițe. Întrebările și contextul relevant sunt trimise serviciului de studiu.',
+  'Explain the main point more simply.':'Explică mai simplu ideea principală.',
+  'How does the surrounding passage help explain this?':'Cum ajută contextul pasajului la înțelegerea lui?',
+  'What in the text supports this interpretation?':'Ce anume din text susține această interpretare?',
+  'Regenerate this study to enable passage chat.':'Regenerează studiul pentru a activa conversația despre pasaj.',
+  'Update the study server to use this feature.':'Actualizează serverul de studiu pentru a folosi această funcție.',
+  'The answer was not saved. Your existing notes are unchanged.':'Răspunsul nu a fost salvat. Notițele existente rămân neschimbate.',
+  'Read retrieved text':'Citește textul preluat','SELA release':'Versiunea SELA',
+  'Last verified service release':'Ultima versiune verificată a serviciului',
+  'Bundled release; service version not verified':'Versiunea inclusă; versiunea serviciului nu este verificată',
+  'Current service release':'Versiunea curentă a serviciului'
+});
+const wordExplanations=new Map(),wordPending=new Map(),chatSessions=new Map();
+let wordRequest=null,chatRequest=null;
+let verifiedRelease=savedJSON('sela.serviceRelease.v1',null);
+if(!verifiedRelease||!/^\d+\.\d+\.\d+$/u.test(verifiedRelease.version)||!Number.isFinite(verifiedRelease.time)||Date.now()-verifiedRelease.time>7*24*60*60_000)verifiedRelease=null;
+let releaseLive=false;
+function renderRelease(){
+  const version=verifiedRelease?.version||SELA_RELEASE.version;
+  const description=releaseLive?'Current service release':verifiedRelease?'Last verified service release':'Bundled release; service version not verified';
+  document.querySelectorAll('[data-sela-release]').forEach(el=>{
+    el.textContent='v'+version;el.setAttribute('aria-label',`${t('SELA release')} ${version}. ${t(description)}`);
+    el.title=t(description);
+  });
+}
+function acceptRelease(status){
+  if(status?.ready===true&&/^\d+\.\d+\.\d+$/u.test(status.version)&&typeof status.release==='string'&&status.release.startsWith('sela-'+status.version)){
+    verifiedRelease={version:status.version,time:Date.now()};releaseLive=true;
+    try{localStorage.setItem('sela.serviceRelease.v1',JSON.stringify(verifiedRelease));}catch{}
+  }else releaseLive=false;
+  state.contextualWords=status?.studyCapabilities?.contextualWords===true;
+  state.passageChat=status?.studyCapabilities?.passageChat===true;
+  renderRelease();
+}
+function cancelStudyInteractions(){
+  wordRequest?.abort();wordRequest=null;chatRequest?.abort();chatRequest=null;
+}
+function safeEvidence(evidence){
+  if(!Array.isArray(evidence)||!evidence.length)return '';
+  return `<details class="evidence-list"><summary>${t('Sources used')}</summary>${evidence.map((s,i)=>{
+    const credits=(s.attribution||[]).map(a=>{
+      let url;try{if(new URL(a.url).protocol==='https:')url=a.url;}catch{}
+      return url?`<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(a.name||a.id||t('Source'))}</a> ${escapeHTML(a.license||'')}`:escapeHTML(a.name||a.id||'');
+    }).join(' · ');
+    return `<div class="evidence-record"><strong>[${i+1}] ${escapeHTML(displayRef(s.reference||''))}</strong><small>${escapeHTML(s.edition||s.identifier||'')} · ${escapeHTML(s.id)}</small><p dir="auto">${escapeHTML(s.text||'')}</p><small>${credits}</small></div>`;
+  }).join('')}</details>`;
+}
+function wordIdentity(index){
+  const word=state.original?.words?.[index];if(!word)return null;
+  const verse=Number(word.verse||state.selected);
+  const tokenIndex=state.original.isPassage?state.original.words.slice(0,index).filter(w=>Number(w.verse)===verse).length:index;
+  return {key:JSON.stringify([state.book,state.chapter,verse,state.translation,state.original.edition,tokenIndex,word.surface,word.morph]),verse,tokenIndex,surface:word.surface};
+}
+function renderWordEnhancement(index){
+  const detail=$(`word-detail-${index}`),identity=wordIdentity(index),word=state.original?.words?.[index];
+  if(!detail||!identity||state.selectedToken!==index)return;
+  detail.querySelector('.contextual-word')?.remove();
+  const data=wordExplanations.get(identity.key);
+  const section=document.createElement('div');section.className='contextual-word';
+  let html=`<h5>${t('Short gloss')}</h5><p>${escapeHTML(word.gloss||t('Lexical gloss unavailable'))}</p>`;
+  const parts=[[t('Surface form'),word.surface],[t('Lemma'),word.lemma],[t('Morphology'),word.morph]].filter(([,v])=>v);
+  html+=`<p class="source-label">${parts.map(([k,v])=>`${escapeHTML(k)}: ${escapeHTML(v)}`).join(' · ')}</p>`;
+  if(state.original.lexicon?.[word.strong]?.transliteration)html+=`<p class="source-label">${t('Dictionary transliteration; correspondence to the surface form is not independently verified.')}</p>`;
+  if(data){
+    html+=`<h5>${t('Meaning in this verse')}</h5><p>${escapeHTML(data.meaning)}</p>`;
+    html+=`<h5>${t('Other documented senses')}</h5>`;
+    if(data.lexicalRecord?.definition)html+=`<details><summary>${t('Source lexical record')}${uiLanguage()==='ro'?' · '+t('English lexical aid'):''}</summary><p>${escapeHTML(data.lexicalRecord.definition)}</p></details>`;
+    html+=`<p class="source-label">${t('No separate documented senses were supplied. The available lexical record is shown above.')}</p>`;
+    html+=`<h5>${t('Translation alternatives here')}</h5>`+(data.alternatives.length?data.alternatives.map(a=>`<p><strong>${escapeHTML(a.rendering)}</strong> — ${escapeHTML(a.reason)}</p>`).join(''):`<p>${t('No further renderings are supported by this explanation.')}</p>`);
+    html+=safeEvidence(data.evidence);
+  }else{
+    html+=`<h5>${t('Meaning in this verse')}</h5>`;
+    if(state.aiEnabled&&state.contextualWords)html+=`<button type="button" class="secondary-btn" data-word-explain="${index}" ${wordPending.has(identity.key)?'disabled':''}>${wordPending.has(identity.key)?t('Explaining…'):t('Explain this word in context')}</button>`;
+    else html+=`<p class="source-label">${t(state.aiEnabled?'Update the study server to use this feature.':'Add an API key on the server to enable AI studies')}</p>`;
+    if(wordPending.has(identity.key))html+=` <button type="button" class="secondary-btn" data-word-cancel>${t('Cancel')}</button>`;
+    html+=`<p class="interaction-error" role="status"></p>`;
+  }
+  section.innerHTML=html;detail.append(section);
+}
+async function explainWord(index){
+  const identity=wordIdentity(index);if(!identity||!state.contextualWords||!state.aiEnabled||wordPending.has(identity.key))return;
+  wordRequest?.abort();const controller=new AbortController();wordRequest=controller;
+  const serial=state.studySerial,translation=state.translation;
+  wordPending.set(identity.key,true);renderWordEnhancement(index);
+  try{
+    const data=await api('/api/word-study',{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,
+      body:JSON.stringify({book:state.book,chapter:state.chapter,verse:identity.verse,translation,tokenIndex:identity.tokenIndex})});
+    if(controller.signal.aborted||serial!==state.studySerial||translation!==state.translation||data.surface!==identity.surface||data.tokenIndex!==identity.tokenIndex||data.language!==(translation==='ntr'?'ro':'en'))return;
+    if(wordExplanations.size>=100)wordExplanations.delete(wordExplanations.keys().next().value);
+    wordExplanations.set(identity.key,data);
+  }catch(error){
+    if(!controller.signal.aborted&&serial===state.studySerial&&state.selectedToken===index){
+      const el=$(`word-detail-${index}`)?.querySelector('.interaction-error');if(el)el.textContent=errorText(error);
+      toast(errorText(error));
+    }
+  }finally{
+    wordPending.delete(identity.key);if(wordRequest===controller)wordRequest=null;
+    if(serial===state.studySerial&&state.selectedToken===index)renderWordEnhancement(index);
+  }
+}
+function chatIdentity(study=state.studies[studyKey()]){
+  return study?.chatContext&&study?.studyRevision?JSON.stringify([studyKey(),uiLanguage(),study.studyRevision]):null;
+}
+function chatSession(id){
+  if(!chatSessions.has(id)){
+    if(chatSessions.size>=8)chatSessions.delete(chatSessions.keys().next().value);
+    chatSessions.set(id,{messages:[],draft:'',related:'',pending:false,error:'',saved:[]});
+  }
+  return chatSessions.get(id);
+}
+function mountPassageChat(study){
+  if(!state.aiEnabled||!study||study!==state.studies[studyKey()])return;
+  const host=document.createElement('section');host.className='passage-chat';host.id='passageChat';host.setAttribute('aria-labelledby','passageChatHeading');
+  const id=chatIdentity(study);
+  if(!state.passageChat||!id){host.innerHTML=`<h4 id="passageChatHeading">${t('Ask about this passage')}</h4><p class="source-label">${t(state.passageChat?'Regenerate this study to enable passage chat.':'Update the study server to use this feature.')}</p>`;}
+  else{
+    const session=chatSession(id);
+    const suggestions=['Explain the main point more simply.','How does the surrounding passage help explain this?','What in the text supports this interpretation?'];
+    host.innerHTML=`<h4 id="passageChatHeading">${t('Ask about this passage')}</h4><p class="source-label">${t('Conversation stays in memory until you clear it or reload. Only answers you save are added to your notes. Questions and relevant study context are sent to the study service.')}</p><div class="chat-messages" role="log" aria-live="polite">${session.messages.map((m,i)=>m.role==='user'?`<div class="chat-question"><strong>${escapeHTML(m.content)}</strong></div>`:`<div class="chat-answer">${m.paragraphs.map(p=>`<p>${escapeHTML(p.text)}</p>`).join('')}${safeEvidence(m.evidence)}<button type="button" class="secondary-btn" data-chat-save="${i}" ${session.saved.includes(i)?'disabled':''}>${t(session.saved.includes(i)?'Saved to notes':'Save to notes')}</button></div>`).join('')}</div><div class="chat-suggestions">${!session.messages.length?suggestions.map((s,i)=>`<button type="button" class="secondary-btn" data-chat-suggestion="${i}">${escapeHTML(t(s))}</button>`).join(''):''}</div><form id="passageChatForm"><label for="chatQuestion">${t('Your question')}</label><textarea id="chatQuestion" maxlength="2000" rows="3" required placeholder="${escapeHTML(t('Ask a question about the passage or its generated study…'))}" ${session.pending?'disabled':''}>${escapeHTML(session.draft)}</textarea><label for="chatRelated">${t('Related Scripture (optional)')}</label><input id="chatRelated" maxlength="100" placeholder="${escapeHTML(t('For example, John 1:1-3'))}" value="${escapeHTML(session.related)}" ${session.pending?'disabled':''}><div class="chat-actions"><button type="submit" class="primary-btn" ${session.pending?'disabled':''}>${t(session.pending?'Answering…':'Ask')}</button>${session.pending?`<button type="button" class="secondary-btn" data-chat-cancel>${t('Cancel')}</button>`:''}<button type="button" class="secondary-btn" data-chat-clear>${t('Clear conversation')}</button></div><p class="interaction-error" role="status">${escapeHTML(session.error)}</p></form>`;
+    host.querySelector('#passageChatForm').addEventListener('submit',e=>{e.preventDefault();void askPassage();});
+    host.querySelector('#chatQuestion').addEventListener('input',e=>{session.draft=e.target.value;});
+    host.querySelector('#chatRelated').addEventListener('input',e=>{session.related=e.target.value;});
+    host.addEventListener('click',e=>{
+      const suggestion=e.target.closest('[data-chat-suggestion]');if(suggestion){session.draft=t(suggestions[Number(suggestion.dataset.chatSuggestion)]);const q=$('chatQuestion');q.value=session.draft;q.focus();}
+      if(e.target.closest('[data-chat-cancel]')){chatRequest?.abort();session.pending=false;mountChatAgain();}
+      if(e.target.closest('[data-chat-clear]')){chatRequest?.abort();chatSessions.delete(id);mountChatAgain();}
+      const save=e.target.closest('[data-chat-save]');if(save)saveChatAnswer(Number(save.dataset.chatSave));
+    });
+  }
+  $('passageChat')?.remove();$('meaningContent').append(host);
+}
+function mountChatAgain(){mountPassageChat(state.studies[studyKey()]);}
+async function askPassage(){
+  const study=state.studies[studyKey()],id=chatIdentity(study);if(!id||!state.passageChat||!state.aiEnabled)return;
+  const session=chatSession(id);if(session.pending)return;
+  const question=($('chatQuestion')?.value??session.draft).trim();if(!question||question.length>2000)return;
+  session.draft=question;session.related=$('chatRelated')?.value?.trim()||'';
+  // Keep a small number of complete turns. Server applies the same bounds.
+  let history=session.messages.slice(-8).map(m=>({role:m.role,content:m.content.slice(0,4500)}));
+  while(JSON.stringify(history).length>18000)history=history.slice(2);
+  const controller=new AbortController();chatRequest?.abort();chatRequest=controller;session.pending=true;session.error='';
+  const serial=state.studySerial,reference=refKey(),translation=state.translation;
+  const body={book:state.book,chapter:state.chapter,verse:state.selected,endVerse:selectionNumbers().at(-1),translation,study,question,history,...(session.related?{relatedReference:session.related}:{})};
+  mountChatAgain();
+  try{
+    const data=await api('/api/study-chat',{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify(body)});
+    if(controller.signal.aborted||serial!==state.studySerial||id!==chatIdentity()||data.studyRevision!==study.studyRevision||data.reference!==reference||data.language!==(translation==='ntr'?'ro':'en'))return;
+    session.messages.push({role:'user',content:question},{role:'assistant',content:data.paragraphs.map(p=>p.text).join('\n\n'),paragraphs:data.paragraphs,evidence:data.evidence});
+    if(session.messages.length>20){session.messages.splice(0,2);session.saved=session.saved.filter(i=>i>=2).map(i=>i-2);}
+    session.draft='';session.related='';
+  }catch(error){if(!controller.signal.aborted&&id===chatIdentity())session.error=errorText(error);}
+  finally{
+    session.pending=false;if(chatRequest===controller)chatRequest=null;
+    if(serial===state.studySerial&&id===chatIdentity()&&chatSessions.get(id)===session)mountChatAgain();
+  }
+}
+function saveChatAnswer(index){
+  const id=chatIdentity();if(!id)return;const session=chatSession(id),message=session.messages[index];
+  if(message?.role!=='assistant'||session.saved.includes(index))return;
+  const previous=state.notes[refKey()]||'';
+  const sources=(message.evidence||[]).map(s=>`${s.reference||s.id} — ${s.edition||s.identifier||''}\n${s.text||''}`).join('\n\n');
+  const addition=`${displayReference()} (${editionAbbreviation()})\n${session.messages[index-1]?.content||''}\n\n${message.content}${sources?'\n\n'+t('Sources used')+':\n'+sources:''}`;
+  const next={...state.notes,[refKey()]:previous+(previous?'\n\n':'')+addition};
+  try{localStorage.setItem('sela.notes',JSON.stringify(next));}
+  catch{toast(t('The answer was not saved. Your existing notes are unchanged.'));return;}
+  state.notes=next;session.saved.push(index);$('noteInput').value=next[refKey()];renderSaved();mountChatAgain();toast(t('Saved to notes'));
+}
+
+// END SELA STUDY UI
+
 // BEGIN SELA DAILY
 // SELA 1.2: authored reading prompts, not quotations or generated Bible text.
 // Each entry links yesterday's lesson to today's focus and two further readings.
@@ -942,7 +1134,7 @@ const DAILY_LABELS={
   'Loading today’s verse…':'Se încarcă versetul de astăzi…',
   'Today’s verse could not be loaded in this translation. Retry or choose another translation.':'Versetul de astăzi nu a putut fi încărcat în această traducere. Reîncearcă sau alege altă traducere.',
   'Try again':'Reîncearcă','Day':'Ziua','of':'din','Cycle':'Ciclul',
-  'Weekly themes':'Temele săptămânale','Today':'Astăzi','SELA version 1.2.2':'SELA versiunea 1.2.2'
+  'Weekly themes':'Temele săptămânale','Today':'Astăzi'
 };
 Object.assign(DAILY_LABELS,{
   'Read':'Citește','Word study':'Studiul cuvintelor','Meaning':'Înțeles','Reflection':'Reflecție','Practice':'Aplicare',
@@ -980,7 +1172,7 @@ Object.assign(DAILY_LABELS,{
   'Loading this lesson’s verse…':'Se încarcă versetul acestei lecții…',
   'This verse could not be loaded. Retry or choose another translation.':'Acest verset nu a putut fi încărcat. Reîncearcă sau alege altă traducere.',
   'Not saved. Keep this app open and copy your writing.':'Nu s-a salvat. Păstrează aplicația deschisă și copiază textul scris.',
-  'SELA version 1.2.4':'SELA versiunea 1.2.4'
+  
 });
 let dailyState=null;
 
@@ -1028,7 +1220,7 @@ function renderDaily(){
   $('dailyPrevious').innerHTML=d.selected>0?`<button type="button" class="daily-previous" data-daily-lesson="${d.selected-1}">${escapeHTML(dt('Previous lesson'))}: ${escapeHTML(dailyRefLabel(DAILY_PLAN[(d.selected-1)%28].reference))}</button>`:'';
   $('dailyLinks').innerHTML=entry.links.map(item=>`<button type="button" class="daily-link" data-daily-ref="${escapeHTML(item.reference)}"><strong>${escapeHTML(dailyRefLabel(item.reference))} <span aria-hidden="true">↗</span></strong><span>${escapeHTML(dailyText(item))}</span></button>`).join('');
   $('dailyThemePath').innerHTML=DAILY_THEMES.map((theme,i)=>`<span role="listitem" ${i===Math.floor(lesson.index/7)?'aria-current="step"':''}>${i+1}. ${escapeHTML(dailyText(theme))}</span>`).join('');
-  $('dailyThemePath').setAttribute('aria-label',dt('Weekly themes'));$('dailyVersion').setAttribute('aria-label',dt('SELA version 1.2.4'));
+  $('dailyThemePath').setAttribute('aria-label',dt('Weekly themes'));
   $('dailyNav').setAttribute('aria-label',dt('Verse of the day'));$('dailyNav').title=dt('Verse of the day');
   const key=`${d.selected}:${state.translation}`;
   if(d.key===key&&d.payload){$('dailyVerseText').textContent=d.payload.verseText;translationCredits(d.payload,'dailyCredit');}

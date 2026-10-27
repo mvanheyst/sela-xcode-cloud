@@ -38,7 +38,7 @@ struct WebReader: UIViewRepresentable {
     @MainActor
     final class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandlerWithReply {
         private let settings: AppSettings
-        private var requests: [UUID: Task<Void, Never>] = [:]
+        private var requests: [String: Task<Void, Never>] = [:]
 
         init(settings: AppSettings) { self.settings = settings }
 
@@ -68,13 +68,17 @@ struct WebReader: UIViewRepresentable {
                 UIPasteboard.general.string = text
                 replyHandler(["copied": true], nil); return
             }
+            if body["action"] as? String == "cancel", let id = body["requestID"] as? String {
+                requests[id]?.cancel()
+                replyHandler(["cancelled": true], nil); return
+            }
             guard body["action"] as? String == "request",
                   let path = body["path"] as? String,
                   let relative = URLComponents(string: path), relative.scheme == nil,
                   relative.host == nil, relative.fragment == nil,
-                  ["/api/status", "/api/books", "/api/chapter", "/api/original", "/api/search", "/api/study"].contains(relative.path),
+                  ["/api/status", "/api/books", "/api/chapter", "/api/original", "/api/search", "/api/study", "/api/word-study", "/api/study-chat"].contains(relative.path),
                   let method = body["method"] as? String,
-                  method == (relative.path == "/api/study" ? "POST" : "GET"),
+                  method == (["/api/study", "/api/word-study", "/api/study-chat"].contains(relative.path) ? "POST" : "GET"),
                   path.utf8.count <= 4_000 else {
                 replyHandler(nil, "Unsupported SELA request."); return
             }
@@ -89,13 +93,16 @@ struct WebReader: UIViewRepresentable {
             request.timeoutInterval = 80
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             if method == "POST" {
-                guard let text = body["body"] as? String, text.utf8.count <= 10_000 else {
+                guard let text = body["body"] as? String, text.utf8.count <= (relative.path == "/api/study-chat" ? 72_000 : 10_000) else {
                     replyHandler(nil, "Invalid study request."); return
                 }
                 request.httpBody = text.data(using: .utf8)
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             }
-            let id = UUID()
+            let id = (body["requestID"] as? String) ?? UUID().uuidString
+            guard id.utf8.count <= 100, requests[id] == nil else {
+                replyHandler(nil, "Invalid or duplicate request identifier."); return
+            }
             requests[id] = Task { @MainActor in
                 defer { requests[id] = nil }
                 do {
