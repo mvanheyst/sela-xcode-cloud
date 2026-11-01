@@ -76,9 +76,9 @@ struct WebReader: UIViewRepresentable {
                   let path = body["path"] as? String,
                   let relative = URLComponents(string: path), relative.scheme == nil,
                   relative.host == nil, relative.fragment == nil,
-                  ["/api/status", "/api/books", "/api/chapter", "/api/original", "/api/search", "/api/study", "/api/word-study", "/api/study-chat"].contains(relative.path),
+                  ["/api/status", "/api/books", "/api/chapter", "/api/original", "/api/search", "/api/study", "/api/word-study", "/api/study-chat", "/api/scripture-background"].contains(relative.path),
                   let method = body["method"] as? String,
-                  method == (["/api/study", "/api/word-study", "/api/study-chat"].contains(relative.path) ? "POST" : "GET"),
+                  method == (["/api/study", "/api/word-study", "/api/study-chat", "/api/scripture-background"].contains(relative.path) ? "POST" : "GET"),
                   path.utf8.count <= 4_000 else {
                 replyHandler(nil, "Unsupported SELA request."); return
             }
@@ -93,7 +93,7 @@ struct WebReader: UIViewRepresentable {
             request.timeoutInterval = 80
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             if method == "POST" {
-                guard let text = body["body"] as? String, text.utf8.count <= (relative.path == "/api/study-chat" ? 72_000 : 10_000) else {
+                guard let text = body["body"] as? String, text.utf8.count <= (relative.path == "/api/scripture-background" ? 240_000 : relative.path == "/api/study-chat" ? 72_000 : 10_000) else {
                     replyHandler(nil, "Invalid study request."); return
                 }
                 request.httpBody = text.data(using: .utf8)

@@ -1,5 +1,5 @@
 // BEGIN SELA RELEASE
-const SELA_RELEASE={"version":"1.3.0","release":"sela-1.3.0-contextual-study-chat"};
+const SELA_RELEASE={"version":"1.6.0","release":"sela-1.6.0-scripture-background-about"};
 // END SELA RELEASE
 import {requestJSON, copyText} from './api-client.js';
 const BOOK_NAMES_RO={"Genesis": "Geneza", "Exodus": "Exodul", "Leviticus": "Leviticul", "Numbers": "Numeri", "Deuteronomy": "Deuteronomul", "Joshua": "Iosua", "Judges": "Judecători", "Ruth": "Rut", "1 Samuel": "1 Samuel", "2 Samuel": "2 Samuel", "1 Kings": "1 Împărați", "2 Kings": "2 Împărați", "1 Chronicles": "1 Cronici", "2 Chronicles": "2 Cronici", "Ezra": "Ezra", "Nehemiah": "Neemia", "Esther": "Estera", "Job": "Iov", "Psalms": "Psalmii", "Proverbs": "Proverbe", "Ecclesiastes": "Eclesiastul", "Song of Solomon": "Cântarea Cântărilor", "Isaiah": "Isaia", "Jeremiah": "Ieremia", "Lamentations": "Plângerile lui Ieremia", "Ezekiel": "Ezechiel", "Daniel": "Daniel", "Hosea": "Osea", "Joel": "Ioel", "Amos": "Amos", "Obadiah": "Obadia", "Jonah": "Iona", "Micah": "Mica", "Nahum": "Naum", "Habakkuk": "Habacuc", "Zephaniah": "Țefania", "Haggai": "Hagai", "Zechariah": "Zaharia", "Malachi": "Maleahi", "Matthew": "Matei", "Mark": "Marcu", "Luke": "Luca", "John": "Ioan", "Acts": "Faptele Apostolilor", "Romans": "Romani", "1 Corinthians": "1 Corinteni", "2 Corinthians": "2 Corinteni", "Galatians": "Galateni", "Ephesians": "Efeseni", "Philippians": "Filipeni", "Colossians": "Coloseni", "1 Thessalonians": "1 Tesaloniceni", "2 Thessalonians": "2 Tesaloniceni", "1 Timothy": "1 Timotei", "2 Timothy": "2 Timotei", "Titus": "Tit", "Philemon": "Filimon", "Hebrews": "Evrei", "James": "Iacov", "1 Peter": "1 Petru", "2 Peter": "2 Petru", "1 John": "1 Ioan", "2 John": "2 Ioan", "3 John": "3 Ioan", "Jude": "Iuda", "Revelation": "Apocalipsa"};
@@ -564,23 +564,28 @@ function renderMeaning() {
   html+=block(t('Reflect & apply'),study.application)+block(t('Textual / translation notes'),study.textualNotes);
   if(state.aiEnabled)html+=`<button id="generateStudy" class="primary-btn"><span>✧</span> ${state.studies[key]?t('Regenerate explanation'):t('Generate fuller explanation')}</button>`;
   html+=`<p class="ai-disclaimer">${t('Lexicon glosses are not automatically a complete contextual translation. AI commentary may contain mistakes and should be checked against the text and reputable biblical scholarship.')}</p>`;
-  $('meaningContent').innerHTML=html;mountPassageChat(study);
+  $('meaningContent').innerHTML=html;mountPassageChat(study);mountScriptureBackground(study);
 }
+let studyGeneration=0;const studyGenerations=new Map();
 async function generateStudy() {
   if(!state.aiEnabled)return toast(t('Add an API key on the server to enable AI studies'));
   if(!hasStudySelection())return;
   cancelStudyInteractions();const passage=isPassage();
   if(passage&&!state.passageSupported)return toast(t('Update the study server to generate passage studies.'));
+  const generation=++studyGeneration;
   const button=$('generateStudy'),ref=refKey(),key=studyKey(ref),serial=state.studySerial,translation=state.translation,endVerse=selectionNumbers().at(-1);
+  studyGenerations.set(key,generation);
+  if(studyGenerations.size>120)studyGenerations.delete(studyGenerations.keys().next().value);
   if(button){button.disabled=true;button.textContent=t('Creating study…');}
   try {
     const data=await api('/api/study',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({book:state.book,chapter:state.chapter,verse:state.selected,...(passage?{endVerse}:{}),translation})});
     if(data.language!==(translation==='ntr'?'ro':'en'))throw new Error(t('An error occurred. Check your connection and try again.'));
     if(passage&&data.reference!==ref)throw new Error(t('Update the study server to generate passage studies.'));
+    if(generation!==studyGenerations.get(key))return;
     state.studies[key]=data;saveJSON('sela.studies',state.studies);
     if(serial===state.studySerial)renderMeaning();
     toast(t('Study ready'));
-  } catch(error){toast(`${t('Study unavailable')}: ${errorText(error)}`);if(button){button.disabled=false;button.textContent=t('Try again');}}
+  } catch(error){if(generation!==studyGenerations.get(key)||serial!==state.studySerial)return;toast(`${t('Study unavailable')}: ${errorText(error)}`);if(button){button.disabled=false;button.textContent=t('Try again');}}
 }
 async function performSearch(query) {
   const term=query.trim();if(!term){toast(t('Enter a reference or a word'));return;}
@@ -602,6 +607,7 @@ async function performSearch(query) {
   }catch(error){if(translation===state.translation)$('searchResults').innerHTML=`<div class="status-note">${escapeHTML(errorText(error))}</div>`;}
 }
 function bindEvents() {
+  $('navAbout')?.addEventListener('click',openAbout);
   $('readerNotice').addEventListener('click',e=>{const action=e.target.closest('[data-reader-action]');if(!action||action.disabled)return;if(action.dataset.readerAction==='choose')$('translationSelect').focus();else void loadChapter();});
   window.addEventListener('online',()=>{void refreshTranslationStatus();});window.addEventListener('offline',()=>{releaseLive=false;renderRelease();});
   $('bookFilter').addEventListener('input',e=>renderBooks(e.target.value));
@@ -703,10 +709,13 @@ function acceptRelease(status){
   }else releaseLive=false;
   state.contextualWords=status?.studyCapabilities?.contextualWords===true;
   state.passageChat=status?.studyCapabilities?.passageChat===true;
+  const priorBackground=state.scriptureBackground;
+  state.scriptureBackground=status?.studyCapabilities?.scriptureBackground;
+  if(!state.scriptureBackground?.enabled||priorBackground?.sourceRevision!==state.scriptureBackground?.sourceRevision){backgroundRequest?.abort();backgroundSessions.clear();$('scriptureBackground')?.remove();}
   renderRelease();
 }
 function cancelStudyInteractions(){
-  wordRequest?.abort();wordRequest=null;chatRequest?.abort();chatRequest=null;
+  wordRequest?.abort();wordRequest=null;chatRequest?.abort();chatRequest=null;backgroundRequest?.abort();backgroundRequest=null;
 }
 function safeEvidence(evidence){
   if(!Array.isArray(evidence)||!evidence.length)return '';
@@ -1354,4 +1363,97 @@ function initDaily(){
 }
 
 // END SELA DAILY
+// BEGIN SELA BACKGROUND AND ABOUT
+Object.assign(ROMANIAN,{
+ 'About':'Despre SELA','About SELA':'Despre SELA','Close About':'Închide pagina Despre SELA',
+ 'Scripture Background & Connections':'Context biblic și conexiuni',
+ 'Discover the references, practices and beliefs behind the author’s words.':'Descoperă trimiterile, practicile și credințele din spatele cuvintelor autorului.',
+ 'Explore background and connections':'Explorează contextul și conexiunile',
+ 'Exploring background…':'Se explorează contextul…',
+ 'Why it matters here':'De ce contează aici','Christian connection':'Conexiune creștină',
+ 'Additional background is temporarily unavailable. Your existing study is ready.':'Contextul suplimentar nu este disponibil momentan. Studiul existent este disponibil.',
+ 'Published English source excerpt':'Fragment din sursa publicată în engleză',
+ 'Source setting and perspective':'Datarea și perspectiva sursei',
+ 'Bundled reader release':'Versiunea inclusă a cititorului',
+ 'Explore the Scripture. Understand the language. Pause and reflect.':'Explorează Scriptura. Înțelege limbajul. Oprește-te și reflectează.'
+});
+const ABOUT_COPY={
+ en:{intro:'SELA stands for Scriptural Exploration and Language Analysis. It helps people explore God’s Word with greater depth, clarity and understanding—whether they are opening the Bible for the first time or have studied it for years.',
+  commitments:[['Scriptural','Scripture is the foundation and authority for study.'],['Exploration','Readers are encouraged to ask questions, investigate context and discover meaningful connections.'],['Language','Original Hebrew, Aramaic and Greek words help illuminate the biblical text.'],['Analysis','Careful examination of wording, context and the author’s message supports deeper understanding.']],
+  name:'SELA also echoes the biblical term Selah (סֶלָה), found in the Psalms and Habakkuk. Generally understood as a musical or liturgical marker, it is often associated with a pause or interlude. Its precise ancient meaning is not established, but it offers a fitting devotional inspiration: pause, consider and reflect on what you have read.',
+  methodHeading:'Our approach to Meaning & Context',method:'SELA’s Meaning & Context section is guided by historical-grammatical exegesis: seeking to understand what the biblical author communicated through the words of the passage within its literary and historical setting.',
+  steps:[['The text itself','Its wording, important phrases and the flow of the author’s argument.'],['Language in context','How original-language words contribute to the passage’s meaning.'],['The surrounding Scripture','How nearby verses and the larger book shape understanding.'],['The original setting','The audience, circumstances and relevant cultural background.'],['Biblical connections','How related passages illuminate the text and its theological significance.']],
+  foundation:'Study is grounded in historic, orthodox Christian faith and an evangelical understanding of Scripture. Different literary forms—including narrative, poetry, prophecy, wisdom and letters—are considered according to how they communicate.',
+  ai:'AI-assisted explanations support exploration, while Scripture remains the foundation and authority.',
+  journeyHeading:'Deeper understanding at your own pace',journey:'SELA brings together original-language word study, passage explanations, interactive questions and guided daily reflection. Readers can examine a word, explore a broader passage, ask follow-up questions or revisit their notes and reflections.',
+  invitation:'The reader chooses the depth and direction. SELA invites thoughtful discovery, prayerful consideration and personal conviction, helping each person grow from their current understanding into a richer knowledge of God’s Word.'},
+ ro:{intro:'SELA înseamnă Scriptural Exploration and Language Analysis — Explorarea Scripturii și analiza limbajului. Îi ajută pe cititori să exploreze Cuvântul lui Dumnezeu cu mai multă profunzime, claritate și înțelegere, fie că deschid Biblia pentru prima dată, fie că o studiază de mulți ani.',
+  commitments:[['Scriptural — Scriptură','Scriptura este temelia și autoritatea studiului.'],['Exploration — Explorare','Cititorii sunt încurajați să pună întrebări, să cerceteze contextul și să descopere conexiuni relevante.'],['Language — Limbaj','Cuvintele originale ebraice, aramaice și grecești ajută la înțelegerea textului biblic.'],['Analysis — Analiză','Examinarea atentă a formulării, contextului și mesajului autorului susține o înțelegere mai profundă.']],
+  name:'Numele SELA amintește și de termenul biblic Selah (סֶלָה), întâlnit în Psalmi și Habacuc. În general, este înțeles ca un semn muzical sau liturgic, asociat adesea cu o pauză sau un interludiu. Sensul său antic exact nu este stabilit, dar oferă o inspirație potrivită pentru studiu: oprește-te, cugetă și reflectează la ceea ce ai citit.',
+  methodHeading:'Abordarea secțiunii Sens și context',method:'Secțiunea Sens și context este ghidată de exegeza istorico-gramaticală: căutarea sensului pe care autorul biblic l-a comunicat prin cuvintele pasajului, în cadrul său literar și istoric.',
+  steps:[['Textul însuși','Formularea, expresiile importante și desfășurarea argumentului autorului.'],['Limbajul în context','Felul în care cuvintele din limbile originale contribuie la sensul pasajului.'],['Scriptura din jur','Felul în care versetele apropiate și cartea în ansamblu modelează înțelegerea.'],['Cadrul original','Destinatarii, împrejurările și contextul cultural relevant.'],['Conexiunile biblice','Felul în care pasajele înrudite luminează textul și semnificația sa teologică.']],
+  foundation:'Studiul este întemeiat pe credința creștină istorică, în acord cu învățătura creștină ortodoxă în sensul de dreaptă credință, și pe o înțelegere evanghelică a Scripturii. Formele literare diferite, precum narațiunea, poezia, profeția, literatura sapiențială și epistolele, sunt luate în considerare potrivit modului în care comunică.',
+  ai:'Explicațiile asistate de inteligența artificială sprijină explorarea, iar Scriptura rămâne temelia și autoritatea.',
+  journeyHeading:'O înțelegere mai profundă, în ritmul tău',journey:'SELA reunește studiul cuvintelor din limbile originale, explicațiile pasajelor, întrebările interactive și reflecția zilnică ghidată. Cititorii pot examina un cuvânt, explora un pasaj mai amplu, pune întrebări suplimentare sau reveni la notițele și reflecțiile lor.',
+  invitation:'Cititorul alege profunzimea și direcția. SELA invită la descoperire atentă, cugetare în rugăciune și convingere personală, ajutând fiecare persoană să înainteze de la înțelegerea sa actuală spre o cunoaștere mai bogată a Cuvântului lui Dumnezeu.'}
+};
+function openAbout(){
+ closeSidebar();let dialog=$('aboutDialog');
+ if(!dialog){dialog=document.createElement('dialog');dialog.id='aboutDialog';dialog.className='about-dialog';dialog.setAttribute('aria-labelledby','aboutHeading');document.body.append(dialog);}
+ const c=ABOUT_COPY[uiLanguage()];
+ const list=items=>`<ul>${items.map(([a,b])=>`<li><strong>${escapeHTML(a)}</strong> — ${escapeHTML(b)}</li>`).join('')}</ul>`;
+ dialog.innerHTML=`<div class="about-toolbar"><strong>SELA</strong><button type="button" class="secondary-btn" id="closeAbout">${t('Close About')}</button></div><article class="about-copy" lang="${uiLanguage()}"><h1 id="aboutHeading" tabindex="-1">${t('About SELA')}</h1><p>${escapeHTML(c.intro)}</p>${list(c.commitments)}<p>${escapeHTML(c.name)}</p><p class="source-label"><a href="https://learn.ligonier.org/articles/what-selah-means-in-the-bible" target="_blank" rel="noopener noreferrer">${uiLanguage()==='ro'?'Despre termenul Selah — Ligonier':'About the term Selah — Ligonier'}</a></p><h2>${escapeHTML(c.methodHeading)}</h2><p>${escapeHTML(c.method)}</p>${list(c.steps)}<p>${escapeHTML(c.foundation)}</p><p>${escapeHTML(c.ai)}</p><h2>${escapeHTML(c.journeyHeading)}</h2><p>${escapeHTML(c.journey)}</p><p>${escapeHTML(c.invitation)}</p><p class="about-motto">${t('Explore the Scripture. Understand the language. Pause and reflect.')}</p><footer><span>${t('SELA release')} <span data-sela-release></span></span><br><small>${t('Bundled reader release')}: v${escapeHTML(SELA_RELEASE.version)}</small></footer></article>`;
+ $('closeAbout').addEventListener('click',()=>{dialog.close();$('navAbout')?.focus();});
+ if(!dialog.open)dialog.showModal();renderRelease();$('aboutHeading').focus();
+}
+const backgroundSessions=new Map();let backgroundRequest=null;
+function backgroundIdentity(study=state.studies[studyKey()]){return study?.studyRevision?`${studyKey()}:${study.studyRevision}:${state.scriptureBackground?.sourceRevision}`:null;}
+function mountScriptureBackground(study){
+ $('scriptureBackground')?.remove();
+ if(!state.scriptureBackground?.enabled||!state.aiEnabled||study!==state.studies[studyKey()]||!study?.chatContext)return;
+ const id=backgroundIdentity(study),session=backgroundSessions.get(id);
+ if(session?.data&&session.data.connections.length===0&&['complete','partial'].includes(session.data.state))return;
+ const host=document.createElement('section');host.id='scriptureBackground';host.className='scripture-background';host.setAttribute('aria-labelledby','backgroundHeading');
+ let html=`<h4 id="backgroundHeading">${t('Scripture Background & Connections')}</h4><p>${t('Discover the references, practices and beliefs behind the author’s words.')}</p>`;
+ if(session?.data?.connections.length){
+  html+=session.data.connections.map(c=>`<details class="background-connection"><summary>${escapeHTML(c.title)}</summary><p>${escapeHTML(c.background)}</p><h5>${t('Why it matters here')}</h5><p>${escapeHTML(c.significance)}</p>${c.christianConnection?`<h5>${t('Christian connection')}</h5><p>${escapeHTML(c.christianConnection)}</p>`:''}${backgroundEvidence(session.data.evidence.filter(s=>[...c.selectedSourceIds,...c.backgroundSourceIds].includes(s.id)))}</details>`).join('');
+ }else{
+  html+=`<button type="button" class="secondary-btn" data-background-load ${session?.pending?'disabled':''}>${t(session?.pending?'Exploring background…':'Explore background and connections')}</button>${session?.pending?` <button type="button" class="secondary-btn" data-background-cancel>${t('Cancel')}</button>`:''}${session?.unavailable?`<p class="source-label" role="status">${t('Additional background is temporarily unavailable. Your existing study is ready.')}</p>`:''}`;
+ }
+ host.innerHTML=html;host.addEventListener('click',e=>{
+  if(e.target.closest('[data-background-load]'))void loadScriptureBackground();
+  if(e.target.closest('[data-background-cancel]')){backgroundRequest?.abort();if(session)session.pending=false;mountScriptureBackground(study);}
+ });
+ const chat=$('passageChat');if(chat)chat.before(host);else $('meaningContent').append(host);
+}
+function backgroundEvidence(evidence){
+ return `<details class="evidence-list"><summary>${t('Sources used')}</summary>${evidence.map(s=>{
+  const historic=s.kind==='historical';
+  const links=(s.attribution||[]).map(a=>{
+   let safe;try{if(new URL(a.url).protocol==='https:')safe=a.url;}catch{}
+   return `${safe?`<a href="${escapeHTML(safe)}" target="_blank" rel="noopener noreferrer">${escapeHTML(a.name||a.id||t('Source'))}</a>`:escapeHTML(a.name||a.id||'')} ${escapeHTML(a.license||'')}`;
+  }).join(' · ');
+  return `<div class="evidence-record"><strong>${escapeHTML(displayRef(s.reference))}</strong><small>${escapeHTML(s.edition)}${historic?' · '+t('Published English source excerpt'):''}</small>${historic?`<p class="source-label">${escapeHTML(s.date)} ${escapeHTML(s.perspective)}</p>`:''}<p dir="auto" lang="${historic?'en':''}">${escapeHTML(s.text)}</p>${historic?`<p class="source-label">${escapeHTML(s.contextNote)}</p>`:''}<small>${links}</small></div>`;
+ }).join('')}</details>`;
+}
+async function loadScriptureBackground(){
+ const study=state.studies[studyKey()],id=backgroundIdentity(study);
+ if(!id||!state.scriptureBackground?.enabled||backgroundSessions.get(id)?.pending)return;
+ if(backgroundSessions.size>=40)backgroundSessions.delete(backgroundSessions.keys().next().value);
+ const session={pending:true,data:null,unavailable:false};backgroundSessions.set(id,session);
+ const controller=new AbortController();backgroundRequest?.abort();backgroundRequest=controller;
+ const serial=state.studySerial,reference=refKey(),translation=state.translation;
+ mountScriptureBackground(study);
+ try{
+  const data=await api('/api/scripture-background',{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,
+   body:JSON.stringify({book:state.book,chapter:state.chapter,verse:state.selected,endVerse:selectionNumbers().at(-1),translation,study})});
+  if(controller.signal.aborted||serial!==state.studySerial||id!==backgroundIdentity()||!state.scriptureBackground?.enabled)return;
+  if(data.reference!==reference||data.language!==uiLanguage()||data.studyRevision!==study.studyRevision||!Array.isArray(data.connections)||!Array.isArray(data.evidence))throw Error('Background response does not match study.');
+  if(['complete','partial'].includes(data.state))session.data=data;
+  else session.unavailable=true;
+ }catch{if(!controller.signal.aborted&&id===backgroundIdentity())session.unavailable=true;}
+ finally{session.pending=false;if(backgroundRequest===controller)backgroundRequest=null;if(id===backgroundIdentity())mountScriptureBackground(study);}
+}
+// END SELA BACKGROUND AND ABOUT
+
 init();
