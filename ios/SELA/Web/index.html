@@ -15,13 +15,14 @@
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true"><span>✦</span></div>
-        <div><div class="brand-name">sela<span class="brand-dot">.</span></div><div class="brand-caption"><span data-i18n="SCRIPTURE &amp; STUDY">SCRIPTURE &amp; STUDY</span><span aria-hidden="true"> · </span><span class="brand-release" data-sela-release>v1.6.1</span></div></div>
+        <div><div class="brand-name">sela<span class="brand-dot">.</span></div><div class="brand-caption"><span data-i18n="SCRIPTURE &amp; STUDY">SCRIPTURE &amp; STUDY</span><span aria-hidden="true"> · </span><span class="brand-release" data-sela-release>v1.7.0</span></div></div>
       </div>
       <div class="sidebar-section-title"><span data-i18n="YOUR SPACE">YOUR SPACE</span></div>
       <nav class="side-links" aria-label="Main navigation" data-i18n-aria-label="Main navigation">
         <button class="side-link active" id="navRead" type="button"><span data-icon="book-open"></span> <span data-i18n="Read Scripture">Read Scripture</span></button>
         <button class="side-link" id="navDaily" type="button" aria-controls="dailyVerseCard" aria-expanded="true"><span data-icon="sparkles"></span> <span id="navDailyLabel">Verse of the day</span></button>
         <button class="side-link" id="navSaved" type="button"><span data-icon="bookmark"></span> <span data-i18n="Highlights &amp; notes">Highlights &amp; notes</span> <span class="saved-count" id="savedCount">0</span></button>
+        <button class="side-link hidden" id="navGuided" type="button"><span data-icon="book-open"></span><span data-guided-nav>Guided Bible Study</span></button>
         <button class="side-link" id="navSearch" type="button"><span data-icon="search"></span> <span data-i18n="Search the Bible">Search the Bible</span></button>
         <button class="side-link" id="navAbout" type="button"><span data-icon="book-open"></span> <span data-i18n="About">About</span></button>
       </nav>
@@ -46,6 +47,7 @@
       </header>
 
       <main id="readerView" class="page-area">
+<div id="guidedModeSwitch" class="guided-mode-switch hidden" role="group" aria-label="Study mode"><button id="modeDaily" type="button" class="active" aria-pressed="true">Verse of the Day</button><button id="modeGuided" type="button" aria-pressed="false">Guided Bible Study</button></div>
 <!-- BEGIN SELA DAILY -->
         <section id="dailyVerseCard" class="daily-card hidden" aria-labelledby="dailyTitle">
           <div class="daily-top"><span id="dailyEyebrow" class="daily-eyebrow">Verse of the day</span><time id="dailyDate"></time><button type="button" id="dailyClose" class="daily-close" title="Close verse of the day" aria-label="Close verse of the day" aria-controls="dailyVerseCard"><span aria-hidden="true">×</span></button></div>
@@ -107,6 +109,7 @@
           </div>
         </section>
 <!-- END SELA DAILY -->
+        <section id="guidedStudyCard" class="daily-card guided-card hidden" aria-labelledby="guidedHeading"><div class="guided-top"><h2 id="guidedHeading">Guided Bible Study</h2><button type="button" id="guidedClose" class="daily-close" aria-label="Close guided study">×</button></div><div id="guidedBody" aria-live="polite"></div></section>
         <section class="reading-header">
           <div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="SCRIPTURE READING">SCRIPTURE READING</span></div>
           <div class="reading-title-row">
@@ -167,13 +170,13 @@
           </section>
           <section class="tab-panel hidden" id="notesTab">
             <div class="section-heading"><span data-icon="notebook-pen"></span><h3><span data-i18n="Personal reflection">Personal reflection</span></h3></div>
-            <p class="notes-caption">Your thoughts are saved on this device.</p>
+            <p class="notes-caption"><span data-i18n="Your thoughts are saved privately in this browser.">Your thoughts are saved privately in this browser.</span></p>
             <textarea id="noteInput" placeholder="What is God teaching you through this verse? Write a reflection, question, or prayer…" rows="8" data-i18n-placeholder="What is God teaching you through this verse? Write a reflection, question, or prayer…"></textarea>
             <div id="noteStatus" class="note-status"><span data-i18n="Notes save automatically.">Notes save automatically.</span></div>
           </section>
         </div>
       </div>
-      <div class="study-bottom"><span data-icon="shield-check"></span><span><span data-i18n="Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.">Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.</span></span></div>
+      <button id="guidedReturn" type="button" class="daily-secondary guided-return hidden">Return to guided study</button><div class="study-bottom"><span data-icon="shield-check"></span><span><span data-i18n="Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.">Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.</span></span></div>
     </aside>
   </div>
 
