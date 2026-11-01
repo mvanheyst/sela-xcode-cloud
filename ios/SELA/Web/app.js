@@ -1,5 +1,5 @@
 // BEGIN SELA RELEASE
-const SELA_RELEASE={"version":"1.6.0","release":"sela-1.6.0-scripture-background-about"};
+const SELA_RELEASE={"version":"1.6.1","release":"sela-1.6.1-daily-study-navigation"};
 // END SELA RELEASE
 import {requestJSON, copyText} from './api-client.js';
 const BOOK_NAMES_RO={"Genesis": "Geneza", "Exodus": "Exodul", "Leviticus": "Leviticul", "Numbers": "Numeri", "Deuteronomy": "Deuteronomul", "Joshua": "Iosua", "Judges": "Judecători", "Ruth": "Rut", "1 Samuel": "1 Samuel", "2 Samuel": "2 Samuel", "1 Kings": "1 Împărați", "2 Kings": "2 Împărați", "1 Chronicles": "1 Cronici", "2 Chronicles": "2 Cronici", "Ezra": "Ezra", "Nehemiah": "Neemia", "Esther": "Estera", "Job": "Iov", "Psalms": "Psalmii", "Proverbs": "Proverbe", "Ecclesiastes": "Eclesiastul", "Song of Solomon": "Cântarea Cântărilor", "Isaiah": "Isaia", "Jeremiah": "Ieremia", "Lamentations": "Plângerile lui Ieremia", "Ezekiel": "Ezechiel", "Daniel": "Daniel", "Hosea": "Osea", "Joel": "Ioel", "Amos": "Amos", "Obadiah": "Obadia", "Jonah": "Iona", "Micah": "Mica", "Nahum": "Naum", "Habakkuk": "Habacuc", "Zephaniah": "Țefania", "Haggai": "Hagai", "Zechariah": "Zaharia", "Malachi": "Maleahi", "Matthew": "Matei", "Mark": "Marcu", "Luke": "Luca", "John": "Ioan", "Acts": "Faptele Apostolilor", "Romans": "Romani", "1 Corinthians": "1 Corinteni", "2 Corinthians": "2 Corinteni", "Galatians": "Galateni", "Ephesians": "Efeseni", "Philippians": "Filipeni", "Colossians": "Coloseni", "1 Thessalonians": "1 Tesaloniceni", "2 Thessalonians": "2 Tesaloniceni", "1 Timothy": "1 Timotei", "2 Timothy": "2 Timotei", "Titus": "Tit", "Philemon": "Filimon", "Hebrews": "Evrei", "James": "Iacov", "1 Peter": "1 Petru", "2 Peter": "2 Petru", "1 John": "1 Ioan", "2 John": "2 Ioan", "3 John": "3 Ioan", "Jude": "Iuda", "Revelation": "Apocalipsa"};
@@ -87,6 +87,26 @@ const state = {
   studies:savedJSON('sela.studies',{}), passageAbort:null, studySerial:0,
   fontSize:Number(localStorage.getItem('sela.fontsize')) || 19, toastTimer:null
 };
+
+const READING_LOCATION_KEY='sela.readingLocation.v1';
+function validReadingLocation(value){
+  if(!value||value.schema!==1||typeof value.book!=='string'||!Number.isInteger(value.chapter))return null;
+  const book=fallbackBooks.find(b=>b.name===value.book);
+  return book&&value.chapter>=1&&value.chapter<=book.chapters?{book:book.name,chapter:value.chapter}:null;
+}
+function initialReadingLocation(){
+  const saved=validReadingLocation(savedJSON(READING_LOCATION_KEY,null));
+  if(saved)return saved;
+  const ref=dailyReference(dailyState?currentDailyLesson().entry.reference:DAILY_PLAN[0].reference);
+  return {book:ref.book,chapter:ref.chapter};
+}
+function rememberReadingLocation(target){
+  const location=validReadingLocation({schema:1,book:target.book,chapter:target.chapter});
+  if(!location)return;
+  // Only the displayed chapter is stored, never verse text, notes or failed
+  // navigation attempts. Optional storage failure must not interrupt reading.
+  try{localStorage.setItem(READING_LOCATION_KEY,JSON.stringify({schema:1,...location}));}catch{}
+}
 
 const editionNames = {web:'World English Bible', kjv:'King James Version', esv:'English Standard Version', niv:'New International Version', ntr:'Noua Traducere Românească',nasb2020:'New American Standard Bible 2020',amp:'Amplified Bible',asv:'American Standard Version',nirv:'New International Reader’s Version 2014'};
 const readerMessages={
@@ -267,6 +287,7 @@ function toast(message) {
 }
 async function api(path,options={}){return requestJSON(path,options);}
 
+
 function editionAbbreviation(){return (state.translations.find(e=>e.id===state.translation)?.abbreviation||state.translation).toUpperCase();}
 function uiLanguage(){return state.translation==='ntr'?'ro':'en';}
 const t=text=>localize(text,uiLanguage());
@@ -363,6 +384,7 @@ async function loadChapter(){
     if(data.translation&&data.translation!==target.translation)throw new Error('The server returned a different translation.');
     if(!Array.isArray(data.verses)||!data.verses.length)throw new Error('The server returned an empty chapter.');
     state.verses=data.verses;state.loaded={...target,editionName:data.editionName||editionNames[target.translation]};
+    rememberReadingLocation(target);
     translationCredits(data);restoreReadingHeader();$('readerNotice').classList.add('hidden');
     const entry=state.translations.find(e=>e.id===target.translation);
     if(entry){entry.available=true;entry.youversionAccess='licensed';renderTranslationOptions();}
@@ -412,6 +434,7 @@ function showView(view) {
   if (view==='saved') renderSaved();
   if (view==='search') $('searchInput').focus();
   closeSidebar();
+  syncDailyNavigation();
 }
 function renderSaved() {
   const refs = new Set([...Object.keys(state.highlight),...Object.keys(state.notes).filter(ref=>state.notes[ref]?.trim())]);
@@ -633,8 +656,8 @@ function bindEvents() {
   $('searchForm').addEventListener('submit',e=>{e.preventDefault();performSearch($('searchInput').value);});
   $('dismissBanner').addEventListener('click',()=>{$('insightBanner').classList.add('hidden');localStorage.setItem('sela.bannerDismissed','true');});
   $('fontButton').addEventListener('click',()=>{state.fontSize=state.fontSize>=24?17:state.fontSize+1;document.documentElement.style.setProperty('--reader-font',`${state.fontSize}px`);localStorage.setItem('sela.fontsize',state.fontSize);toast(`${t('Verse text:')} ${state.fontSize}px`);});
-  $('navRead').addEventListener('click',()=>showView('read'));$('navSaved').addEventListener('click',()=>showView('saved'));$('navSearch').addEventListener('click',()=>showView('search'));
-  $('mobileRead').addEventListener('click',()=>{showView('read');closePanel();});$('mobileSaved').addEventListener('click',()=>{showView('saved');closePanel();});$('mobileSearch').addEventListener('click',()=>{showView('search');closePanel();});
+  $('navRead').addEventListener('click',()=>{showView('read');setDailyVisible(false);});$('navSaved').addEventListener('click',()=>showView('saved'));$('navSearch').addEventListener('click',()=>showView('search'));
+  $('mobileRead').addEventListener('click',()=>{showView('read');setDailyVisible(false);closePanel();});$('mobileSaved').addEventListener('click',()=>{showView('saved');closePanel();});$('mobileSearch').addEventListener('click',()=>{showView('search');closePanel();});
   $('searchButton').addEventListener('click',()=>{closePanel();showView('search');});
   $('mobileStudy').addEventListener('click',()=>{void openSelectedStudy();});
   $('closeStudy').addEventListener('click',closePanel);
@@ -646,6 +669,7 @@ async function init(){
   document.documentElement.style.setProperty('--reader-font',`${state.fontSize}px`);
   $('insightBanner').classList.toggle('hidden',localStorage.getItem('sela.bannerDismissed')==='true');
   bindEvents();
+  $('chapterTitle').textContent=t('Opening Scripture…');$('topReference').textContent=t('Opening Scripture…');
   try{
     const [books]=await Promise.all([api('/api/books'),refreshTranslationStatus()]);
     if(books.books?.length)state.books=books.books;
@@ -654,7 +678,9 @@ async function init(){
   saveJSON('sela.translation',state.translation);
   renderTranslationOptions();
   $('bookSelect').innerHTML=state.books.map(b=>`<option value="${escapeHTML(b.name)}">${escapeHTML(b.name)}</option>`).join('');
-  initDaily();renderBooks();updateNavigation();$('savedCount').textContent=new Set([...Object.keys(state.highlight),...Object.keys(state.notes)]).size;
+  initDaily();
+  if(state.studySerial===0){const location=initialReadingLocation();state.book=location.book;state.chapter=location.chapter;}
+  renderBooks();updateNavigation();$('savedCount').textContent=new Set([...Object.keys(state.highlight),...Object.keys(state.notes)]).size;
   await loadChapter();
   const refresh=()=>{void refreshTranslationStatus().finally(()=>setTimeout(refresh,60000));};
   setTimeout(refresh,60000);
@@ -1169,6 +1195,7 @@ const dt=label=>uiLanguage()==='ro'?(DAILY_LABELS[label]||label):label;
 const dailyText=value=>value[uiLanguage()]||value.en;
 Object.assign(DAILY_LABELS,{
   'Study journal':'Jurnal de studiu','Close journal':'Închide jurnalul','Study cycle':'Ciclul de studiu',
+  'Close verse of the day':'Închide versetul zilei',
   'Resume where I left off':'Continuă de unde am rămas','Continue my path':'Continuă parcursul meu',
   'Finish this study':'Încheie acest studiu','Completed':'Încheiat','In progress':'În desfășurare','Not started':'Neînceput',
   'Earlier record':'Înregistrare anterioară','Started':'Început','Last edited':'Ultima modificare',
@@ -1184,6 +1211,29 @@ Object.assign(DAILY_LABELS,{
   
 });
 let dailyState=null;
+
+// The full card's page-session visibility is separate from prompt expansion,
+// saved daily preferences and lesson progress. Every new page starts visible.
+function syncDailyNavigation(){
+  const visible=dailyState?.visible!==false,dailyActive=state.view==='read'&&visible;
+  const daily=$('navDaily');
+  if(daily){daily.classList.toggle('active',dailyActive);daily.setAttribute('aria-expanded',String(visible));daily.setAttribute('aria-current',dailyActive?'page':'false');}
+  $('navRead')?.classList.toggle('active',state.view==='read'&&!dailyActive);
+  $('dailyNav')?.setAttribute('aria-expanded',String(visible));
+}
+function setDailyVisible(visible,{focus=false}={}){
+  if(!dailyState)return;
+  dailyState.visible=visible;
+  $('dailyVerseCard')?.classList.toggle('hidden',!visible);
+  syncDailyNavigation();renderDailyFlow();
+  if(focus&&!visible&&state.view==='read'){$('chapterTitle')?.setAttribute('tabindex','-1');$('chapterTitle')?.focus();}
+}
+async function reopenDailyStudy(){
+  if(!dailyState)return;
+  showView('read');closePanel();setDailyVisible(true);setDailyOpen(true);
+  $('dailyVerseCard').scrollIntoView?.({behavior:'auto',block:'start'});$('dailyTitle').focus();
+  await refreshDaily();
+}
 
 // Lesson progress is independent of the calendar; dates label actual activity.
 const DAILY_STEPS=['Read','Word study','Meaning','Reflection','Practice'];
@@ -1212,7 +1262,7 @@ function dailyDates(j){
 function renderDaily(){
   if(!dailyState||!$('dailyVerseCard'))return;
   const d=dailyState,lesson=currentDailyLesson(),entry=lesson.entry,j=dailyJourney(),complete=!!j.completedDate;
-  $('dailyVerseCard').lang=uiLanguage();$('dailyVerseCard').classList.remove('hidden');
+  $('dailyVerseCard').lang=uiLanguage();$('dailyVerseCard').classList.toggle('hidden',d.visible===false);syncDailyNavigation();
   $('dailyDate').dateTime=d.date;$('dailyDate').textContent=new Date(`${d.date}T12:00:00`).toLocaleDateString(uiLanguage()==='ro'?'ro-RO':'en-CA',{month:'long',day:'numeric',year:'numeric'});
   $('dailyEyebrow').textContent=dt('Verse of the day');$('dailySubtitle').textContent=dt('A daily path of spiritual growth');
   $('dailyProgress').textContent=`${dt('Day')} ${lesson.day} ${dt('of')} 28 · ${dt('Cycle')} ${lesson.cycle} · ${dt(dailyStatus(journalEntry(d.journal,d.selected)))}`;
@@ -1231,6 +1281,8 @@ function renderDaily(){
   $('dailyThemePath').innerHTML=DAILY_THEMES.map((theme,i)=>`<span role="listitem" ${i===Math.floor(lesson.index/7)?'aria-current="step"':''}>${i+1}. ${escapeHTML(dailyText(theme))}</span>`).join('');
   $('dailyThemePath').setAttribute('aria-label',dt('Weekly themes'));
   $('dailyNav').setAttribute('aria-label',dt('Verse of the day'));$('dailyNav').title=dt('Verse of the day');
+  if($('navDailyLabel'))$('navDailyLabel').textContent=dt('Verse of the day');
+  if($('dailyClose')){$('dailyClose').setAttribute('aria-label',dt('Close verse of the day'));$('dailyClose').title=dt('Close verse of the day');}
   const key=`${d.selected}:${state.translation}`;
   if(d.key===key&&d.payload){$('dailyVerseText').textContent=d.payload.verseText;translationCredits(d.payload,'dailyCredit');}
   else{$('dailyVerseText').textContent=dt(d.loading||d.key!==key?'Loading this lesson’s verse…':'This verse could not be loaded. Retry or choose another translation.');translationCredits(null,'dailyCredit');}
@@ -1263,7 +1315,7 @@ function renderDailyFlow(){
   }
   if(continuation){
     const ref=dailyReference(currentDailyLesson().entry.reference),isDaily=state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse&&!isPassage();
-    continuation.classList.toggle('hidden',!isDaily||!d.open||![1,2].includes(j.step));
+    continuation.classList.toggle('hidden',d.visible===false||!isDaily||!d.open||![1,2].includes(j.step));
     continuation.textContent=`${dt('Continue daily study')}: ${dt(DAILY_STEPS[Math.min(4,j.step+1)])} →`;
   }
 }
@@ -1273,12 +1325,13 @@ function setDailyStep(step){
 }
 async function selectDailyLesson(ordinal){
   if(!Number.isSafeInteger(ordinal)||ordinal<0)return;
+  setDailyVisible(true);
   dailyState.selected=ordinal;dailyState.open=true;dailyState.journalOpen=false;$('dailyJournal').classList.add('hidden');
   showView('read');closePanel();dailySeen();await refreshDaily();
   $('dailyVerseCard').scrollIntoView?.({behavior:'auto',block:'start'});
 }
 function openDailyJournal(){
-  if(!dailyState)return;showView('read');closePanel();dailyState.journalOpen=true;$('dailyJournal').classList.remove('hidden');
+  if(!dailyState)return;setDailyVisible(true);showView('read');closePanel();dailyState.journalOpen=true;$('dailyJournal').classList.remove('hidden');
   dailyState.journalCycle=journalPosition(dailyState.selected).cycle;renderDailyJournal();$('dailyJournal').scrollIntoView?.({behavior:'auto',block:'start'});
 }
 function renderDailyJournal(){
@@ -1330,10 +1383,12 @@ function initDaily(){
   let raw=null,saved=null,storageBlocked=false;
   try{raw=localStorage.getItem(STUDY_JOURNAL_KEY);saved=raw?JSON.parse(raw):null;if(raw&&(!saved||saved.schema!==1||!journalObject(saved.entries)||saved.planId&&saved.planId!==DAILY_PLAN_ID))storageBlocked=true;}catch{storageBlocked=true;}
   const journal=loadStudyJournal(saved,{anchor,journeys:savedJSON('sela.daily.journeys',{}),completed:savedJSON('sela.daily.completed',{})});
-  dailyState={anchor,date:today,auto:savedJSON('sela.daily.auto',true)!==false,journal,selected:journalNext(journal),journalOpen:false,journalCycle:1,storageBlocked,storageError:false,key:'',payload:null,loading:false,abort:null};
+  dailyState={visible:true,anchor,date:today,auto:savedJSON('sela.daily.auto',true)!==false,journal,selected:journalNext(journal),journalOpen:false,journalCycle:1,storageBlocked,storageError:false,key:'',payload:null,loading:false,abort:null};
   dailyState.open=dailyState.auto&&savedJSON('sela.daily.lastPrompt','')!==today;if(dailyState.open)dailySeen();
   // Do not touch the original legacy keys or ordinary verse notes during migration.
   saveDailyJourney();
+  $('dailyClose')?.addEventListener('click',event=>{event.stopPropagation();setDailyVisible(false,{focus:true});});
+  $('navDaily')?.addEventListener('click',()=>{void reopenDailyStudy();});
   $('dailyExpand').addEventListener('click',()=>setDailyOpen(true));$('dailyLater').addEventListener('click',()=>setDailyOpen(false));
   $('dailyRetry').addEventListener('click',()=>void refreshDaily(true));
   $('dailyPromptToggle').addEventListener('change',event=>{dailyState.auto=event.target.checked;saveJSON('sela.daily.auto',dailyState.auto);});
