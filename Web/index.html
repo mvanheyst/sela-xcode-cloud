@@ -7,7 +7,8 @@
   <meta name="description" content="A quiet place to read Scripture, highlight verses, and explore the original Greek, Hebrew and Aramaic.">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?reader=1.8.0">
+  <link rel="stylesheet" href="/reader-highlight-1.7.1-hf1.css">
   <title>SELA — Scripture, deeply understood</title>
 </head>
 <body>
@@ -15,7 +16,7 @@
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true"><span>✦</span></div>
-        <div><div class="brand-name">sela<span class="brand-dot">.</span></div><div class="brand-caption"><span data-i18n="SCRIPTURE &amp; STUDY">SCRIPTURE &amp; STUDY</span><span aria-hidden="true"> · </span><span class="brand-release" data-sela-release>v1.7.1</span></div></div>
+        <div><div class="brand-name">sela<span class="brand-dot">.</span></div><div class="brand-caption"><span data-i18n="SCRIPTURE &amp; STUDY">SCRIPTURE &amp; STUDY</span><span aria-hidden="true"> · </span><span class="brand-release" data-sela-release>v1.8.0</span></div></div>
       </div>
       <div class="sidebar-section-title"><span data-i18n="YOUR SPACE">YOUR SPACE</span></div>
       <nav class="side-links" aria-label="Main navigation" data-i18n-aria-label="Main navigation">
@@ -183,6 +184,6 @@
   <div id="mobileBackdrop" class="mobile-backdrop hidden"></div>
   <nav class="mobile-nav" aria-label="Mobile navigation" data-i18n-aria-label="Mobile navigation"><button id="mobileRead" class="active"><span data-icon="book-open"></span><span><span data-i18n="Read">Read</span></span></button><button id="mobileSearch"><span data-icon="search"></span><span><span data-i18n="Search">Search</span></span></button><button id="mobileSaved"><span data-icon="bookmark"></span><span><span data-i18n="Saved">Saved</span></span></button><button id="mobileStudy"><span data-icon="sparkles"></span><span><span data-i18n="Study">Study</span></span></button></nav>
   <div class="toast hidden" id="toast" role="status"></div>
-  <script type="module" src="/app.js"></script>
+  <script type="module" src="/app.js?reader=1.8.0"></script>
 </body>
 </html>
