@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fcfbf8">
+  <meta name="description" content="A quiet place to read Scripture, highlight verses, and explore the original Greek, Hebrew and Aramaic.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <title>SELA — Scripture, deeply understood</title>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span>✦</span></div>
+        <div><div class="brand-name">sela<span class="brand-dot">.</span></div><div class="brand-caption"><span data-i18n="SCRIPTURE &amp; STUDY">SCRIPTURE &amp; STUDY</span><span aria-hidden="true"> · </span><span class="brand-release" data-sela-release>v1.7.1</span></div></div>
+      </div>
+      <div class="sidebar-section-title"><span data-i18n="YOUR SPACE">YOUR SPACE</span></div>
+      <nav class="side-links" aria-label="Main navigation" data-i18n-aria-label="Main navigation">
+        <button class="side-link active" id="navRead" type="button"><span data-icon="book-open"></span> <span data-i18n="Read Scripture">Read Scripture</span></button>
+        <button class="side-link" id="navDaily" type="button" aria-controls="dailyVerseCard" aria-expanded="true"><span data-icon="sparkles"></span> <span id="navDailyLabel">Verse of the day</span></button>
+        <button class="side-link" id="navSaved" type="button"><span data-icon="bookmark"></span> <span data-i18n="Highlights &amp; notes">Highlights &amp; notes</span> <span class="saved-count" id="savedCount">0</span></button>
+        <button class="side-link hidden" id="navGuided" type="button"><span data-icon="book-open"></span><span data-guided-nav>Guided Bible Study</span></button>
+        <button class="side-link" id="navSearch" type="button"><span data-icon="search"></span> <span data-i18n="Search the Bible">Search the Bible</span></button>
+        <button class="side-link" id="navAbout" type="button"><span data-icon="book-open"></span> <span data-i18n="About">About</span></button>
+      </nav>
+      <div class="sidebar-section-title books-title"><span data-i18n="THE BIBLE">THE BIBLE</span></div>
+      <div class="book-filter-wrap"><span data-icon="search"></span><input id="bookFilter" aria-label="Filter Bible books" placeholder="Find a book…" autocomplete="off" data-i18n-aria-label="Filter Bible books" data-i18n-placeholder="Find a book…"></div>
+      <div class="book-scroll" id="bookList" aria-label="Bible books" data-i18n-aria-label="Bible books"></div>
+      <div class="sidebar-footer"><div class="sidebar-footer-icon">✧</div><div><strong><span data-i18n="A deeper kind of reading">A deeper kind of reading</span></strong><small><span data-i18n="Original words. Timeless context.">Original words. Timeless context.</span></small></div></div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-button mobile-menu" id="menuButton" title="Open menu" aria-label="Open menu" data-i18n-title="Open menu" data-i18n-aria-label="Open menu"><span data-icon="menu"></span></button>
+          <div class="topbar-crumb"><span data-i18n="THE BIBLE">THE BIBLE</span> <span class="crumb-divider">/</span> <span id="topReference">2 Peter 3</span></div>
+        </div>
+        <div class="topbar-right">
+          <span class="quiet-label"><span data-i18n="A QUIET MOMENT WITH THE WORD">A QUIET MOMENT WITH THE WORD</span></span>
+          <button class="icon-button" id="dailyNav" type="button" aria-controls="dailyVerseCard" aria-expanded="true" title="Verse of the day" aria-label="Verse of the day"><span data-icon="sparkles"></span></button>
+          <button class="icon-button" id="searchButton" title="Search" aria-label="Search Bible" data-i18n-title="Search" data-i18n-aria-label="Search Bible"><span data-icon="search"></span></button>
+          <button class="icon-button" id="fontButton" title="Change text size" aria-label="Change text size" data-i18n-title="Change text size" data-i18n-aria-label="Change text size"><span data-icon="type"></span></button>
+        </div>
+      </header>
+
+      <main id="readerView" class="page-area">
+<div id="guidedModeSwitch" class="guided-mode-switch hidden" role="group" aria-label="Study mode"><button id="modeDaily" type="button" class="active" aria-pressed="true">Verse of the Day</button><button id="modeGuided" type="button" aria-pressed="false">Guided Bible Study</button></div>
+<!-- BEGIN SELA DAILY -->
+        <section id="dailyVerseCard" class="daily-card hidden" aria-labelledby="dailyTitle">
+          <div class="daily-top"><span id="dailyEyebrow" class="daily-eyebrow">Verse of the day</span><time id="dailyDate"></time><button type="button" id="dailyClose" class="daily-close" title="Close verse of the day" aria-label="Close verse of the day" aria-controls="dailyVerseCard"><span aria-hidden="true">×</span></button></div>
+          <p id="dailySubtitle" class="daily-subtitle">A daily path of spiritual growth</p>
+          <div class="daily-plan-line"><span id="dailyProgress"></span><span id="dailyTheme"></span></div>
+          <h2 id="dailyTitle" tabindex="-1"></h2>
+          <p id="dailyReference" class="daily-reference"></p>
+          <p id="dailyVerseText" class="daily-verse" aria-live="polite"></p>
+          <div id="dailyCredit" class="source-credit daily-credit"></div>
+          <button id="dailyRetry" type="button" class="daily-text-button hidden" data-daily-label="Try again">Try again</button>
+          <div class="daily-actions"><button id="dailyStart" type="button" class="primary-btn">Begin daily study</button><button id="dailyExpand" type="button" class="daily-text-button" aria-expanded="false" aria-controls="dailyDetails" data-daily-label="Show today’s prompt">Show today’s prompt</button><button id="dailyLater" type="button" class="daily-text-button" data-daily-label="Later today">Later today</button></div>
+          <div class="daily-actions"><button id="dailyResume" type="button" class="daily-secondary hidden" data-daily-label="Resume where I left off">Resume where I left off</button><button id="dailyJournalOpen" type="button" class="daily-secondary" data-daily-label="Study journal">Study journal</button></div>
+          <p id="dailyEntryDates" class="daily-small"></p>
+          <section id="dailyJournal" class="daily-history hidden" aria-labelledby="dailyJournalTitle">
+            <div class="journal-heading"><h2 id="dailyJournalTitle">Study journal</h2><button type="button" id="dailyJournalClose" class="daily-text-button" data-daily-label="Close journal">Close journal</button></div>
+            <p id="dailyJournalNote" class="daily-small"></p>
+            <label class="daily-field-label" for="dailyJournalCycle" data-daily-label="Study cycle">Study cycle</label><select id="dailyJournalCycle" class="journal-cycle"></select>
+            <div id="dailyJournalList"></div><div id="dailyLegacyNotes"></div>
+          </section>
+          <div id="dailyDetails" class="daily-details">
+            <nav id="dailySteps" class="daily-steps" aria-label="Daily study steps"></nav>
+            <p id="dailyStepStatus" class="daily-step-status" aria-live="polite"></p>
+            <div data-daily-stage="0" class="daily-stage">
+              <p class="daily-coaching" data-daily-label="Read slowly. What does the verse actually say? Notice the speaker, repeated words and the surrounding passage."></p>
+              <div class="daily-block"><h3 data-daily-label="Build on what you learned">Build on what you learned</h3><p id="dailyBridge"></p><div id="dailyPrevious"></div></div>
+              <div class="daily-actions"><button type="button" class="daily-secondary" data-daily-open="context" data-daily-label="Read in context">Read in context</button></div>
+            </div>
+            <div data-daily-stage="1" class="daily-stage hidden">
+              <h3 data-daily-label="Explore the original words"></h3>
+              <p class="daily-coaching" data-daily-label="Choose one Greek, Hebrew or Aramaic word. Compare its meaning with its use in this sentence; a dictionary gloss alone does not determine the verse’s meaning."></p>
+              <button type="button" class="daily-secondary" data-daily-tool="study" data-daily-label="Explore the original words"></button>
+            </div>
+            <div data-daily-stage="2" class="daily-stage hidden">
+              <h3 data-daily-label="Understand the author’s message"></h3>
+              <p class="daily-coaching" data-daily-label="Read the historical and literary context. What was the author communicating to the first readers? Explore the linked passages before applying the verse."></p>
+              <button type="button" class="daily-secondary" data-daily-tool="meaning" data-daily-label="Open meaning &amp; context"></button>
+              <p class="daily-coaching daily-small" data-daily-label="Generate a verse study there if you want a fuller explanation."></p>
+              <div class="daily-block"><h3 data-daily-label="Explore the connections">Explore the connections</h3><div id="dailyLinks" class="daily-links"></div></div>
+            </div>
+            <div data-daily-stage="3" class="daily-stage hidden">
+              <h3 data-daily-label="Reflect">Reflect</h3><p id="dailyQuestion" class="daily-coaching"></p>
+              <label class="daily-field-label" for="dailyReflection" data-daily-label="Your reflection"></label>
+              <textarea id="dailyReflection" class="daily-journal" rows="5"></textarea>
+              <p id="dailyLegacyReflection" class="daily-small journal-writing hidden"></p>
+              <p class="daily-small" data-daily-label="Saved on this device"></p>
+            </div>
+            <div data-daily-stage="4" class="daily-stage hidden">
+              <h3 data-daily-label="Practice today">Practice today</h3><p id="dailyPractice" class="daily-coaching"></p>
+              <label class="daily-field-label" for="dailyIntention" data-daily-label="My next step"></label>
+              <textarea id="dailyIntention" class="daily-journal" rows="3"></textarea>
+              <button id="dailySuggest" type="button" class="daily-text-button" data-daily-label="Use today’s suggestion"></button>
+              <p class="daily-small" data-daily-label="Saved on this device"></p>
+            </div>
+            <div class="daily-actions"><button id="dailyBack" type="button" class="daily-secondary" data-daily-label="Back">Back</button><button id="dailyNext" type="button" class="primary-btn">Continue</button><button id="dailyComplete" type="button" class="primary-btn hidden">Finish today’s study</button></div>
+            <p id="dailySaveStatus" class="daily-small" role="status" aria-live="polite"></p>
+            <p class="daily-small" data-daily-label="You can revisit each step. Your place and practice plan are saved on this device."></p>
+            <div id="dailyThemePath" class="daily-theme-path" role="list" aria-label="Weekly themes"></div>
+            <label class="daily-preference"><input type="checkbox" id="dailyPromptToggle" checked><span data-daily-label="Open this prompt each day">Open this prompt each day</span></label>
+          </div>
+        </section>
+<!-- END SELA DAILY -->
+        <section id="guidedStudyCard" class="daily-card guided-card hidden" aria-labelledby="guidedHeading"><div class="guided-top"><h2 id="guidedHeading">Guided Bible Study</h2><button type="button" id="guidedClose" class="daily-close" aria-label="Close guided study">×</button></div><div id="guidedBody" aria-live="polite"></div></section>
+        <section class="reading-header">
+          <div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="SCRIPTURE READING">SCRIPTURE READING</span></div>
+          <div class="reading-title-row">
+            <div><h1 id="chapterTitle">2 Peter <em>3</em></h1><p class="chapter-subtitle" id="chapterSubtitle"><span data-i18n="The promise of His coming">The promise of His coming</span></p></div>
+            <div class="chapter-arrows">
+              <button id="prevChapter" class="circle-button" aria-label="Previous chapter" title="Previous chapter" data-i18n-aria-label="Previous chapter" data-i18n-title="Previous chapter"><span data-icon="chevron-left"></span></button>
+              <button id="nextChapter" class="circle-button" aria-label="Next chapter" title="Next chapter" data-i18n-aria-label="Next chapter" data-i18n-title="Next chapter"><span data-icon="chevron-right"></span></button>
+            </div>
+          </div>
+          <div class="reading-controls">
+            <div class="reference-controls">
+              <label class="select-wrap"><span data-icon="book-open"></span><select id="bookSelect" aria-label="Book" data-i18n-aria-label="Book"></select><span data-icon="chevron-down"></span></label>
+              <label class="select-wrap chapter-select"><span><span data-i18n="CH.">CH.</span></span><select id="chapterSelect" aria-label="Chapter" data-i18n-aria-label="Chapter"></select><span data-icon="chevron-down"></span></label>
+            </div>
+            <label class="version-control"><span data-icon="layers"></span><select id="translationSelect" aria-label="Bible translation" data-i18n-aria-label="Bible translation"><option value="web">WEB — World English Bible</option><option value="kjv">KJV — King James Version</option><option value="niv" disabled>NIV — New International Version</option><option value="ntr" disabled>NTR — Noua Traducere Românească (Romanian)</option><option value="nasb2020" disabled>NASB 2020 — New American Standard Bible</option><option value="amp" disabled>AMP — Amplified Bible</option><option value="asv" disabled>ASV — American Standard Version</option><option value="nirv" disabled>NIrV — New International Reader’s Version</option></select><span data-icon="chevron-down"></span></label>
+          </div>
+        </section>
+
+        <div class="insight-banner" id="insightBanner"><div class="banner-symbol">✦</div><div><strong><span data-i18n="Go beyond the translation">Go beyond the translation</span></strong><p><span data-i18n="Tap any verse to uncover its original language, historical setting, and deeper meaning.">Tap any verse to uncover its original language, historical setting, and deeper meaning.</span></p></div><button id="dismissBanner" aria-label="Dismiss tip" data-i18n-aria-label="Dismiss tip"><span data-icon="x"></span></button></div>
+        <div class="reading-section-label"><span><span data-i18n="THE WORD">THE WORD</span></span><span class="reading-line"></span><span id="languageLabel">WORLD ENGLISH BIBLE</span></div>
+        <div class="status-note hidden" id="readerNotice"></div>
+        <div class="verses" id="verseList" aria-live="polite"><div class="loading-passage"><span class="spinner"></span> <span data-i18n="Opening Scripture…">Opening Scripture…</span></div></div>
+        <div id="translationCredit" class="source-credit" aria-live="polite"></div>
+        <footer class="reader-footer"><span>✦</span><p><span data-i18n="Read slowly. Discover deeply. Let the words dwell.">Read slowly. Discover deeply. Let the words dwell.</span></p></footer>
+      </main>
+
+      <main id="savedView" class="page-area hidden">
+        <div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="YOUR COLLECTION">YOUR COLLECTION</span></div>
+        <h1 class="secondary-title"><span data-i18n="Saved">Saved</span> <em><span data-i18n="Scripture">Scripture</span></em></h1>
+        <p class="secondary-subtitle"><span data-i18n="The verses that have spoken to you, gathered in one place.">The verses that have spoken to you, gathered in one place.</span></p>
+        <button type="button" id="savedJournalOpen" class="daily-secondary saved-journal-link" data-daily-label="Study journal">Study journal</button>
+        <div id="savedList" class="saved-list"></div>
+      </main>
+      <main id="searchView" class="page-area hidden">
+        <div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="EXPLORE THE WORD">EXPLORE THE WORD</span></div>
+        <h1 class="secondary-title"><span data-i18n="Find a">Find a</span> <em><span data-i18n="passage">passage</span></em></h1>
+        <p class="secondary-subtitle"><span data-i18n="Search uses the selected translation. References such as “John 3:16” open that passage.">Search uses the selected translation. References such as “John 3:16” open that passage.</span></p>
+        <form id="searchForm" class="search-box"><span data-icon="search"></span><input id="searchInput" placeholder="Verse, reference, or phrase…" aria-label="Search" minlength="2" data-i18n-aria-label="Search" data-i18n-placeholder="Verse, reference, or phrase…"><button type="submit"><span data-i18n="Search">Search</span> <span data-icon="arrow-right"></span></button></form>
+        <div id="searchResults" class="search-results"><div class="search-hint"><span data-i18n="Try: John 3:16 · Psalm 23 · covenant · peace">Try: John 3:16 · Psalm 23 · covenant · peace</span></div></div>
+      </main>
+    </div>
+
+    <aside class="study-panel" id="studyPanel" aria-label="Verse study panel" data-i18n-aria-label="Verse study panel">
+      <div class="study-topbar"><div><span class="study-overline"><span data-i18n="DIG DEEPER">DIG DEEPER</span></span><h2><span data-i18n="Verse">Verse</span> <em><span data-i18n="study">study</span></em></h2></div><button class="icon-button" id="closeStudy" aria-label="Close study" data-i18n-aria-label="Close study"><span data-icon="x"></span></button></div>
+      <div class="study-scroller" id="studyScroller">
+        <div class="study-empty" id="studyEmpty"><div class="study-empty-icon">✳</div><h3><span data-i18n="Every word has a story.">Every word has a story.</span></h3><p><span data-i18n="Select a verse in the reading pane to see the original Greek, Hebrew or Aramaic, word meanings, and historical context.">Select a verse in the reading pane to see the original Greek, Hebrew or Aramaic, word meanings, and historical context.</span></p><div class="empty-steps"><span><span data-i18n="01   Read">01   Read</span></span><span><span data-i18n="02   Select">02   Select</span></span><span><span data-i18n="03   Discover">03   Discover</span></span></div></div>
+        <div id="studyContent" class="hidden">
+          <div class="selected-verse-card"><div class="selected-meta"><span id="selectedReference">2 Peter 3:10</span><span id="selectedVersion">WEB</span></div><p id="selectedText"></p></div>
+          <div class="study-actions"><div><span class="tiny-label"><span data-i18n="MARK THIS VERSE">MARK THIS VERSE</span></span><div class="highlight-palette" id="highlightPalette" aria-label="Highlight colors" data-i18n-aria-label="Highlight colors"><button data-color="honey" aria-label="Highlight gold" title="Gold" data-i18n-title="Gold" data-i18n-aria-label="Highlight gold"></button><button data-color="sage" aria-label="Highlight green" title="Green" data-i18n-title="Green" data-i18n-aria-label="Highlight green"></button><button data-color="lavender" aria-label="Highlight lavender" title="Lavender" data-i18n-title="Lavender" data-i18n-aria-label="Highlight lavender"></button><button data-color="rose" aria-label="Highlight pink" title="Pink" data-i18n-title="Pink" data-i18n-aria-label="Highlight pink"></button><button class="erase-highlight" data-color="none" aria-label="Remove highlight" title="Remove highlight" data-i18n-aria-label="Remove highlight" data-i18n-title="Remove highlight"><span data-icon="x"></span></button></div></div><button id="copyVerse" class="copy-verse" title="Copy verse" data-i18n-title="Copy verse"><span data-icon="copy"></span><span><span data-i18n="Copy">Copy</span></span></button></div>
+          <div class="study-tabs" role="tablist" aria-label="Study sections" data-i18n-aria-label="Study sections"><button class="study-tab active" data-tab="words" role="tab" aria-selected="true"><span data-i18n="Original text">Original text</span></button><button class="study-tab" data-tab="meaning" role="tab" aria-selected="false"><span data-i18n="Meaning &amp; context">Meaning &amp; context</span></button><button class="study-tab" data-tab="notes" role="tab" aria-selected="false"><span data-i18n="My notes">My notes</span></button></div>
+          <section class="tab-panel" id="wordsTab">
+            <div class="section-heading"><span data-icon="languages"></span><h3 id="originalHeading"><span data-i18n="Greek original">Greek original</span></h3></div>
+            <div id="originalContent"><div class="section-loading"><span class="spinner"></span> <span data-i18n="Loading original text…">Loading original text…</span></div></div>
+          </section>
+          <section class="tab-panel hidden" id="meaningTab">
+            <div class="section-heading"><span data-icon="sparkles"></span><h3><span data-i18n="Meaning &amp; context">Meaning &amp; context</span></h3></div>
+            <div id="meaningContent"></div>
+          </section>
+          <section class="tab-panel hidden" id="notesTab">
+            <div class="section-heading"><span data-icon="notebook-pen"></span><h3><span data-i18n="Personal reflection">Personal reflection</span></h3></div>
+            <p class="notes-caption"><span data-i18n="Your thoughts are saved privately in this browser.">Your thoughts are saved privately in this browser.</span></p>
+            <textarea id="noteInput" placeholder="What is God teaching you through this verse? Write a reflection, question, or prayer…" rows="8" data-i18n-placeholder="What is God teaching you through this verse? Write a reflection, question, or prayer…"></textarea>
+            <div id="noteStatus" class="note-status"><span data-i18n="Notes save automatically.">Notes save automatically.</span></div>
+          </section>
+        </div>
+      </div>
+      <button id="guidedReturn" type="button" class="daily-secondary guided-return hidden">Return to guided study</button><div class="study-bottom"><span data-icon="shield-check"></span><span><span data-i18n="Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.">Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.</span></span></div>
+    </aside>
+  </div>
+
+  <div id="mobileBackdrop" class="mobile-backdrop hidden"></div>
+  <nav class="mobile-nav" aria-label="Mobile navigation" data-i18n-aria-label="Mobile navigation"><button id="mobileRead" class="active"><span data-icon="book-open"></span><span><span data-i18n="Read">Read</span></span></button><button id="mobileSearch"><span data-icon="search"></span><span><span data-i18n="Search">Search</span></span></button><button id="mobileSaved"><span data-icon="bookmark"></span><span><span data-i18n="Saved">Saved</span></span></button><button id="mobileStudy"><span data-icon="sparkles"></span><span><span data-i18n="Study">Study</span></span></button></nav>
+  <div class="toast hidden" id="toast" role="status"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
