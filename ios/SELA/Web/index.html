@@ -15,11 +15,12 @@
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true"><span>✦</span></div>
-        <div><div class="brand-name">sela<span class="brand-dot">.</span></div><div class="brand-caption"><span data-i18n="SCRIPTURE &amp; STUDY">SCRIPTURE &amp; STUDY</span><span aria-hidden="true"> · </span><span class="brand-release" data-sela-release>v1.6.0</span></div></div>
+        <div><div class="brand-name">sela<span class="brand-dot">.</span></div><div class="brand-caption"><span data-i18n="SCRIPTURE &amp; STUDY">SCRIPTURE &amp; STUDY</span><span aria-hidden="true"> · </span><span class="brand-release" data-sela-release>v1.6.1</span></div></div>
       </div>
       <div class="sidebar-section-title"><span data-i18n="YOUR SPACE">YOUR SPACE</span></div>
       <nav class="side-links" aria-label="Main navigation" data-i18n-aria-label="Main navigation">
         <button class="side-link active" id="navRead" type="button"><span data-icon="book-open"></span> <span data-i18n="Read Scripture">Read Scripture</span></button>
+        <button class="side-link" id="navDaily" type="button" aria-controls="dailyVerseCard" aria-expanded="true"><span data-icon="sparkles"></span> <span id="navDailyLabel">Verse of the day</span></button>
         <button class="side-link" id="navSaved" type="button"><span data-icon="bookmark"></span> <span data-i18n="Highlights &amp; notes">Highlights &amp; notes</span> <span class="saved-count" id="savedCount">0</span></button>
         <button class="side-link" id="navSearch" type="button"><span data-icon="search"></span> <span data-i18n="Search the Bible">Search the Bible</span></button>
         <button class="side-link" id="navAbout" type="button"><span data-icon="book-open"></span> <span data-i18n="About">About</span></button>
@@ -38,7 +39,7 @@
         </div>
         <div class="topbar-right">
           <span class="quiet-label"><span data-i18n="A QUIET MOMENT WITH THE WORD">A QUIET MOMENT WITH THE WORD</span></span>
-          <button class="icon-button" id="dailyNav" type="button" title="Verse of the day" aria-label="Verse of the day"><span data-icon="sparkles"></span></button>
+          <button class="icon-button" id="dailyNav" type="button" aria-controls="dailyVerseCard" aria-expanded="true" title="Verse of the day" aria-label="Verse of the day"><span data-icon="sparkles"></span></button>
           <button class="icon-button" id="searchButton" title="Search" aria-label="Search Bible" data-i18n-title="Search" data-i18n-aria-label="Search Bible"><span data-icon="search"></span></button>
           <button class="icon-button" id="fontButton" title="Change text size" aria-label="Change text size" data-i18n-title="Change text size" data-i18n-aria-label="Change text size"><span data-icon="type"></span></button>
         </div>
@@ -47,7 +48,7 @@
       <main id="readerView" class="page-area">
 <!-- BEGIN SELA DAILY -->
         <section id="dailyVerseCard" class="daily-card hidden" aria-labelledby="dailyTitle">
-          <div class="daily-top"><span id="dailyEyebrow" class="daily-eyebrow">Verse of the day</span><time id="dailyDate"></time></div>
+          <div class="daily-top"><span id="dailyEyebrow" class="daily-eyebrow">Verse of the day</span><time id="dailyDate"></time><button type="button" id="dailyClose" class="daily-close" title="Close verse of the day" aria-label="Close verse of the day" aria-controls="dailyVerseCard"><span aria-hidden="true">×</span></button></div>
           <p id="dailySubtitle" class="daily-subtitle">A daily path of spiritual growth</p>
           <div class="daily-plan-line"><span id="dailyProgress"></span><span id="dailyTheme"></span></div>
           <h2 id="dailyTitle" tabindex="-1"></h2>
