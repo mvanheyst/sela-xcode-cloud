@@ -20,7 +20,11 @@ struct WebReader: UIViewRepresentable {
         reader.isOpaque = false
         reader.backgroundColor = UIColor(red: 0.988, green: 0.984, blue: 0.973, alpha: 1)
         reader.scrollView.contentInsetAdjustmentBehavior = .never
-        reader.load(URLRequest(url: URL(string: "sela://app/index.html")!))
+        // Unique document identity prevents reusing an older cached reader page.
+        reader.load(URLRequest(
+            url: URL(string: "sela://app/index.html?reader=1.7.1-highlight-hf1")!,
+            cachePolicy: .reloadIgnoringLocalCacheData
+        ))
         return reader
     }
 
@@ -156,7 +160,8 @@ final class BundleSchemeHandler: NSObject, WKURLSchemeHandler {
         let headers = [
             "Content-Type": (types[file.pathExtension] ?? "application/octet-stream") + "; charset=utf-8",
             "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'",
-            "X-Content-Type-Options": "nosniff"
+            "X-Content-Type-Options": "nosniff",
+            "Cache-Control": "no-store"
         ]
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: headers)!
         urlSchemeTask.didReceive(response)

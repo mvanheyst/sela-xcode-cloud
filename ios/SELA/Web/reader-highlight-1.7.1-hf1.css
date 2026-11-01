@@ -1,0 +1,16 @@
+/* SELA iOS 1.7.1 highlight refresh HF1. Keep source geometry and stored data. */
+:root { --sela-highlight-style-revision: "1.7.1-highlight-hf1"; }
+.verse.highlight-honey .verse-text,
+.verse.highlight-sage .verse-text,
+.verse.highlight-lavender .verse-text,
+.verse.highlight-rose .verse-text {
+  background-image: none !important;
+  background-repeat: no-repeat !important;
+  background-clip: border-box !important;
+  background-origin: padding-box !important;
+  border-radius: 3px;
+}
+.verse.highlight-honey .verse-text { background-color: #f8e7b5 !important; }
+.verse.highlight-sage .verse-text { background-color: #cee9cf !important; }
+.verse.highlight-lavender .verse-text { background-color: #e0d9fa !important; }
+.verse.highlight-rose .verse-text { background-color: #f6d5d5 !important; }
