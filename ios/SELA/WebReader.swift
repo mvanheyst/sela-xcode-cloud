@@ -76,9 +76,9 @@ struct WebReader: UIViewRepresentable {
                   let path = body["path"] as? String,
                   let relative = URLComponents(string: path), relative.scheme == nil,
                   relative.host == nil, relative.fragment == nil,
-                  ["/api/status", "/api/books", "/api/chapter", "/api/original", "/api/search", "/api/study", "/api/word-study", "/api/study-chat", "/api/scripture-background"].contains(relative.path),
+                  ["/api/status", "/api/books", "/api/chapter", "/api/original", "/api/search", "/api/study", "/api/word-study", "/api/study-chat", "/api/scripture-background", "/api/guided-study/catalog", "/api/guided-study/path", "/api/guided-study/session", "/api/guided-study/explain"].contains(relative.path),
                   let method = body["method"] as? String,
-                  method == (["/api/study", "/api/word-study", "/api/study-chat", "/api/scripture-background"].contains(relative.path) ? "POST" : "GET"),
+                  method == (["/api/study", "/api/word-study", "/api/study-chat", "/api/scripture-background", "/api/guided-study/explain"].contains(relative.path) ? "POST" : "GET"),
                   path.utf8.count <= 4_000 else {
                 replyHandler(nil, "Unsupported SELA request."); return
             }

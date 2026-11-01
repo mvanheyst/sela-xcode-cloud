@@ -1,7 +1,7 @@
+import {requestJSON,copyText} from './api-client.js';
 // BEGIN SELA RELEASE
-const SELA_RELEASE={"version":"1.6.1","release":"sela-1.6.1-daily-study-navigation"};
+const SELA_RELEASE={"version":"1.7.0","release":"sela-1.7.0-guided-bible-study"};
 // END SELA RELEASE
-import {requestJSON, copyText} from './api-client.js';
 const BOOK_NAMES_RO={"Genesis": "Geneza", "Exodus": "Exodul", "Leviticus": "Leviticul", "Numbers": "Numeri", "Deuteronomy": "Deuteronomul", "Joshua": "Iosua", "Judges": "Judecători", "Ruth": "Rut", "1 Samuel": "1 Samuel", "2 Samuel": "2 Samuel", "1 Kings": "1 Împărați", "2 Kings": "2 Împărați", "1 Chronicles": "1 Cronici", "2 Chronicles": "2 Cronici", "Ezra": "Ezra", "Nehemiah": "Neemia", "Esther": "Estera", "Job": "Iov", "Psalms": "Psalmii", "Proverbs": "Proverbe", "Ecclesiastes": "Eclesiastul", "Song of Solomon": "Cântarea Cântărilor", "Isaiah": "Isaia", "Jeremiah": "Ieremia", "Lamentations": "Plângerile lui Ieremia", "Ezekiel": "Ezechiel", "Daniel": "Daniel", "Hosea": "Osea", "Joel": "Ioel", "Amos": "Amos", "Obadiah": "Obadia", "Jonah": "Iona", "Micah": "Mica", "Nahum": "Naum", "Habakkuk": "Habacuc", "Zephaniah": "Țefania", "Haggai": "Hagai", "Zechariah": "Zaharia", "Malachi": "Maleahi", "Matthew": "Matei", "Mark": "Marcu", "Luke": "Luca", "John": "Ioan", "Acts": "Faptele Apostolilor", "Romans": "Romani", "1 Corinthians": "1 Corinteni", "2 Corinthians": "2 Corinteni", "Galatians": "Galateni", "Ephesians": "Efeseni", "Philippians": "Filipeni", "Colossians": "Coloseni", "1 Thessalonians": "1 Tesaloniceni", "2 Thessalonians": "2 Tesaloniceni", "1 Timothy": "1 Timotei", "2 Timothy": "2 Timotei", "Titus": "Tit", "Philemon": "Filimon", "Hebrews": "Evrei", "James": "Iacov", "1 Peter": "1 Petru", "2 Peter": "2 Petru", "1 John": "1 Ioan", "2 John": "2 Ioan", "3 John": "3 Ioan", "Jude": "Iuda", "Revelation": "Apocalipsa"};
 const ROMANIAN={"SELA — Scripture, deeply understood": "SELA — Scriptura, înțeleasă în profunzime", "SCRIPTURE & STUDY": "SCRIPTURĂ ȘI STUDIU", "YOUR SPACE": "SPAȚIUL TĂU", "Read Scripture": "Citește Scriptura", "Highlights & notes": "Evidențieri și notițe", "Search the Bible": "Caută în Biblie", "THE BIBLE": "BIBLIA", "A deeper kind of reading": "O lectură mai profundă", "Original words. Timeless context.": "Cuvinte originale. Context pentru toate timpurile.", "A QUIET MOMENT WITH THE WORD": "UN MOMENT DE LINIȘTE CU SCRIPTURA", "SCRIPTURE READING": "LECTURA SCRIPTURII", "The promise of His coming": "Promisiunea venirii Sale", "CH.": "CAP.", "Go beyond the translation": "Descoperă dincolo de traducere", "Tap any verse to uncover its original language, historical setting, and deeper meaning.": "Atinge un verset pentru a descoperi textul original, cadrul istoric și sensul său profund.", "THE WORD": "CUVÂNTUL", "Opening Scripture…": "Se deschide Scriptura…", "Read slowly. Discover deeply. Let the words dwell.": "Citește încet. Descoperă în profunzime. Lasă cuvintele să prindă rădăcini.", "YOUR COLLECTION": "COLECȚIA TA", "Saved": "Salvate", "Scripture": "Scriptura", "The verses that have spoken to you, gathered in one place.": "Versetele care ți-au vorbit, adunate într-un singur loc.", "EXPLORE THE WORD": "EXPLOREAZĂ SCRIPTURA", "Find a": "Găsește un", "passage": "pasaj", "Keyword searches use WEB. References like “2 Peter 3:10” open your selected reading translation.": "Căutarea folosește versiunea selectată. Poți introduce o trimitere precum „Ioan 3:16”.", "Search": "Caută", "Try: John 3:16 · Psalm 23 · covenant · peace": "Încearcă: Ioan 3:16 · Psalmii 23 · legământ · pace", "DIG DEEPER": "APROFUNDEAZĂ", "Verse": "Studiul", "study": "versetului", "Every word has a story.": "Fiecare cuvânt are o poveste.", "Select a verse in the reading pane to see the original Greek, Hebrew or Aramaic, word meanings, and historical context.": "Selectează un verset pentru a vedea textul original grecesc, ebraic sau aramaic, sensurile cuvintelor și contextul istoric.", "01   Read": "01   Citește", "02   Select": "02   Selectează", "03   Discover": "03   Descoperă", "MARK THIS VERSE": "EVIDENȚIAZĂ VERSETUL", "Copy": "Copiază", "Original text": "Textul original", "Meaning & context": "Sens și context", "My notes": "Notițele mele", "Greek original": "Originalul grecesc", "Hebrew original": "Originalul ebraic", "Aramaic original": "Originalul aramaic", "Hebrew / Aramaic original": "Originalul ebraic / aramaic", "Loading original text…": "Se încarcă textul original…", "Personal reflection": "Reflecție personală", "Your thoughts are saved privately in this browser.": "Gândurile tale sunt salvate doar pe acest dispozitiv.", "Notes save automatically.": "Notițele se salvează automat.", "Word study uses Greek/Hebrew/Aramaic sources. AI commentary uses WEB and those sources, independently of your reading translation.": "Analiza folosește textul original grecesc, ebraic sau aramaic. Glosările și studiul sunt generate direct în română; textul NTR nu este trimis serviciului AI.", "Read": "Citește", "Study": "Studiu", "Find a book…": "Găsește o carte…", "Filter Bible books": "Filtrează cărțile Bibliei", "Bible books": "Cărțile Bibliei", "Main navigation": "Navigare principală", "Mobile navigation": "Navigare mobilă", "Open menu": "Deschide meniul", "Search Bible": "Caută în Biblie", "Change text size": "Schimbă mărimea textului", "Previous chapter": "Capitolul anterior", "Next chapter": "Capitolul următor", "Book": "Cartea", "Chapter": "Capitolul", "Bible translation": "Traducerea Bibliei", "Search Scripture": "Caută în Scriptură", "Search for a word or reference…": "Caută un cuvânt sau o trimitere…", "What is God teaching you through this verse? Write a reflection, question, or prayer…": "Ce te învață Dumnezeu prin acest verset? Scrie o reflecție, o întrebare sau o rugăciune…", "No books found.": "Nu s-au găsit cărți.", "OLD TESTAMENT": "VECHIUL TESTAMENT", "NEW TESTAMENT": "NOUL TESTAMENT", "Read • reflect • understand": "Citește • reflectează • înțelege", "No verses available for this chapter.": "Nu sunt disponibile versete pentru acest capitol.", "Study this verse": "Studiază acest verset", "Your collection begins with a single verse.": "Colecția ta începe cu un singur verset.", "Highlight or write a note while you read.": "Evidențiază un verset sau scrie o notiță în timp ce citești.", "Tap to open this passage.": "Atinge pentru a deschide pasajul.", "Verse not available in this passage preview": "Versetul nu este disponibil în acest pasaj.", "Loading original text and word definitions…": "Se încarcă textul original și sensurile cuvintelor…", "Original-language data is currently unavailable.": "Datele textului original nu sunt disponibile acum.", "Please check your connection and retry by reselecting the verse.": "Verifică conexiunea și selectează din nou versetul.", "Lexical gloss unavailable": "Glosare lexicală indisponibilă", "parts:": "componente:", "Tap any word for its lexicon details.": "Atinge un cuvânt pentru detalii lexicale.", "No morphological tags were returned for this verse.": "Sursa nu a furnizat analiza morfologică pentru acest verset.", "Text and lexical data:": "Text și date lexicale:", "Different manuscript editions may have variant readings.": "Edițiile manuscriselor pot avea variante textuale.", "A full lexicon definition is unavailable for this token.": "Definiția lexicală completă nu este disponibilă pentru acest cuvânt.", "Not available": "Indisponibil", "Explore the original meaning": "Explorează sensul original", "Add AI-powered historical context": "Adaugă context istoric cu AI", "Generate a careful explanation of this verse, including literal translation, literary and first-century context, different interpretations, and cross-references.": "Generează în română explicația versetului, traducerea literală din original, contextul literar și istoric, interpretări și trimiteri biblice.", "The word-by-word original text is available from the Scripture source. To generate in-depth context for any passage, add your OpenAI API key to the server environment.": "Textul original este disponibil din sursa biblică. Glosările românești și explicațiile necesită activarea serviciului AI pe server.", "Generate verse study": "Generează studiul versetului", "See README.md for optional AI setup.": "Activează serviciul de studiu pe server.", "Included example commentary · not an AI-generated manuscript analysis": "Comentariu exemplificativ inclus", "AI-generated study · verify interpretive claims with trusted commentaries.": "Studiu generat cu AI · verifică interpretările în comentarii de încredere.", "A direct translation": "O traducere literală din original", "What the author is saying": "Ce spune autorul", "Key expressions": "Expresii-cheie", "Historical setting": "Cadrul istoric", "Literary context": "Contextul literar", "Interpretations & nuances": "Interpretări și nuanțe", "Connected Scripture": "Trimiteri biblice", "Reflect & apply": "Reflectează și aplică", "Textual / translation notes": "Observații textuale și de traducere", "Regenerate explanation": "Regenerează explicația", "Generate fuller explanation": "Generează o explicație detaliată", "Lexicon glosses are not automatically a complete contextual translation. AI commentary may contain mistakes and should be checked against the text and reputable biblical scholarship.": "Glosările lexicale nu reprezintă automat o traducere contextuală completă. Comentariul AI poate conține erori; verifică-l în text și în lucrări biblice de încredere.", "Add an API key on the server to enable AI studies": "Activează serviciul AI pe server pentru studii.", "Creating study…": "Se generează studiul…", "Study ready": "Studiul este gata", "Try again": "Reîncearcă", "Enter a reference or a word": "Introdu o trimitere sau un cuvânt", "Searching Scripture…": "Se caută în Scriptură…", "matching verses in": "versete găsite în", "(showing first results)": "(primele rezultate)", "No verses found. Try another phrase.": "Nu s-au găsit versete. Încearcă altă expresie.", "Unknown": "Necunoscut", "Open verse": "Deschide versetul", "Highlight removed": "Evidențiere eliminată", "Verse highlighted": "Verset evidențiat", "Verse copied": "Verset copiat", "Clipboard requires a secure connection": "Copierea necesită o conexiune securizată", "Saved on this device ✓": "Salvat pe acest dispozitiv ✓", "Select a verse to begin studying": "Selectează un verset pentru a începe studiul", "Browser storage is unavailable": "Stocarea locală nu este disponibilă", "Study unavailable": "Studiul nu este disponibil", "Unable to load": "Nu se poate încărca", "Please try again or choose another translation.": "Reîncearcă sau alege altă traducere.", "Verse text:": "Mărimea textului:", "unavailable": "indisponibil", "An error occurred. Check your connection and try again.": "Serviciul nu este disponibil momentan. Verifică conexiunea și reîncearcă.", "The study server took too long to respond. Please try again.": "Serverul de studiu nu a răspuns la timp. Reîncearcă.", "Highlight color": "Culoarea evidențierii", "Remove highlight": "Elimină evidențierea", "Honey": "Auriu", "Sage": "Verde", "Lavender": "Lavandă", "Rose": "Roz", "Close study": "Închide studiul", "Dismiss": "Închide", "Search by reference or keyword": "Caută după trimitere sau cuvânt", "Search uses the selected translation. References such as “John 3:16” open that passage.": "Căutarea folosește versiunea selectată. O trimitere precum „Ioan 3:16” deschide pasajul.", "Dismiss tip": "Închide sugestia", "Verse, reference, or phrase…": "Verset, trimitere sau expresie…", "Verse study panel": "Panoul de studiu al versetului", "Highlight colors": "Culorile evidențierii", "Highlight gold": "Evidențiază cu auriu", "Gold": "Auriu", "Highlight green": "Evidențiază cu verde", "Green": "Verde", "Highlight lavender": "Evidențiază cu lavandă", "Highlight pink": "Evidențiază cu roz", "Pink": "Roz", "Copy verse": "Copiază versetul", "Study sections": "Secțiunile studiului", "Source": "Sursa"};
 Object.assign(ROMANIAN,{"Select up to 20 consecutive verses.": "Selectează cel mult 20 de versete consecutive.", "Select consecutive verses to study this passage.": "Selectează versete consecutive pentru a studia pasajul.", "MARK SELECTED VERSES": "EVIDENȚIAZĂ VERSETELE SELECTATE", "Study the full selected passage, including its original wording and surrounding context.": "Studiază întregul pasaj selectat, inclusiv formularea originală și contextul învecinat.", "Update the study server to generate passage studies.": "Actualizează serverul de studiu pentru a genera studii de pasaje."});
@@ -153,7 +153,7 @@ async function refreshTranslationStatus(){
   if(state.catalogPending)return state.catalogPending;
   state.catalogPending=(async()=>{
     try{const status=await api('/api/status');state.aiEnabled=!!status.aiEnabled;acceptRelease(status);state.passageSupported=status.studyCapabilities?.passageSelection===true;if(Array.isArray(status.translations))acceptTranslationStatus(status.translations);}
-    catch{ releaseLive=false;renderRelease(); /* Keep verified UI metadata. The server still enforces actual access. */ }
+    catch{ guidedCapability(null);releaseLive=false;renderRelease(); /* Keep verified UI metadata. The server still enforces actual access. */ }
     finally{state.catalogPending=null;}
   })();
   return state.catalogPending;
@@ -286,7 +286,6 @@ function toast(message) {
   clearTimeout(state.toastTimer); state.toastTimer = setTimeout(()=>el.classList.add('hidden'),2900);
 }
 async function api(path,options={}){return requestJSON(path,options);}
-
 
 function editionAbbreviation(){return (state.translations.find(e=>e.id===state.translation)?.abbreviation||state.translation).toUpperCase();}
 function uiLanguage(){return state.translation==='ntr'?'ro':'en';}
@@ -632,7 +631,7 @@ async function performSearch(query) {
 function bindEvents() {
   $('navAbout')?.addEventListener('click',openAbout);
   $('readerNotice').addEventListener('click',e=>{const action=e.target.closest('[data-reader-action]');if(!action||action.disabled)return;if(action.dataset.readerAction==='choose')$('translationSelect').focus();else void loadChapter();});
-  window.addEventListener('online',()=>{void refreshTranslationStatus();});window.addEventListener('offline',()=>{releaseLive=false;renderRelease();});
+  window.addEventListener('online',()=>{void refreshTranslationStatus();});window.addEventListener('offline',()=>{guidedCapability(null);releaseLive=false;renderRelease();});
   $('bookFilter').addEventListener('input',e=>renderBooks(e.target.value));
   $('bookList').addEventListener('click',e=>{const btn=e.target.closest('[data-book]');if(btn)navigate(btn.dataset.book,1);});
   $('bookSelect').addEventListener('change',e=>navigate(e.target.value,1));
@@ -678,7 +677,7 @@ async function init(){
   saveJSON('sela.translation',state.translation);
   renderTranslationOptions();
   $('bookSelect').innerHTML=state.books.map(b=>`<option value="${escapeHTML(b.name)}">${escapeHTML(b.name)}</option>`).join('');
-  initDaily();
+  initDaily();initGuided();
   if(state.studySerial===0){const location=initialReadingLocation();state.book=location.book;state.chapter=location.chapter;}
   renderBooks();updateNavigation();$('savedCount').textContent=new Set([...Object.keys(state.highlight),...Object.keys(state.notes)]).size;
   await loadChapter();
@@ -738,6 +737,7 @@ function acceptRelease(status){
   const priorBackground=state.scriptureBackground;
   state.scriptureBackground=status?.studyCapabilities?.scriptureBackground;
   if(!state.scriptureBackground?.enabled||priorBackground?.sourceRevision!==state.scriptureBackground?.sourceRevision){backgroundRequest?.abort();backgroundSessions.clear();$('scriptureBackground')?.remove();}
+  guidedCapability(status?.studyCapabilities?.guidedStudy);
   renderRelease();
 }
 function cancelStudyInteractions(){
@@ -1225,10 +1225,11 @@ function setDailyVisible(visible,{focus=false}={}){
   if(!dailyState)return;
   dailyState.visible=visible;
   $('dailyVerseCard')?.classList.toggle('hidden',!visible);
-  syncDailyNavigation();renderDailyFlow();
+  syncDailyNavigation();renderDailyFlow();renderGuidedVisibility();
   if(focus&&!visible&&state.view==='read'){$('chapterTitle')?.setAttribute('tabindex','-1');$('chapterTitle')?.focus();}
 }
 async function reopenDailyStudy(){
+  guided.mode='daily';
   if(!dailyState)return;
   showView('read');closePanel();setDailyVisible(true);setDailyOpen(true);
   $('dailyVerseCard').scrollIntoView?.({behavior:'auto',block:'start'});$('dailyTitle').focus();
@@ -1262,7 +1263,8 @@ function dailyDates(j){
 function renderDaily(){
   if(!dailyState||!$('dailyVerseCard'))return;
   const d=dailyState,lesson=currentDailyLesson(),entry=lesson.entry,j=dailyJourney(),complete=!!j.completedDate;
-  $('dailyVerseCard').lang=uiLanguage();$('dailyVerseCard').classList.toggle('hidden',d.visible===false);syncDailyNavigation();
+  $('dailyVerseCard').lang=uiLanguage();$('dailyVerseCard').classList.toggle('hidden',d.visible===false);syncDailyNavigation();renderGuidedVisibility();
+  if(guided.enabled&&guided.mode==='guided'&&guided.catalogLanguage&&guided.catalogLanguage!==uiLanguage()&&!guided.busy)void loadGuidedCatalog(true);
   $('dailyDate').dateTime=d.date;$('dailyDate').textContent=new Date(`${d.date}T12:00:00`).toLocaleDateString(uiLanguage()==='ro'?'ro-RO':'en-CA',{month:'long',day:'numeric',year:'numeric'});
   $('dailyEyebrow').textContent=dt('Verse of the day');$('dailySubtitle').textContent=dt('A daily path of spiritual growth');
   $('dailyProgress').textContent=`${dt('Day')} ${lesson.day} ${dt('of')} 28 · ${dt('Cycle')} ${lesson.cycle} · ${dt(dailyStatus(journalEntry(d.journal,d.selected)))}`;
@@ -1315,7 +1317,7 @@ function renderDailyFlow(){
   }
   if(continuation){
     const ref=dailyReference(currentDailyLesson().entry.reference),isDaily=state.book===ref.book&&state.chapter===ref.chapter&&state.selected===ref.verse&&!isPassage();
-    continuation.classList.toggle('hidden',d.visible===false||!isDaily||!d.open||![1,2].includes(j.step));
+    continuation.classList.toggle('hidden',d.visible===false||(guided.enabled&&guided.mode==='guided')||!isDaily||!d.open||![1,2].includes(j.step));
     continuation.textContent=`${dt('Continue daily study')}: ${dt(DAILY_STEPS[Math.min(4,j.step+1)])} →`;
   }
 }
@@ -1324,6 +1326,7 @@ function setDailyStep(step){
   saveDailyJourney();dailyState.open=true;dailySeen();renderDaily();
 }
 async function selectDailyLesson(ordinal){
+  guided.mode='daily';
   if(!Number.isSafeInteger(ordinal)||ordinal<0)return;
   setDailyVisible(true);
   dailyState.selected=ordinal;dailyState.open=true;dailyState.journalOpen=false;$('dailyJournal').classList.add('hidden');
@@ -1331,6 +1334,7 @@ async function selectDailyLesson(ordinal){
   $('dailyVerseCard').scrollIntoView?.({behavior:'auto',block:'start'});
 }
 function openDailyJournal(){
+  guided.mode='daily';
   if(!dailyState)return;setDailyVisible(true);showView('read');closePanel();dailyState.journalOpen=true;$('dailyJournal').classList.remove('hidden');
   dailyState.journalCycle=journalPosition(dailyState.selected).cycle;renderDailyJournal();$('dailyJournal').scrollIntoView?.({behavior:'auto',block:'start'});
 }
@@ -1510,5 +1514,153 @@ async function loadScriptureBackground(){
  finally{session.pending=false;if(backgroundRequest===controller)backgroundRequest=null;if(id===backgroundIdentity())mountScriptureBackground(study);}
 }
 // END SELA BACKGROUND AND ABOUT
+
+// BEGIN SELA GUIDED STUDY
+// Opt-in mode only; no persisted mode and no writes to existing daily/study keys.
+const GUIDED_KEY='sela.guidedStudy.v1';
+const GUIDED_RO={
+ 'Verse of the Day':'Versetul zilei','Guided Bible Study':'Studiu biblic ghidat','Choose a study path':'Alege un parcurs de studiu','All Scripture':'Toată Scriptura','Old Testament':'Vechiul Testament','New Testament':'Noul Testament','Both Testaments':'Ambele Testamente','All study types':'Toate tipurile de studiu','Book studies':'Studii pe cărți','Connected books':'Cărți conectate','Genre studies':'Studii pe genuri','Search paths':'Caută parcursuri','Search by book or study title':'Caută după carte sau titlul studiului','Continue your study':'Continuă studiul','Browse study paths':'Explorează parcursurile','Close guided study':'Închide studiul ghidat','Loading study paths…':'Se încarcă parcursurile…','Loading this session…':'Se încarcă sesiunea…','Try again':'Încearcă din nou','Your progress is safe. Please retry when connected.':'Progresul este păstrat. Reîncearcă atunci când ai conexiune.','Chapter':'Capitolul','Section':'Secțiunea','of':'din','completed sessions':'sesiuni finalizate','Read':'Citește','Observe':'Observă','Understand':'Înțelege','Connect':'Conectează','Reflect':'Reflectează','Previous step':'Pasul anterior','Continue':'Continuă','Previous session':'Sesiunea anterioară','Next session':'Sesiunea următoare','Finish this session':'Finalizează sesiunea','Session completed ✓':'Sesiune finalizată ✓','You have reached the end of this path. You can revisit every session.':'Ai ajuns la finalul parcursului. Poți reveni la orice sesiune.','Read this passage in Scripture':'Citește pasajul în Scriptură','Explore original words':'Explorează cuvintele originale','Open Meaning & Context':'Deschide Sens și context','Generate session guide':'Generează ghidul sesiunii','Preparing your session guide…':'Se pregătește ghidul sesiunii…','The optional guide is unavailable. Reading, questions and your progress remain available.':'Ghidul opțional nu este disponibil. Lectura, întrebările și progresul rămân disponibile.','AI session guide · check its claims against the passage and sources.':'Ghid de sesiune generat cu AI · verifică afirmațiile în pasaj și în surse.','Session guides use WEB and original-language evidence; your reading edition stays selected.':'Ghidurile folosesc WEB și dovezi din limbile originale; ediția ta de lectură rămâne selectată.','AI guides are optional. The reading path and observation prompts work without them.':'Ghidurile AI sunt opționale. Parcursul și întrebările de observare funcționează fără ele.','Book and path orientation':'Orientare în carte și parcurs','Read in context':'Citește în context','Surrounding verses':'Versete învecinate','What changes, repeats or develops in this passage? Which words support your observation?':'Ce se schimbă, se repetă sau se dezvoltă în pasaj? Ce cuvinte susțin observația ta?','Follow the author’s argument or narrative. What does this section contribute to the book?':'Urmărește argumentul sau narațiunea autorului. Cum contribuie această secțiune la carte?','Compare the preceding and following sections. What is continued, contrasted or explained?':'Compară secțiunile anterioare și următoare. Ce se continuă, se contrastează sau se explică?','What does this passage help you understand? What might you want to consider, revisit or explore further?':'Ce te ajută pasajul să înțelegi? Ce ai dori să iei în considerare, să recitești sau să explorezi mai departe?','Your observations':'Observațiile tale','Your understanding and questions':'Înțelegerea și întrebările tale','Connections you notice':'Legăturile pe care le observi','Your reflection':'Reflecția ta','Optional — write in your own words.':'Opțional — scrie cu propriile cuvinte.','Saved on this device':'Salvat pe acest dispozitiv','Not saved. Keep this page open and copy your writing.':'Nu s-a salvat. Păstrează pagina deschisă și copiază ce ai scris.','Stored progress could not be read. Copy any writing before leaving; existing stored data has not been replaced.':'Progresul salvat nu a putut fi citit. Copiază ce ai scris înainte de a ieși; datele existente nu au fost înlocuite.','Study journal':'Jurnal de studiu','No sessions completed yet.':'Nicio sesiune finalizată încă.','Review session':'Revizuiește sesiunea','All sessions in this chapter':'Toate sesiunile capitolului','Return to guided study':'Înapoi la studiul ghidat','Earlier in this path':'Mai devreme în parcurs','Next in this path':'Urmează în parcurs','Your studies':'Studiile tale','No matching paths.':'Niciun parcurs potrivit.','Guided study is currently disabled.':'Studiul ghidat este dezactivat în prezent.','Source':'Sursă','Continue this path':'Continuă acest parcurs','Optional reflection; you can finish without writing a response.':'Reflecție opțională; poți finaliza fără să scrii un răspuns.','Observations':'Observații','The movement of the passage':'Progresia pasajului','Connections':'Legături','Questions for exploration':'Întrebări pentru explorare','A wider chapter may contain several sessions, each covering up to 20 consecutive verses.':'Un capitol mai lung poate avea mai multe sesiuni, fiecare cu cel mult 20 de versete consecutive.'};
+function gt(s){return uiLanguage()==='ro'?(GUIDED_RO[s]||s):s;}
+function guidedStored(){
+ try{const raw=localStorage.getItem(GUIDED_KEY);if(!raw)return {schema:1,activePath:null,paths:{}};const d=JSON.parse(raw);if(d?.schema!==1||!d.paths||typeof d.paths!=='object'||Array.isArray(d.paths))throw Error('shape');
+  const out={schema:1,activePath:typeof d.activePath==='string'?d.activePath:null,paths:{}};
+  for(const [id,p]of Object.entries(d.paths)){if(!/^[a-z0-9-]{1,100}$/u.test(id)||!p||!Number.isSafeInteger(p.position)||p.position<0||!Number.isSafeInteger(p.section)||p.section<0||!p.entries||typeof p.entries!=='object'||Array.isArray(p.entries))continue;out.paths[id]={position:p.position,section:p.section,entries:{}};
+   for(const [key,e]of Object.entries(p.entries)){if(key.length>220||!e||!Number.isInteger(e.step)||e.step<0||e.step>4)continue;out.paths[id].entries[key]={step:e.step,reference:String(e.reference||'').slice(0,140),position:Number.isInteger(e.position)?e.position:0,section:Number.isInteger(e.section)?e.section:0,completedAt:typeof e.completedAt==='string'?e.completedAt:null,writing:Object.fromEntries(['observe','understand','connect','reflect'].map(k=>[k,String(e.writing?.[k]||'')]))};}}
+  return out;
+ }catch{return {schema:1,activePath:null,paths:{},unreadable:true};}
+}
+const guided={enabled:false,mode:'daily',journal:guidedStored(),catalog:null,path:null,session:null,reading:null,guide:null,guideBusy:false,guideError:false,busy:false,error:false,abort:null,guideAbort:null,serial:0,contextKey:'',catalogLanguage:'',kind:'all',scope:'all',search:'',screen:'catalog',storageError:false};
+const GUIDED_STEPS=['Read','Observe','Understand','Connect','Reflect'];
+function guidedCapability(status){
+ const enabled=status?.enabled===true;const changed=guided.enabled!==enabled;guided.enabled=enabled;
+ if(!enabled){guided.abort?.abort();guided.guideAbort?.abort();guided.mode='daily';guided.busy=false;guided.guideBusy=false;}
+ if(changed||!enabled)renderGuidedVisibility();
+}
+function renderGuidedVisibility(){
+ const visible=dailyState?.visible!==false;
+ $('guidedModeSwitch')?.classList.toggle('hidden',!guided.enabled||!visible);
+ $('navGuided')?.classList.toggle('hidden',!guided.enabled);
+ const navLabel=document.querySelector?.('[data-guided-nav]');if(navLabel)navLabel.textContent=gt('Guided Bible Study');
+ if($('guidedReturn'))$('guidedReturn').textContent=gt('Return to guided study');
+ $('guidedModeSwitch')?.setAttribute('aria-label',gt('Guided Bible Study'));
+ const on=guided.enabled&&guided.mode==='guided';
+ $('guidedStudyCard')?.classList.toggle('hidden',!visible||!on);
+ $('dailyVerseCard')?.classList.toggle('hidden',!visible||on);
+ for(const id of ['modeDaily','modeGuided']){const el=$(id);el?.classList.toggle('active',id===(on?'modeGuided':'modeDaily'));el?.setAttribute('aria-pressed',String(id===(on?'modeGuided':'modeDaily')));if(el)el.textContent=gt(id==='modeDaily'?'Verse of the Day':'Guided Bible Study');}
+ $('navGuided')?.classList.toggle('active',on&&visible&&state.view==='read');
+ if(on){$('navDaily')?.classList.remove('active');$('dailyStudyContinue')?.classList.add('hidden');}
+ if($('guidedReturn'))$('guidedReturn').classList.toggle('hidden',!on||!guided.session);
+}
+async function setGuidedMode(mode){
+ if(mode==='guided'&&!guided.enabled)return;
+ guided.mode=mode==='guided'?'guided':'daily';if(dailyState)dailyState.visible=true;showView('read');closePanel();renderDaily();renderGuidedVisibility();
+ if(guided.mode==='guided'){if(guided.contextKey&&guided.contextKey.endsWith(':'+state.translation)&&guided.session)renderGuided();else await loadGuidedCatalog(true);$('guidedStudyCard')?.scrollIntoView?.({behavior:'auto',block:'start'});}else $('dailyVerseCard')?.scrollIntoView?.({behavior:'auto',block:'start'});
+}
+function saveGuided(){
+ if(guided.journal.unreadable){guided.storageError=true;}else try{localStorage.setItem(GUIDED_KEY,JSON.stringify(guided.journal));guided.storageError=false;}catch{guided.storageError=true;}
+ const el=$('guidedSaveStatus');if(el)el.textContent=gt(guided.journal.unreadable?'Stored progress could not be read. Copy any writing before leaving; existing stored data has not been replaced.':guided.storageError?'Not saved. Keep this page open and copy your writing.':'Saved on this device');
+}
+function guidedEntry(){
+ const s=guided.session;if(!s)return null;let p=guided.journal.paths[s.pathId];if(!p)p=guided.journal.paths[s.pathId]={position:s.position,section:s.section,entries:{}};
+ if(!p.entries[s.id])p.entries[s.id]={step:0,reference:s.reference,position:s.position,section:s.section,completedAt:null,writing:{observe:'',understand:'',connect:'',reflect:''}};
+ return p.entries[s.id];
+}
+function guidedTitle(p){return p.book&&uiLanguage()==='ro'?(BOOK_NAMES_RO[p.book]||p.title):p.title;}
+async function loadGuidedCatalog(resume=false){
+ if(!guided.enabled)return;guided.abort?.abort();const ctrl=new AbortController();guided.abort=ctrl;const serial=++guided.serial,lang=uiLanguage();guided.busy=true;guided.error=false;guided.screen='catalog';renderGuided();
+ try{const c=await api('/api/guided-study/catalog?language='+lang,{signal:ctrl.signal});if(ctrl.signal.aborted||serial!==guided.serial||!guided.enabled)return;guided.catalog=c;guided.catalogLanguage=lang;guided.busy=false;
+  if(resume&&guided.journal.activePath&&c.paths.some(p=>p.id===guided.journal.activePath)){await openGuidedPath(guided.journal.activePath);return;}
+ }catch(e){if(ctrl.signal.aborted)return;if(e.code==='guided-disabled')guidedCapability({enabled:false});else guided.error=true;}
+ finally{if(serial===guided.serial&&!ctrl.signal.aborted){guided.busy=false;renderGuided();}}
+}
+async function openGuidedPath(id){
+ if(!guided.enabled||!guided.catalog?.paths.some(p=>p.id===id))return;
+ guided.abort?.abort();guided.guideAbort?.abort();const ctrl=new AbortController();guided.abort=ctrl;const serial=++guided.serial;guided.busy=true;guided.error=false;guided.screen='session';guided.path=null;guided.session=null;renderGuided();
+ try{const p=await api('/api/guided-study/path?'+new URLSearchParams({id,language:uiLanguage()}),{signal:ctrl.signal});if(ctrl.signal.aborted||serial!==guided.serial||!guided.enabled)return;guided.path=p;const saved=guided.journal.paths[id];guided.journal.activePath=id;
+  await loadGuidedSession(saved&&saved.position<p.chapters.length?saved.position:0,saved?.section||0);
+ }catch(e){if(ctrl.signal.aborted)return;if(e.code==='guided-disabled')guidedCapability({enabled:false});else{guided.busy=false;guided.error=true;renderGuided();}}
+}
+async function loadGuidedSession(position,section=0,last=false){
+ if(!guided.enabled||!guided.path)return;
+ guided.abort?.abort();guided.guideAbort?.abort();const ctrl=new AbortController();guided.abort=ctrl;const serial=++guided.serial,pathId=guided.path.id,translation=state.translation,language=uiLanguage();guided.busy=true;guided.error=false;guided.guide=null;guided.guideBusy=false;guided.guideError=false;renderGuided();
+ try{
+  let s=await api('/api/guided-study/session?'+new URLSearchParams({pathId,position,section:last?0:section,language}),{signal:ctrl.signal});
+  if(last&&s.sectionCount>1)s=await api('/api/guided-study/session?'+new URLSearchParams({pathId,position,section:s.sectionCount-1,language}),{signal:ctrl.signal});
+  if(ctrl.signal.aborted||serial!==guided.serial||!guided.enabled)return;
+  const reading=await requestChapter(new URLSearchParams({book:s.book,chapter:s.chapter,translation}),ctrl.signal);
+  if(ctrl.signal.aborted||serial!==guided.serial||!guided.enabled||translation!==state.translation)return;
+  for(let n=s.startVerse;n<=s.endVerse;n++)if(!(reading.verses||[]).some(v=>Number(v.verse)<=n&&Number(v.verseEnd||v.verse)>=n))throw Error('Missing reading verses');
+  guided.session=s;guided.reading=reading;guided.contextKey=`${pathId}:${position}:${s.section}:${translation}`;guidedEntry();
+  const p=guided.journal.paths[pathId];p.position=position;p.section=s.section;guided.busy=false;saveGuided();
+ }catch(e){if(ctrl.signal.aborted)return;if(e.code==='guided-disabled')guidedCapability({enabled:false});else guided.error=true;}
+ finally{if(serial===guided.serial&&!ctrl.signal.aborted){guided.busy=false;renderGuided();}}
+}
+async function generateGuidedGuide(){
+ if(!guided.enabled||!guided.session||guided.guideBusy)return;guided.guideAbort?.abort();const ctrl=new AbortController();guided.guideAbort=ctrl;const s=guided.session,translation=state.translation;guided.guideBusy=true;guided.guideError=false;renderGuided();
+ try{const data=await api('/api/guided-study/explain',{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({pathId:s.pathId,position:s.position,section:s.section,language:uiLanguage()})});
+  if(ctrl.signal.aborted||!guided.enabled||guided.session?.id!==s.id||translation!==state.translation)return;
+  if(data.sessionId!==s.id||data.language!==uiLanguage())throw Error('Guide identity');guided.guide=data;
+ }catch(e){if(ctrl.signal.aborted)return;if(e.code==='guided-disabled')guidedCapability({enabled:false});else guided.guideError=true;}
+ finally{if(guided.guideAbort===ctrl){guided.guideBusy=false;renderGuided();}}
+}
+function guidedMove(delta){const s=guided.session;if(!s||guided.busy)return;if(delta>0){if(s.section+1<s.sectionCount)return loadGuidedSession(s.position,s.section+1);if(s.position+1<s.chapterCount)return loadGuidedSession(s.position+1,0);}else{if(s.section>0)return loadGuidedSession(s.position,s.section-1);if(s.position>0)return loadGuidedSession(s.position-1,0,true);}}
+async function openGuidedTool(mode){
+ const s=guided.session;if(!guided.enabled||!s)return;const stamp=guided.contextKey;
+ await navigate(s.book,s.chapter,mode==='read'?null:s.startVerse,mode==='read'?null:s.endVerse);
+ if(stamp!==guided.contextKey||!guided.enabled)return;
+ if(mode!=='read'&&state.book===s.book&&state.chapter===s.chapter&&state.selected===s.startVerse)switchTab(mode==='meaning'?'meaning':'words');
+ renderGuidedVisibility();
+}
+function guidedClaim(v){return v?`<p>${escapeHTML(v.text)} <small>${escapeHTML(v.evidenceIds.map(id=>'['+id+']').join(' '))}</small></p>`:'';}
+function renderGuided(){
+ renderGuidedVisibility();const root=$('guidedBody');if(!root||!guided.enabled||guided.mode!=='guided')return;
+ $('guidedHeading').textContent=gt('Guided Bible Study');$('guidedClose').setAttribute('aria-label',gt('Close guided study'));
+ if(guided.busy){root.innerHTML=`<p role="status">${escapeHTML(gt(guided.screen==='catalog'?'Loading study paths…':'Loading this session…'))}</p>`;return;}
+ if(guided.error){root.innerHTML=`<p role="status">${escapeHTML(gt('Your progress is safe. Please retry when connected.'))}</p><button type="button" class="daily-secondary" data-guided-action="retry">${escapeHTML(gt('Try again'))}</button><button type="button" class="daily-text-button" data-guided-action="browse">${escapeHTML(gt('Browse study paths'))}</button>`;return;}
+ if(guided.screen==='catalog'||!guided.session){renderGuidedCatalog();return;}
+ const s=guided.session,j=guidedEntry(),step=j.step,p=guided.journal.paths[s.pathId],g=guided.guide;
+ const completed=Object.values(p.entries).filter(e=>e.completedAt).length;
+ const actions=`<div class="daily-actions"><button type="button" class="daily-secondary" data-guided-action="read">${escapeHTML(gt('Read this passage in Scripture'))}</button><button type="button" class="daily-secondary" data-guided-action="words">${escapeHTML(gt('Explore original words'))}</button><button type="button" class="daily-secondary" data-guided-action="meaning">${escapeHTML(gt('Open Meaning & Context'))}</button></div>`;
+ const excerpt=(guided.reading.verses||[]).filter(v=>Number(v.verse)<=s.endVerse&&Number(v.verseEnd||v.verse)>=s.startVerse);
+ const around=(guided.reading.verses||[]).filter(v=>Number(v.verse)>=s.startVerse-5&&Number(v.verse)<=s.endVerse+5&&!excerpt.includes(v));
+ const text=vs=>vs.map(v=>`<p class="guided-scripture"><sup>${Number(v.verse)}</sup> ${escapeHTML(v.text)}</p>`).join('');
+ const labels=['Your observations','Your understanding and questions','Connections you notice','Your reflection'];
+ const prompts=['What changes, repeats or develops in this passage? Which words support your observation?','Follow the author’s argument or narrative. What does this section contribute to the book?','Compare the preceding and following sections. What is continued, contrasted or explained?','What does this passage help you understand? What might you want to consider, revisit or explore further?'];
+ let content=step===0?`<h3>${escapeHTML(gt('Book and path orientation'))}</h3><p>${escapeHTML(s.focus)}</p><p class="daily-coaching">${escapeHTML(s.genreAdvice)}</p>${text(excerpt)}<div id="guidedCredits" class="source-credit"></div><details><summary>${escapeHTML(gt('Surrounding verses'))}</summary>${text(around)}</details>`:`<p class="daily-coaching">${escapeHTML(gt(prompts[step-1]))}</p>`;
+ if(g){if(step===0)content+=guidedClaim(g.orientation);if(step===1)content+=g.observations.map(guidedClaim).join('');if(step===2)content+=guidedClaim(g.movement);if(step===3)content+=g.connections.map(guidedClaim).join('');if(step===4)content+=`<p>${escapeHTML(g.reflection)}</p>`;if([1,2,4].includes(step))content+=`<details><summary>${escapeHTML(gt('Questions for exploration'))}</summary><ul>${g.questions.map(x=>`<li>${escapeHTML(x)}</li>`).join('')}</ul></details>`;}
+ if(step===3){for(const [name,c]of [['Earlier in this path',s.previousChapter],['Next in this path',s.nextChapter]])if(c)content+=`<p><strong>${escapeHTML(gt(name))}:</strong> ${escapeHTML(displayReference(c.book,c.chapter))}</p>`;}
+ if(step>0)content+=`<label class="daily-field-label" for="guidedWriting">${escapeHTML(gt(labels[step-1]))}</label><textarea id="guidedWriting" class="daily-journal" rows="5" data-guided-writing="${['observe','understand','connect','reflect'][step-1]}" placeholder="${escapeHTML(gt('Optional — write in your own words.'))}">${escapeHTML(j.writing[['observe','understand','connect','reflect'][step-1]])}</textarea>`;
+ const entries=Object.entries(p.entries);
+ root.innerHTML=`<div class="guided-toolbar"><button type="button" class="daily-text-button" data-guided-action="browse">← ${escapeHTML(gt('Browse study paths'))}</button><span>${completed} ${escapeHTML(gt('completed sessions'))}</span></div><h3 class="guided-path-title">${escapeHTML(guidedTitle(guided.path))}</h3><p>${escapeHTML(displayReference(s.book,s.chapter,s.startVerse,s.endVerse))}</p><p class="daily-small">${escapeHTML(gt('Chapter'))} ${s.position+1} ${escapeHTML(gt('of'))} ${s.chapterCount} · ${escapeHTML(gt('Section'))} ${s.section+1} ${escapeHTML(gt('of'))} ${s.sectionCount} · ${escapeHTML(s.genre)}</p><nav class="guided-steps" aria-label="${escapeHTML(gt('Guided Bible Study'))}">${GUIDED_STEPS.map((name,i)=>`<button type="button" class="${i===step?'active':''}" data-guided-step="${i}" aria-current="${i===step?'step':'false'}">${i+1}. ${escapeHTML(gt(name))}</button>`).join('')}</nav><section class="guided-stage">${content}</section>${actions}<div class="daily-actions"><button type="button" class="daily-secondary" data-guided-action="stepBack" ${step===0?'disabled':''}>${escapeHTML(gt('Previous step'))}</button>${step<4?`<button type="button" class="primary-btn" data-guided-action="stepNext">${escapeHTML(gt('Continue'))}: ${escapeHTML(gt(GUIDED_STEPS[step+1]))} →</button>`:`<button type="button" class="primary-btn" data-guided-action="complete" ${j.completedAt?'disabled':''}>${escapeHTML(gt(j.completedAt?'Session completed ✓':'Finish this session'))}</button><p class="daily-small">${escapeHTML(gt('Optional reflection; you can finish without writing a response.'))}</p>`}</div><p id="guidedSaveStatus" class="daily-small" role="status">${escapeHTML(gt(guided.storageError?'Not saved. Keep this page open and copy your writing.':guided.journal.unreadable?'Stored progress could not be read. Copy any writing before leaving; existing stored data has not been replaced.':'Saved on this device'))}</p><details class="guided-guide"><summary>${escapeHTML(gt('Generate session guide'))}</summary><p class="daily-small">${escapeHTML(gt('Session guides use WEB and original-language evidence; your reading edition stays selected.'))}</p>${state.aiEnabled?`<button type="button" class="daily-secondary" data-guided-action="generate" ${guided.guideBusy?'disabled':''}>${escapeHTML(gt(guided.guideBusy?'Preparing your session guide…':'Generate session guide'))}</button>`:`<p>${escapeHTML(gt('AI guides are optional. The reading path and observation prompts work without them.'))}</p>`}${guided.guideError?`<p role="status">${escapeHTML(gt('The optional guide is unavailable. Reading, questions and your progress remain available.'))}</p>`:''}${g?`<p class="daily-small">${escapeHTML(gt('AI session guide · check its claims against the passage and sources.'))}</p>${safeEvidence(g.evidence)}`:''}</details><div class="daily-actions"><button type="button" class="daily-secondary" data-guided-action="previous" ${s.position===0&&s.section===0?'disabled':''}>← ${escapeHTML(gt('Previous session'))}</button><button type="button" class="daily-secondary" data-guided-action="next" ${s.position===s.chapterCount-1&&s.section===s.sectionCount-1?'disabled':''}>${escapeHTML(gt('Next session'))} →</button></div>${s.position===s.chapterCount-1&&s.section===s.sectionCount-1?`<p>${escapeHTML(gt('You have reached the end of this path. You can revisit every session.'))}</p>`:''}<details><summary>${escapeHTML(gt('All sessions in this chapter'))}</summary><div class="guided-session-links">${s.units.map((u,i)=>`<button type="button" class="daily-text-button" data-guided-section="${i}">${escapeHTML(displayReference(s.book,s.chapter,u.start,u.end))}</button>`).join('')}</div></details><label class="daily-field-label" for="guidedChapter">${escapeHTML(gt('Chapter'))}</label><select id="guidedChapter" class="journal-cycle">${guided.path.chapters.map((c,i)=>`<option value="${i}" ${i===s.position?'selected':''}>${i+1}. ${escapeHTML(displayReference(c.book,c.chapter))}</option>`).join('')}</select><details class="guided-journal"><summary>${escapeHTML(gt('Study journal'))} (${entries.length})</summary>${entries.map(([id,e])=>`<details class="journal-entry"><summary>${escapeHTML(displayRef(e.reference))}${e.completedAt?' ✓':''}</summary><p class="daily-small">${escapeHTML(e.completedAt?new Date(e.completedAt).toLocaleDateString(uiLanguage()==='ro'?'ro-RO':'en-CA'):'')}</p>${Object.entries(e.writing).filter(([,v])=>v).map(([k,v])=>`<h4>${escapeHTML(gt(labels[['observe','understand','connect','reflect'].indexOf(k)]))}</h4><p class="journal-writing">${escapeHTML(v)}</p>`).join('')}<button type="button" class="daily-secondary" data-guided-review="${escapeHTML(id)}">${escapeHTML(gt('Review session'))}</button></details>`).join('')}</details>`;
+ if($('guidedCredits'))translationCredits(guided.reading,'guidedCredits');
+}
+function renderGuidedCatalog(){
+ const root=$('guidedBody');if(!root||!guided.catalog)return;
+ root.innerHTML=`<p class="daily-coaching">${escapeHTML(gt('Choose a study path'))}</p><p class="daily-small">${escapeHTML(gt('A wider chapter may contain several sessions, each covering up to 20 consecutive verses.'))}</p><div class="guided-filters"><label>${escapeHTML(gt('All study types'))}<select id="guidedKind">${[['all','All study types'],['book','Book studies'],['connected','Connected books'],['genre','Genre studies']].map(([id,label])=>`<option value="${id}" ${id===guided.kind?'selected':''}>${escapeHTML(gt(label))}</option>`).join('')}</select></label><label>${escapeHTML(gt('All Scripture'))}<select id="guidedScope">${[['all','All Scripture'],['OT','Old Testament'],['NT','New Testament'],['both','Both Testaments']].map(([id,label])=>`<option value="${id}" ${id===guided.scope?'selected':''}>${escapeHTML(gt(label))}</option>`).join('')}</select></label></div><label class="daily-field-label" for="guidedSearch">${escapeHTML(gt('Search paths'))}</label><input id="guidedSearch" class="guided-search" type="search" value="${escapeHTML(guided.search)}" placeholder="${escapeHTML(gt('Search by book or study title'))}"><div id="guidedPathList"></div><p class="daily-small">${escapeHTML(guided.catalog.notice||'')}</p>`;
+ renderGuidedPathList();
+}
+function renderGuidedPathList(){
+ const root=$('guidedPathList');if(!root)return;const search=guided.search.toLocaleLowerCase();
+ const list=guided.catalog.paths.filter(p=>(guided.kind==='all'||p.kind===guided.kind)&&(guided.scope==='all'||p.testament===guided.scope)&&`${guidedTitle(p)} ${p.title} ${p.focus}`.toLocaleLowerCase().includes(search));
+ root.innerHTML=list.map(p=>{const progress=guided.journal.paths[p.id];return `<button type="button" class="guided-path" data-guided-path="${escapeHTML(p.id)}"><strong>${escapeHTML(guidedTitle(p))}</strong><span>${escapeHTML(p.focus)}</span><small>${p.chapterCount} ${escapeHTML(gt('Chapter'))} · ${escapeHTML(gt(p.kind==='book'?'Book studies':p.kind==='connected'?'Connected books':'Genre studies'))}${progress?' · '+Object.values(progress.entries).filter(e=>e.completedAt).length+' '+escapeHTML(gt('completed sessions')):''}</small>${progress?`<span class="guided-resume">${escapeHTML(gt('Continue this path'))} →</span>`:''}</button>`;}).join('')||`<p>${escapeHTML(gt('No matching paths.'))}</p>`;
+}
+function initGuided(){
+ $('modeDaily')?.addEventListener('click',()=>void setGuidedMode('daily'));$('modeGuided')?.addEventListener('click',()=>void setGuidedMode('guided'));
+ $('navGuided')?.addEventListener('click',()=>void setGuidedMode('guided'));$('guidedClose')?.addEventListener('click',()=>setDailyVisible(false,{focus:true}));
+ $('guidedReturn')?.addEventListener('click',()=>void setGuidedMode('guided'));
+ $('guidedStudyCard')?.addEventListener('input',e=>{if(e.target.id==='guidedSearch'){guided.search=e.target.value;renderGuidedPathList();return;}const key=e.target.dataset?.guidedWriting;if(key&&['observe','understand','connect','reflect'].includes(key)){const j=guidedEntry();if(j){j.writing[key]=e.target.value;saveGuided();}}});
+ $('guidedStudyCard')?.addEventListener('change',e=>{if(e.target.id==='guidedKind'){guided.kind=e.target.value;renderGuidedPathList();}if(e.target.id==='guidedScope'){guided.scope=e.target.value;renderGuidedPathList();}if(e.target.id==='guidedChapter')void loadGuidedSession(Number(e.target.value),0);});
+ $('guidedStudyCard')?.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||b.disabled||!guided.enabled)return;
+  if(b.dataset.guidedPath){void openGuidedPath(b.dataset.guidedPath);return;}
+  const j=guided.session?guidedEntry():null;
+  if(b.dataset.guidedStep!==undefined&&j){j.step=Number(b.dataset.guidedStep);saveGuided();renderGuided();return;}
+  if(b.dataset.guidedSection!==undefined){void loadGuidedSession(guided.session.position,Number(b.dataset.guidedSection));return;}
+  if(b.dataset.guidedReview){const entry=guided.journal.paths[guided.path.id].entries[b.dataset.guidedReview];if(entry)void loadGuidedSession(entry.position,entry.section);return;}
+  switch(b.dataset.guidedAction){case 'browse':void loadGuidedCatalog();break;case 'retry':if(guided.path)void loadGuidedSession(guided.journal.paths[guided.path.id]?.position||0,guided.journal.paths[guided.path.id]?.section||0);else void loadGuidedCatalog();break;case 'generate':void generateGuidedGuide();break;case 'read':case 'words':case 'meaning':void openGuidedTool(b.dataset.guidedAction);break;case 'previous':void guidedMove(-1);break;case 'next':void guidedMove(1);break;case 'stepBack':if(j)j.step=Math.max(0,j.step-1);saveGuided();renderGuided();break;case 'stepNext':if(j)j.step=Math.min(4,j.step+1);saveGuided();renderGuided();break;case 'complete':if(j){j.completedAt=new Date().toISOString();saveGuided();renderGuided();}break;}
+ });
+ renderGuidedVisibility();
+}
+// END SELA GUIDED STUDY
 
 init();
