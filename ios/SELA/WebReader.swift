@@ -22,7 +22,7 @@ struct WebReader: UIViewRepresentable {
         reader.scrollView.contentInsetAdjustmentBehavior = .never
         // Unique document identity prevents reusing an older cached reader page.
         reader.load(URLRequest(
-            url: URL(string: "sela://app/index.html?reader=1.8.0")!,
+            url: URL(string: "sela://app/index.html?reader=1.8.1")!,
             cachePolicy: .reloadIgnoringLocalCacheData
         ))
         return reader
